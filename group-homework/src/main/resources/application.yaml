@@ -1,6 +1,3 @@
 spring:
-  datasource:
-    url: jdbc:opengauss://localhost:5432/postgres
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+  profiles:
+    active: dev

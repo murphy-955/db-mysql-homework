@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:opengauss://139.9.131.107:26000/mydb
+    username: zeyu
+    password: '102301237lzy.'
+    driver-class-name: org.opengauss.Driver
+  jackson:
+    default-property-inclusion: non_null
+  data:
+    redis:
+      port: 6379
+      host: 106.15.90.163
+      database: 0
+      timeout: 10000
+
+mybatis:
+  configuration:
+    auto-mapping-behavior: full
+    map-underscore-to-camel-case: true
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.zeyuli.pojo
+  mapper-locations: classpath:/mappers/*.xml
+
+jwt:
+  token:
+    tokenExpiration: 24
+    tokenSignKey: 4Pe5KKKoVYj8nJw7MHQ2PpIPjdc5vhIaJUge38cMkc9be3CLIl4vxt2cYLzxBMFDdWEgWj8d9B4BYr73DqWP0g==
+
+redis:
+  baseKey:
+    admin:
+      login: "admin:token:"
+    user:
+      login: "user:token:"

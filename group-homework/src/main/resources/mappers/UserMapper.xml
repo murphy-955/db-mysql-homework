@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace: 命名空间，用于区分不同的mapper-->
+<mapper namespace="com.zeyuli.mappers.UserMapper">
+    <!--声明sql语句-->
+    <!--注意Mapper.xml文件中引用的方法不能重载，否则会报错-->
+    <insert id="register">
+        INSERT INTO bill_sys.user (user_id,username,password)
+        VALUES (#{id},#{username},#{password})
+    </insert>
+
+    <select id="login" resultType="com.zeyuli.pojo.po.UserPo">
+        SELECT user_id, username, password
+        FROM bill_sys.user
+        WHERE username = #{username}
+        AND password = #{password}
+    </select>
+</mapper>
+
