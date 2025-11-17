@@ -6,6 +6,7 @@ import com.zeyuli.enm.StatusCodeEnum;
 import com.zeyuli.mappers.AdminMapper;
 import com.zeyuli.pojo.po.UserPo;
 import com.zeyuli.pojo.vo.AdminGetUserListVo;
+import com.zeyuli.pojo.vo.AdminManageUserVo;
 import com.zeyuli.service.AdminService;
 import com.zeyuli.util.JwtUtil;
 import com.zeyuli.util.Response;
@@ -35,7 +36,7 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Value("${redis.baseKey.admin.login}")
+    @Value("${cache.redis.baseKey.admin.login}")
     private String adminBaseKey;
 
     /**
@@ -65,15 +66,16 @@ public class AdminServiceImpl implements AdminService {
      * 获取用户列表<br>
      * 包含了用户id，用户名，是否禁用的信息
      *
-     * @author : 李泽聿
-     * @since : 2025-11-14 10:31
-     * @param vo 管理员token
-     * @param page 页码
+     * @param vo    管理员token
+     * @param page  页码
      * @param limit 每页条数
      * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-14 10:31
      */
     @Override
     @CheckAdminToken
+    // TODO: 待测试
     public Map<String, Object> getUserList(AdminGetUserListVo vo, Integer page, Integer limit) {
         List<UserPo> userList = adminMapper.getUserList(page, limit);
         if (userList == null || userList.isEmpty()) {
@@ -92,8 +94,67 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @CheckAdminToken
+    // TODO: 待测试
     public Map<String, Object> getUserInfoCount(AdminGetUserListVo vo, Integer limit) {
         int count = adminMapper.getUserInfoCount(limit);
         return Response.success(count / limit + 1);
+    }
+
+    /**
+     * 禁用用户<br>
+     *
+     * @param vo
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-14 14:13
+     */
+    @Override
+    @CheckAdminToken
+    // TODO: 待测试
+    public Map<String, Object> disableUser(AdminManageUserVo vo) {
+        int res = adminMapper.disableUser(vo.getUserId());
+        if (res == 0) {
+            return Response.error(StatusCodeEnum.MANAGE_USER_FAILED);
+        }
+        return Response.success(null);
+    }
+
+    /**
+     * 启用用户<br>
+     *
+     * @param vo {@link AdminManageUserVo}
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-14 14:18
+     */
+    @Override
+    @CheckAdminToken
+    // TODO: 待测试
+    public Map<String, Object> enableUser(AdminManageUserVo vo) {
+        int res = adminMapper.enableUser(vo.getUserId());
+        if (res == 0) {
+            return Response.error(StatusCodeEnum.MANAGE_USER_FAILED);
+        }
+        return Response.success(null);
+    }
+
+    /**
+     * 删除用户<br>
+     * 这是真删了(⊙o⊙)？
+     *
+     * @author : 李泽聿
+     * @since : 2025-11-14 14:21
+     * @param vo {@link AdminManageUserVo}
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     */
+    @Override
+    @CheckAdminToken
+    // TODO: 待测试
+    public Map<String, Object> deleteUser(AdminManageUserVo vo) {
+        int res = adminMapper.deleteUser(vo.getUserId());
+        if (res == 0) {
+            return Response.error(StatusCodeEnum.MANAGE_USER_FAILED);
+        }
+        return Response.success(null);
     }
 }

@@ -18,5 +18,22 @@
         SELECT COUNT(*)
         FROM bill_sys.user
     </select>
+
+    <update id="disableUser">
+        UPDATE bill_sys.user
+        WHERE id = #{userId}
+        SET whetherItIsDisabledOrNot = TRUE
+    </update>
+
+    <update id="enableUser">
+        UPDATE bill_sys.user
+        WHERE id = #{userId}
+        SET whetherItIsDisabledOrNot = FALSE
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM bill_sys.user
+        WHERE id = #{userId}
+    </delete>
 </mapper>
 

@@ -4,40 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="docs: 更新接口文档">
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/annotations/CheckAdminToken.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckAdminTokenAspect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/StatusCodeEnum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/expection/AdminTokenException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/handler/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/AdminMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/UserPo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/AdminGetUserListVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/AdminLoginVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserLoginVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserRegisterVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/AdminService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/JwtUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/Response.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/AdminMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/script/creata_SHA256.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/test/TestDbConnect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="src: 初步开发账单的查询和插入业务">
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/annotations/CheckUserToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/LocalCacheConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/BillController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/RecordEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/UsageEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/expection/CachePenetrationExpectation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/expection/UserTokenException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/BillMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/bo/GetBillListBo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/BillPo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/AddBillVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/AdminManageUserVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserGetBillDetailVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserQueryBillVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/BillService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/BillMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/docs/接口文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/docs/接口文档.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckAdminTokenAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckAdminTokenAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/StatusCodeEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/StatusCodeEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/AdminMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/AdminMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/AdminMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/AdminMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +50,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
         <option value="Exception" />
       </list>
@@ -106,6 +109,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Spring Boot.Main.executor&quot;: &quot;Run&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -116,7 +120,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -134,6 +138,7 @@
       <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\util" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\fzu\mysql" />
       <recent name="D:\fzu\MySql\homewok-3-SQL-statement\initial-mysql" />
     </key>
   </component>
@@ -256,7 +261,8 @@
       <workItem from="1763032712493" duration="3137000" />
       <workItem from="1763077632010" duration="10825000" />
       <workItem from="1763088599290" duration="1918000" />
-      <workItem from="1763091363766" duration="42000" />
+      <workItem from="1763091363766" duration="17292000" />
+      <workItem from="1763337895148" duration="13405000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -330,7 +336,31 @@
       <option name="project" value="LOCAL" />
       <updated>1763089771962</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763091435571</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1763091435571</updated>
+    </task>
+    <task id="LOCAL-00011" summary="docs: 更新接口文档，部分接口有微调">
+      <option name="closed" value="true" />
+      <created>1763361809913</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1763361809913</updated>
+    </task>
+    <task id="LOCAL-00012" summary="docs: 更新接口文档，部分接口有微调">
+      <option name="closed" value="true" />
+      <created>1763362298801</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362298801</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -352,7 +382,9 @@
     <MESSAGE value="提交初步需求文档" />
     <MESSAGE value="docs: 接口文档" />
     <MESSAGE value="docs: 更新接口文档" />
-    <option name="LAST_COMMIT_MESSAGE" value="docs: 更新接口文档" />
+    <MESSAGE value="docs: 更新接口文档，部分接口有微调" />
+    <MESSAGE value="src: 初步开发账单的查询和插入业务" />
+    <option name="LAST_COMMIT_MESSAGE" value="src: 初步开发账单的查询和插入业务" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

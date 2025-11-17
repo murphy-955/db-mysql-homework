@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Value("${jwt.token.tokenExpiration}")
     private long tokenExpiration;
 
-    @Value("${redis.baseKey.user.login}")
+    @Value("${cache.redis.baseKey.user.login}")
     private String userBaseLoginKey;
 
     /**
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         int res = userMapper.register(id, vo.getPassword(), vo.getUsername());
         if (res > 0) {
             String token = jwtUtil.createToken(id, vo.getUsername(), vo.getPassword());
-            String key = vo.getUsername()
+            String key = id
                     .concat(":")
                     .concat(userBaseLoginKey);
             // 设置token为===>>murphy_955:user:token:返回的token
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         UserPo res = userMapper.login(vo.getUsername(), vo.getPassword());
         if (res != null) {
             String token = jwtUtil.createToken(res.getUserId(), res.getUsername(), res.getPassword());
-            String key = res.getUsername()
+            String key = res.getUserId()
                     .concat(":")
                     .concat(userBaseLoginKey);
             // 设置token为===>>murphy_955:user:token:返回的token

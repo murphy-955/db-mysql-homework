@@ -13,7 +13,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
@@ -31,7 +30,7 @@ public class CheckAdminTokenAspect {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Value("${redis.baseKey.admin.login}")
+    @Value("${cache.redis.baseKey.admin.login}")
     private String adminBaseLoginKey;
 
     @Pointcut("@annotation(com.zeyuli.annotations.CheckAdminToken)")
@@ -40,15 +39,7 @@ public class CheckAdminTokenAspect {
 
     @Before("markedCheckAdminToken()")
     public void checkAdminToken(JoinPoint jp) {
-        String token;
-        Object firstArg = jp.getArgs()[0];
-        try {
-            Field tokenFiled = firstArg.getClass().getDeclaredField("token");
-            tokenFiled.setAccessible(true);
-            token = (String) tokenFiled.get(firstArg);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("token字段不存在或无法访问");
-        }
+        String token = JwtUtil.getToken(jp);
         String redisToken = Objects.requireNonNull(redisTemplate.opsForValue().get(adminBaseLoginKey)).toString();
         if (redisToken.equals(token)) {
             return;

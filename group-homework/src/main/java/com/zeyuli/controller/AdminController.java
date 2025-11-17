@@ -3,8 +3,8 @@ package com.zeyuli.controller;
 
 import com.zeyuli.pojo.vo.AdminGetUserListVo;
 import com.zeyuli.pojo.vo.AdminLoginVo;
+import com.zeyuli.pojo.vo.AdminManageUserVo;
 import com.zeyuli.service.AdminService;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,5 +38,20 @@ public class AdminController {
     public Map<String, Object> getUserInfoCount(@RequestParam("limit") Integer limit,
                                                 @RequestBody AdminGetUserListVo vo) {
         return adminService.getUserInfoCount(vo, limit);
+    }
+
+    @PostMapping("admin/disableUser")
+    public Map<String, Object> disableUser(@RequestBody AdminManageUserVo vo) {
+        return adminService.disableUser(vo);
+    }
+
+    @PostMapping("admin/enableUser")
+    public Map<String, Object> enableUser(@RequestBody AdminManageUserVo vo) {
+        return adminService.enableUser(vo);
+    }
+
+    @PostMapping("admin/deleteUser")
+    public Map<String, Object> deleteUser(@RequestBody AdminManageUserVo vo) {
+        return adminService.deleteUser(vo);
     }
 }

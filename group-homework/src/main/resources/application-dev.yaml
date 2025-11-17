@@ -8,10 +8,19 @@ spring:
     default-property-inclusion: non_null
   data:
     redis:
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
       port: 6379
       host: 106.15.90.163
       database: 0
       timeout: 10000
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=300s
 
 mybatis:
   configuration:
@@ -26,9 +35,19 @@ jwt:
     tokenExpiration: 24
     tokenSignKey: 4Pe5KKKoVYj8nJw7MHQ2PpIPjdc5vhIaJUge38cMkc9be3CLIl4vxt2cYLzxBMFDdWEgWj8d9B4BYr73DqWP0g==
 
-redis:
+cache:
   baseKey:
-    admin:
-      login: "admin:token:"
-    user:
-      login: "user:token:"
+    billList: "bill:list:"
+  redis:
+    # 基础过期时间
+    expireTime: 30
+    # 空值缓存时间
+    nullCacheTime: 15
+    baseKey:
+      # 管理员的key后缀
+      admin:
+        login: "admin:token:"
+      # 用户的key后缀
+      user:
+        login: "user:token:"
+    nullData : "EMPTY"

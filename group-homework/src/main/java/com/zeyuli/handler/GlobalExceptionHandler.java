@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.naming.CommunicationException;
 import java.util.Map;
 
 /**
@@ -25,6 +24,18 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Map<String, Object> handleAdminTokenException(AdminTokenException e) {
         return Response.error(StatusCodeEnum.ADMIN_TOKEN_EXPIRED, e.getMessage());
+    }
+
+    @ExceptionHandler(UserTokenException.class)
+    @ResponseBody
+    public Map<String, Object> handleUserTokenException(UserTokenException e) {
+        return Response.error(StatusCodeEnum.USER_TOKEN_EXPIRED, e.getMessage());
+    }
+
+    @ExceptionHandler(CachePenetrationExpectation.class)
+    @ResponseBody
+    public Map<String, Object> handleCachePenetrationExpectation(CachePenetrationExpectation e) {
+        return Response.error(StatusCodeEnum.THE_VALUE_OF_THE_VISIT_DOES_NOT_EXIST);
     }
 
 }

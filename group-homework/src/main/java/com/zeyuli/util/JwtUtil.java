@@ -2,10 +2,12 @@ package com.zeyuli.util;
 
 import io.jsonwebtoken.*;
 import lombok.Data;
+import org.aspectj.lang.JoinPoint;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
@@ -37,7 +39,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 从token字符串获取id,userName,password
+    // 从token字符串依次获取id,userName,password
     public String[] getUserInfo(String token) {
         if (token == null)
             return null;
@@ -72,6 +74,19 @@ public class JwtUtil {
         } catch (Exception e) {
             // 过期出现异常，返回true
             return true;
+        }
+    }
+
+    public static String getToken(JoinPoint jp) {
+        String token;
+        Object firstArg = jp.getArgs()[0];
+        try {
+            Field field = firstArg.getClass().getDeclaredField("token");
+            field.setAccessible(true);
+            token = (String) field.get(firstArg);
+            return token;
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("token字段不存在或无法访问");
         }
     }
 }
