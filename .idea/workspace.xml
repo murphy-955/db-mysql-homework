@@ -4,14 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="docs: 新增需求文档">
-      <change afterPath="$PROJECT_DIR$/group-homework/docs/接口文档.md" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="src: 初步开发账单的查询和插入业务">
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/annotations/CheckUserToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/LocalCacheConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/BillController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/RecordEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/UsageEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/expection/CachePenetrationExpectation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/expection/UserTokenException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/BillMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/bo/GetBillListBo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/BillPo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/AddBillVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/AdminManageUserVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserGetBillDetailVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserQueryBillVo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/BillService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/BillMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckAdminTokenAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckAdminTokenAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/StatusCodeEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/enm/StatusCodeEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/AdminMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/AdminMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/AdminMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/AdminMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+        <option value="Exception" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,6 +72,17 @@
     &quot;accountId&quot;: &quot;4ddbbf41-3334-4c6b-9bd3-c0f1364de7f5&quot;
   }
 }</component>
+  <component name="HttpClientOnboardingState">{
+  &quot;isOnboardingCommentShown&quot;: true
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\softenvironment\apache-maven-3.9.9-bin\repo" />
+        <option name="userSettingsFile" value="D:\softenvironment\apache-maven-3.9.9-bin\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -37,41 +91,148 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/fzu/mysql",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;HTTP 请求.Request | #1.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testConnect.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testConnection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testSimpleConnection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testSqlSentence.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.group-homework [clean].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.Main.executor&quot;: &quot;Run&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/handler&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;java.sql.Driver&quot;,
+      &quot;postgresql&quot;,
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\handler" />
+      <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\config" />
+      <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\util" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\fzu\mysql" />
       <recent name="D:\fzu\MySql\homewok-3-SQL-statement\initial-mysql" />
     </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationStatuses">
+      <map>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="Request | #1" value="STOPPED" />
+              <entry key="Request | #2" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.Main">
+    <configuration name="Request | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#1" runType="运行单个请求">
+      <method v="2" />
+    </configuration>
+    <configuration name="Request | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#2" index="2" runType="运行单个请求">
+      <method v="2" />
+    </configuration>
+    <configuration name="TestDbConnect.testConnection" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="group-homework" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.zeyuli.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.zeyuli.test" />
+      <option name="MAIN_CLASS_NAME" value="com.zeyuli.test.TestDbConnect" />
+      <option name="METHOD_NAME" value="testConnection" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestDbConnect.testSimpleConnection" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="group-homework" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.zeyuli.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.zeyuli.test" />
+      <option name="MAIN_CLASS_NAME" value="com.zeyuli.test.TestDbConnect" />
+      <option name="METHOD_NAME" value="testSimpleConnection" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestDbConnect.testSqlSentence" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="group-homework" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.zeyuli.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.zeyuli.test" />
+      <option name="MAIN_CLASS_NAME" value="com.zeyuli.test.TestDbConnect" />
+      <option name="METHOD_NAME" value="testSqlSentence" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="group-homework" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.zeyuli.Main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP 请求.Request | #2" />
+        <item itemvalue="HTTP 请求.Request | #1" />
+        <item itemvalue="JUnit.TestDbConnect.testSqlSentence" />
+        <item itemvalue="JUnit.TestDbConnect.testConnection" />
+        <item itemvalue="JUnit.TestDbConnect.testSimpleConnection" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -96,6 +257,12 @@
       <workItem from="1762933631805" duration="141000" />
       <workItem from="1763015608001" duration="2083000" />
       <workItem from="1763019023627" duration="3993000" />
+      <workItem from="1763024427162" duration="5971000" />
+      <workItem from="1763032712493" duration="3137000" />
+      <workItem from="1763077632010" duration="10825000" />
+      <workItem from="1763088599290" duration="1918000" />
+      <workItem from="1763091363766" duration="17292000" />
+      <workItem from="1763337895148" duration="13405000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -121,7 +288,79 @@
       <option name="project" value="LOCAL" />
       <updated>1762933695708</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="docs: 接口文档">
+      <option name="closed" value="true" />
+      <created>1763024221124</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763024221124</updated>
+    </task>
+    <task id="LOCAL-00005" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763087671273</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763087671273</updated>
+    </task>
+    <task id="LOCAL-00006" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763087982330</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1763087982330</updated>
+    </task>
+    <task id="LOCAL-00007" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763088723331</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1763088723331</updated>
+    </task>
+    <task id="LOCAL-00008" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763089119663</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1763089119664</updated>
+    </task>
+    <task id="LOCAL-00009" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763089771962</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1763089771962</updated>
+    </task>
+    <task id="LOCAL-00010" summary="docs: 更新接口文档">
+      <option name="closed" value="true" />
+      <created>1763091435571</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1763091435571</updated>
+    </task>
+    <task id="LOCAL-00011" summary="docs: 更新接口文档，部分接口有微调">
+      <option name="closed" value="true" />
+      <created>1763361809913</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1763361809913</updated>
+    </task>
+    <task id="LOCAL-00012" summary="docs: 更新接口文档，部分接口有微调">
+      <option name="closed" value="true" />
+      <created>1763362298801</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1763362298801</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -141,6 +380,14 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="前七项" />
     <MESSAGE value="提交初步需求文档" />
-    <option name="LAST_COMMIT_MESSAGE" value="提交初步需求文档" />
+    <MESSAGE value="docs: 接口文档" />
+    <MESSAGE value="docs: 更新接口文档" />
+    <MESSAGE value="docs: 更新接口文档，部分接口有微调" />
+    <MESSAGE value="src: 初步开发账单的查询和插入业务" />
+    <option name="LAST_COMMIT_MESSAGE" value="src: 初步开发账单的查询和插入业务" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

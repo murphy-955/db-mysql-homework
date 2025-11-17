@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--namespace: 命名空间，用于区分不同的mapper-->
+<mapper namespace="com.zeyuli.mappers.BillMapper">
+    <!--声明sql语句-->
+    <!--注意Mapper.xml文件中引用的方法不能重载，否则会报错-->
+
+    <insert id="addBill" parameterType="map">
+        INSERT INTO bill_sys.user_bill
+        (user_id, record_enum, amount, account, type, date, remarks)
+        VALUES
+        (#{userId}, #{vo.recordEnum}, #{vo.amount}, #{vo.account}, #{vo.type}, #{vo.date}, #{vo.remarks})
+        RETURNING
+        id,
+        user_id AS userId,
+        record_enum AS recordEnum,
+        amount,
+        account,
+        type,
+        date,
+        remarks
+    </insert>
+
+    <select id="getBillList" resultType="com.zeyuli.pojo.bo.GetBillListBo">
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = #{userId}
+        AND (
+            date &lt; #{lastDate}
+            OR date = #{lastDate} AND id &lt; #{lastId}
+        )
+        ORDER BY date DESC, id DESC
+        LIMIT #{page}, #{limit}
+    </select>
+
+    <select id="getBillDetail" resultType="com.zeyuli.pojo.po.BillPo">
+        SELECT id, user_id, record_enum, amount, account, type, date, remarks
+        FROM bill_sys.user_bill
+        WHERE id = #{id}
+        AND user_id = #{userId}
+    </select>
+
+</mapper>
+
