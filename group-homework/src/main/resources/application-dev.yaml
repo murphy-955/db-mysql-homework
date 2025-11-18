@@ -39,9 +39,9 @@ cache:
   baseKey:
     billList: "bill:list:"
   redis:
-    # 基础过期时间
+    # 基础过期时间(分钟)
     expireTime: 30
-    # 空值缓存时间
+    # 空值缓存时间(秒)
     nullCacheTime: 15
     baseKey:
       # 管理员的key后缀

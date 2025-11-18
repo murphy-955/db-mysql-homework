@@ -3,7 +3,9 @@ package com.zeyuli.mappers;
 
 import com.zeyuli.pojo.bo.GetBillListBo;
 import com.zeyuli.pojo.po.BillPo;
+import com.zeyuli.pojo.vo.AddBillListVo;
 import com.zeyuli.pojo.vo.AddBillVo;
+import com.zeyuli.pojo.vo.ModifyBillVo;
 import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,4 +33,20 @@ public interface BillMapper {
 
     BillPo getBillDetail(@Param("id") Long id,
                          @Param("userId") String userId);
+
+    int deleteBill(@NotNull(message = "账单ID不能为空") Long id,
+                   String userId);
+
+    List<GetBillListBo> getDeleteBillList(@Param("page") int page,
+                                          @Param("limit") int limit,
+                                          @Param("userId") String userId);
+
+    BillPo recoverBill(@Param("id") Long id,
+                       @Param("userId") String userId);
+
+    BillPo modifyBill(@Param("vo") ModifyBillVo vo,
+                      @Param("userId") String userId);
+
+    List<BillPo> addBillList(@Param("vo") AddBillListVo vo,
+                       @Param("userId") String userId);
 }

@@ -22,7 +22,9 @@ public enum StatusCodeEnum {
     USER_TOKEN_EXPIRED(435, "用户令牌错误"),
     INSERT_BILL_FAILED(436, "新增账单失败"),
     GET_DATA_FAILED(437, "获取数据失败"),
-    THE_VALUE_OF_THE_VISIT_DOES_NOT_EXIST(438, "访问值不存在");
+    THE_VALUE_OF_THE_VISIT_DOES_NOT_EXIST(438, "访问值不存在"),
+    DELETE_BILL_FAILED(439, "删除账单失败"),
+    SEARCH_TYPE_NOT_ALLOWED(440, "查找方式不被允许");
 
 
     private final Integer statusCode;

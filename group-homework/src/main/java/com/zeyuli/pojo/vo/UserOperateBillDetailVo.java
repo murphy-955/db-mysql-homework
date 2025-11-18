@@ -14,11 +14,9 @@ import java.time.LocalDate;
  * @since 2025-11-17 09:46
  */
 @Data
-public class UserGetBillDetailVo {
+public class UserOperateBillDetailVo {
     @NotNull(message = "token")
     private Long token;
     @NotNull(message = "账单ID不能为空")
     private Long id;
-    @NotNull(message = "日期不能为空")
-    private LocalDate date;
 }

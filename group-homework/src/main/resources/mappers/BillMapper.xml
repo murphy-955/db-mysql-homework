@@ -14,21 +14,14 @@
         (user_id, record_enum, amount, account, type, date, remarks)
         VALUES
         (#{userId}, #{vo.recordEnum}, #{vo.amount}, #{vo.account}, #{vo.type}, #{vo.date}, #{vo.remarks})
-        RETURNING
-        id,
-        user_id AS userId,
-        record_enum AS recordEnum,
-        amount,
-        account,
-        type,
-        date,
-        remarks
+        RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
     </insert>
 
     <select id="getBillList" resultType="com.zeyuli.pojo.bo.GetBillListBo">
         SELECT id, record_enum, amount, date
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
+        AND deleted = FALSE
         AND (
             date &lt; #{lastDate}
             OR date = #{lastDate} AND id &lt; #{lastId}
@@ -41,8 +34,55 @@
         SELECT id, user_id, record_enum, amount, account, type, date, remarks
         FROM bill_sys.user_bill
         WHERE id = #{id}
-        AND user_id = #{userId}
+        AND deleted = FALSE
     </select>
+
+    <update id="deleteBill">
+        UPDATE bill_sys.user_bill
+        SET deleted = TRUE
+        WHERE id = #{id}
+        AND user_id = #{userId}
+    </update>
+
+    <select id="getDeleteBillList" resultType="com.zeyuli.pojo.bo.GetBillListBo">
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = #{userId}
+        AND deleted = TRUE
+        ORDER BY date DESC, id DESC
+        LIMIT #{page}, #{limit}
+    </select>
+
+    <update id="recoverBill" parameterType="map">
+        UPDATE bill_sys.user_bill
+        SET deleted = FALSE
+        WHERE id = #{id}
+        AND user_id = #{userId}
+        RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
+    </update>
+
+    <update id="modifyBill" parameterType="map">
+        UPDATE bill_sys.user_bill
+        SET record_enum = #{vo.recordEnum},
+            amount = #{vo.amount},
+            account = #{vo.account},
+            type = #{vo.type},
+            date = #{vo.date},
+            remarks = #{vo.remarks}
+        WHERE id = #{id}
+        AND user_id = #{userId}
+        RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
+    </update>
+
+    <insert id="addBillList" parameterType="map">
+        INSERT INTO bill_sys.user_bill
+        (user_id, record_enum, amount, account, type, date, remarks)
+        <foreach collection="voList" item="vo" separator=";">
+            VALUES
+            (#{vo.userId}, #{vo.recordEnum}, #{vo.amount}, #{vo.account}, #{vo.type}, #{vo.date}, #{vo.remarks})
+        </foreach>
+        RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
+    </insert>
 
 </mapper>
 

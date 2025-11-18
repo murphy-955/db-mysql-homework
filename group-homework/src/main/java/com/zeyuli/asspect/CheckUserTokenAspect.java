@@ -50,6 +50,10 @@ public class CheckUserTokenAspect {
     @Before("markedCheckUserToken()")
     public void checkUserToken(JoinPoint jp) {
         String token = JwtUtil.getToken(jp);
+        // 校验token是否过期
+        if (jwtUtil.isExpiration(token)) {
+            throw new UserTokenException("用户token已过期");
+        }
         String[] userInfo = jwtUtil.getUserInfo(token);
         String key = userInfo[0]
                 .concat(":")
@@ -60,8 +64,7 @@ public class CheckUserTokenAspect {
         }
         UserPo res = userMapper.selectUser(userInfo[0]);
         String hash = DigestUtils.md5DigestAsHex(res.getPassword().getBytes()).substring(0, 6);
-        if (jwtUtil.isExpiration(token)
-                && userInfo[1].equals(res.getUsername())
+        if (userInfo[1].equals(res.getUsername())
                 && userInfo[2].equals(hash)) {
             redisTemplate.opsForValue().set(key, token, tokenExpiration, TimeUnit.HOURS);
             return;

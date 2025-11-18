@@ -28,8 +28,11 @@ CREATE TABLE IF NOT EXISTS bill_sys."user_bill"
     account VARCHAR(20) NOT NULL,
     type VARCHAR(15) NOT NULL ,
     date DATE NOT NULL,
-    remarks VARCHAR(50)
+    remarks VARCHAR(50) ,
+    deleted  BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+DROP TABLE IF EXISTS bill_sys."user_bill";
 
 CREATE INDEX idx_bill_user_id_date ON bill_sys."user_bill"(user_id, date);
 CREATE INDEX idx_bill_date ON bill_sys."user_bill"(date);

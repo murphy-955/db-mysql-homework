@@ -14,3 +14,18 @@ Content-Type: application/json
 {
   "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_6tWKi5NUrJSMjQwMjYwNDI2V9JRKi1OLfJLzE0FCldmVibmpSdnpOYBxQvKU8qAYmZJlkZmqUB-akWBkpWhuZmxobmhpbFlLQDdFImUTAAAAA.ko8wsI_HxM1VpsusOwxaqIE3D6YHKNMZgMwgmMGZKbdBmVJjUPwXprNzLIwT7eQqoWKM5gCoS77q01ErG356qg"
 }
+
+###
+GET http://localhost:8080/api/query/getSearchType
+
+###
+POST http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_6tWKi5NUrJSMjQwMjYwNDI2V9JRKi1OLfJLzE0FCldmVibmpSdnpOYBxQvKU8qAYmZJlkZmqUB-akWBkpWhuZmxobmhpbFlLQDdFImUTAAAAA.ko8wsI_HxM1VpsusOwxaqIE3D6YHKNMZgMwgmMGZKbdBmVJjUPwXprNzLIwT7eQqoWKM5gCoS77q01ErG356qg",
+  "page": 1,
+  "limit": 10,
+  "startDate": "2021-10-10",
+  "endDate": "2021-10-11"
+}

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 /**
- * 全局异常处理器，用来处理Token过期异常
+ * 全局异常处理器，用来处理所有自定义异常
  *
  * @author 李泽聿
  * @since 2025-11-14 10:50:00
@@ -36,6 +36,12 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Map<String, Object> handleCachePenetrationExpectation(CachePenetrationExpectation e) {
         return Response.error(StatusCodeEnum.THE_VALUE_OF_THE_VISIT_DOES_NOT_EXIST);
+    }
+
+    @ExceptionHandler(SearchTypeNotAllowedExpectation.class)
+    @ResponseBody
+    public Map<String, Object> handleSearchTypeNotAllowedExpectation(SearchTypeNotAllowedExpectation e) {
+        return Response.error(StatusCodeEnum.SEARCH_TYPE_NOT_ALLOWED, e.getMessage());
     }
 
 }
