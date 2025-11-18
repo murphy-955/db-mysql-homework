@@ -165,9 +165,13 @@ export default {
 
 /* 容器 */
 .container {
-  max-width: 1200px;
-  margin: 50px auto;
-  padding: 0 20px;
+  width: 100vw;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 50px;
+  box-sizing: border-box;
 }
 
 /* 功能区域 */
@@ -176,117 +180,20 @@ export default {
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-bottom: 30px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.section-icon {
-  font-size: 20px;
-}
-
-.section-header h3 {
-  font-size: 18px;
-  color: #333;
-}
-
-.download-section {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.platform-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab-btn {
-  padding: 8px 20px;
-  border: 1px solid #ddd;
-  background-color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.tab-btn.active {
-  background-color: #d9534f;
-  color: white;
-  border-color: #d9534f;
-}
-
-.tab-btn:hover:not(.active) {
-  background-color: #f5f5f5;
-}
-
-.import-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.import-card:hover {
-  background-color: #e9ecef;
-}
-
-.import-icon {
-  font-size: 20px;
-}
-
-/* 按钮样式 */
-.btn {
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s;
-  border: none;
-  font-weight: 500;
-}
-
-.btn-primary {
-  background-color: #d9534f;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #c9302c;
-}
-
-.btn-outline {
-  background-color: white;
-  color: #d9534f;
-  border: 1px solid #d9534f;
-}
-
-.btn-outline:hover {
-  background-color: #fff5f5;
+  /* 移除 margin-bottom，因为现在是并排布局 */
 }
 
 /* 功能卡片网格 */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
 .feature-card {
   background: white;
-  border-radius: 12px;
-  padding: 25px;
+  border-radius: px;
+  padding: 20px; /* 从25px减少到20px，缩小卡片大小 */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: all 0.3s;
