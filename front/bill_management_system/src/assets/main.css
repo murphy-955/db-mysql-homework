@@ -2,11 +2,10 @@
 
 #app {
   width: 100vw;
-  height: 56.25vw; /* 16:9 aspect ratio */
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   font-weight: normal;
-  overflow: hidden;
 }
 
 a,

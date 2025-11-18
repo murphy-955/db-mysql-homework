@@ -93,7 +93,7 @@ export default {
 
 <style scoped>
 * {
-  margin: 0;
+  //margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
@@ -106,6 +106,9 @@ export default {
 
 /* 导航栏 */
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   background-color: white;
   display: flex;
   justify-content: space-between;
@@ -192,12 +195,13 @@ export default {
 
 .feature-card {
   background: white;
-  border-radius: px;
+  border-radius: 7px;
   padding: 20px; /* 从25px减少到20px，缩小卡片大小 */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
+  width: 300px;
 }
 
 .feature-card:hover {
