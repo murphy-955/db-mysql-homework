@@ -1,8 +1,8 @@
 package com.zeyuli.controller;
 
 
-import com.zeyuli.enm.SearchTypeEnum;
-import com.zeyuli.pojo.vo.GetBillListOrderByDateVo;
+import com.zeyuli.enm.QueryBillListTypeEnum;
+import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.service.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +27,8 @@ public class QueryController {
     }
 
     @PostMapping("getBillList")
-    public Map<String, Object> getBillList(@RequestParam(value = "searchType",required = true,defaultValue = "UNDEFINED") SearchTypeEnum searchType,
-                                           @RequestBody GetBillListOrderByDateVo vo) {
+    public Map<String, Object> getBillList(@RequestParam(value = "searchType",required = true,defaultValue = "UNDEFINED") QueryBillListTypeEnum searchType,
+                                           @RequestBody GetBillListOrderBySpecificMethodVo vo) {
         return queryService.getBillList(vo, searchType);
     }
 }

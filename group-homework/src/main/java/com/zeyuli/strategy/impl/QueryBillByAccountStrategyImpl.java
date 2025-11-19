@@ -2,10 +2,10 @@ package com.zeyuli.strategy.impl;
 
 
 import com.zeyuli.annotations.CheckUserToken;
-import com.zeyuli.enm.SearchTypeEnum;
+import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.mappers.QueryBillMapper;
 import com.zeyuli.pojo.bo.GetBillListBo;
-import com.zeyuli.pojo.vo.GetBillListOrderByDateVo;
+import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.strategy.BillQueryStrategy;
 import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
@@ -22,7 +22,7 @@ import java.util.List;
  * @since 2025-11-18 14:11
  */
 @Component
-public class BillQueryByAccountStrategyImpl implements BillQueryStrategy {
+public class QueryBillByAccountStrategyImpl implements BillQueryStrategy {
     @Autowired
     private CacheUtil cacheUtil;
 
@@ -35,13 +35,21 @@ public class BillQueryByAccountStrategyImpl implements BillQueryStrategy {
     @Value("${cache.baseKey.billList}")
     private String billListCacheKey;
 
+    /**
+     * 根据账户查询账单列表
+     *
+     * @author : 李泽聿
+     * @since : 2025-11-19 07:56
+     * @param vo 账单查询参数
+     * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
+     */
     @Override
     @CheckUserToken
-    public List<GetBillListBo> queryBillList(GetBillListOrderByDateVo vo) {
-        String type = vo.getSearchType().name();
+    public List<GetBillListBo> queryBillList(GetBillListOrderBySpecificMethodVo vo) {
+        String type = getSearchType();
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         // 缓存key
-        // 格式：bill:list:id（前16位）:DATE_RANGE:startDate:endDate
+        // 格式：bill:list:id（前16位）:ACCOUNT:startDate:endDate
         String key = String.format(billListCacheKey,
                 userId.substring(0,16),
                 type,
@@ -54,9 +62,9 @@ public class BillQueryByAccountStrategyImpl implements BillQueryStrategy {
         if (billList != null) {
             return billList;
         }
-        billList = queryBillMapper.queryBillListOrderByAccount(vo);
+        billList = queryBillMapper.queryBillListOrderByAccount(vo, userId);
         if (!billList.isEmpty()) {
-            cacheUtil.asyncCacheHotBillListOrderByDate(key, billList);
+            cacheUtil.asyncCacheBillListOrderBySpecificMethod(key, billList);
             return billList;
         }
         // 4. 缓存空值
@@ -66,6 +74,6 @@ public class BillQueryByAccountStrategyImpl implements BillQueryStrategy {
 
     @Override
     public String getSearchType() {
-        return SearchTypeEnum.ACCOUNT.name();
+        return QueryBillListTypeEnum.ACCOUNT.name();
     }
 }

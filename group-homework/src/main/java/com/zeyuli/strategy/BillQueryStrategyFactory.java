@@ -1,6 +1,7 @@
 package com.zeyuli.strategy;
 
 
+import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.expection.SearchTypeNotAllowedExpectation;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class BillQueryStrategyFactory implements InitializingBean {
       *
       * @author : 李泽聿
       * @since : 2025-11-18 09:14
-      * @param searchType 查询方式，见 {@link com.zeyuli.enm.SearchTypeEnum}
+      * @param searchType 查询方式，见 {@link QueryBillListTypeEnum}
       * @return : com.zeyuli.strategy.BillQueryStrategy
       */
     public static BillQueryStrategy getBillQueryStrategy(String searchType) {

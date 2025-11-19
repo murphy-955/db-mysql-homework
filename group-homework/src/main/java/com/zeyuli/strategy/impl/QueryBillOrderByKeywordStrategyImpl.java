@@ -9,40 +9,37 @@ import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.strategy.BillQueryStrategy;
 import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- * 根据<b>日期范围</b>查询账单信息的实现类
+ * 根据关键字查询
  *
  * @author 李泽聿
- * @since 2025-11-18 08:55
+ * @since 2025-11-19 09:01
  */
 @Component
-public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
-    @Autowired
-    private JwtUtil jwtUtil;
+@RequiredArgsConstructor
+public class QueryBillOrderByKeywordStrategyImpl implements BillQueryStrategy {
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private CacheUtil cacheUtil;
+    private final QueryBillMapper queryBillMapper;
 
-    @Autowired
-    private QueryBillMapper queryBillMapper;
-
+    private final CacheUtil cacheUtil;
 
     @Value("${cache.baseKey.billList}")
     private String baseCacheBillListKey;
 
     /**
-     * 先读缓存，缓存中没有再查询数据库，如果数据库中也没有数据，则返回空列表，并缓存空值
+     * 根据关键字查询账单列表
      *
-     * @param vo 包含了查询的<b>日期范围</b>，<b>token</b>等，见 {@link GetBillListOrderBySpecificMethodVo}
+     * @param vo 包含了信息的类，见{@link GetBillListOrderBySpecificMethodVo}
      * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
      * @author : 李泽聿
-     * @since : 2025-11-18 10:48
+     * @since : 2025-11-19 09:02
      */
     @Override
     @CheckUserToken
@@ -67,7 +64,7 @@ public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
         }
 
         // 3. 查数据库
-        billList = queryBillMapper.queryBillListOrderByDate(vo, userId);
+        billList = queryBillMapper.queryBillListOrderByKeyword(vo,userId);
         if (!billList.isEmpty()) {
             cacheUtil.asyncCacheBillListOrderBySpecificMethod(key, billList);
             return billList;
@@ -77,16 +74,9 @@ public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
         return null;
     }
 
-    /**
-     * 获取查询策略的类型<br>
-     * 该策略实现类用于根据<b>日期范围</b>查询账单信息
-     *
-     * @return : java.lang.String
-     * @author : 李泽聿
-     * @since : 2025-11-18 10:45
-     */
+
     @Override
     public String getSearchType() {
-        return QueryBillListTypeEnum.DATE_RANGE.name();
+        return QueryBillListTypeEnum.KEYWORD.name();
     }
 }

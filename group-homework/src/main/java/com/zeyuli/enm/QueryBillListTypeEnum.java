@@ -12,9 +12,8 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SearchTypeEnum {
+public enum QueryBillListTypeEnum {
     DATE_RANGE( "日期范围查询"),
-    // TODO 待实现
     AMOUNT_RANGE( "金额范围查询"),
     USAGE_TYPE( "用途类型查询"),
     // TODO 待实现

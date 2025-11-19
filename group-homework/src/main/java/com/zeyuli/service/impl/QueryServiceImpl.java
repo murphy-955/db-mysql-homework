@@ -1,10 +1,10 @@
 package com.zeyuli.service.impl;
 
 
-import com.zeyuli.enm.SearchTypeEnum;
+import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.enm.StatusCodeEnum;
 import com.zeyuli.pojo.bo.GetBillListBo;
-import com.zeyuli.pojo.vo.GetBillListOrderByDateVo;
+import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.service.QueryService;
 import com.zeyuli.strategy.BillQueryStrategy;
 import com.zeyuli.strategy.BillQueryStrategyFactory;
@@ -33,8 +33,8 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public Map<String, Object> getSearchType() {
         Map<String, Object> res = new HashMap<>();
-        for (SearchTypeEnum searchTypeEnum : SearchTypeEnum.values()) {
-            res.put(String.valueOf(searchTypeEnum), searchTypeEnum.getDescription());
+        for (QueryBillListTypeEnum queryBillListTypeEnum : QueryBillListTypeEnum.values()) {
+            res.put(String.valueOf(queryBillListTypeEnum), queryBillListTypeEnum.getDescription());
         }
         return Response.success(StatusCodeEnum.SUCCESS, res);
     }
@@ -44,11 +44,11 @@ public class QueryServiceImpl implements QueryService {
      *
      * @author : 李泽聿
      * @since : 2025-11-18 08:29
-     * @param vo 包含了查询的日期范围，见 {@link GetBillListOrderByDateVo}
+     * @param vo 包含了查询的日期范围，见 {@link GetBillListOrderBySpecificMethodVo}
      * @return : java.util.Map<java.lang.String,java.lang.Object>
      */
     @Override
-    public Map<String, Object> getBillList(GetBillListOrderByDateVo vo, SearchTypeEnum searchType) {
+    public Map<String, Object> getBillList(GetBillListOrderBySpecificMethodVo vo, QueryBillListTypeEnum searchType) {
         BillQueryStrategy billQueryStrategy = BillQueryStrategyFactory.getBillQueryStrategy(searchType.name());
         List<GetBillListBo> getBillListBos = billQueryStrategy.queryBillList(vo);
         if (getBillListBos.isEmpty()) {

@@ -9,17 +9,46 @@
     <!--声明sql语句-->
     <!--注意Mapper.xml文件中引用的方法不能重载，否则会报错-->
     <select id="queryBillListOrderByDate" resultType="com.zeyuli.pojo.bo.GetBillListBo">
-        SELECT * FROM bill_sys.user_bill
-        WHERE user_id = ${vo.userId}
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = ${userId}
         AND date BETWEEN ${vo.startDate} AND ${vo.endDate}
         ORDER BY date DESC
         LIMIT ${vo.page} ,${vo.limit}
     </select>
-    
+
     <select id="queryBillListOrderByAccount" resultType="com.zeyuli.pojo.bo.GetBillListBo">
-        SELECT * FROM bill_sys.user_bill
-        WHERE user_id = ${vo.userId}
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = ${userId}
         AND account = ${vo.account}
+        ORDER BY date DESC
+        LIMIT ${vo.page} ,${vo.limit}
+    </select>
+
+    <select id="queryBillListOrderByAmountRange" resultType="com.zeyuli.pojo.bo.GetBillListBo">
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = ${userId}
+        AND amount BETWEEN ${vo.startAmount} AND ${vo.endAmount}
+        ORDER BY date DESC
+        LIMIT ${vo.page} ,${vo.limit}
+    </select>
+
+    <select id="queryBillListOrderByUsageType" resultType="com.zeyuli.pojo.bo.GetBillListBo">
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = ${userId}
+        AND record_enum = ${vo.usageEnum}
+        ORDER BY date DESC
+        LIMIT ${vo.page} ,${vo.limit}
+    </select>
+
+    <select id="queryBillListOrderByKeyword" resultType="com.zeyuli.pojo.bo.GetBillListBo">
+        SELECT id, record_enum, amount, date
+        FROM bill_sys.user_bill
+        WHERE user_id = ${userId}
+        AND (remarks LIKE '%${vo.keyword}%')
         ORDER BY date DESC
         LIMIT ${vo.page} ,${vo.limit}
     </select>

@@ -330,10 +330,9 @@ public class CacheUtil {
      * @since : 2025-11-18 11:47
      * @param key  : 缓存键
      * @param billList  : 账单列表
-     * @return : void
      */
     @Async
-    public void asyncCacheHotBillListOrderByDate(String key, List<GetBillListBo> billList) {
+    public void asyncCacheBillListOrderBySpecificMethod(String key, List<GetBillListBo> billList) {
         // 缓存热数据，过期时间为7天
         if (billList.getLast().getDate().isBefore(LocalDate.now().plusDays(7))) {
             localBillListCache.put(key, billList);
@@ -360,7 +359,7 @@ public class CacheUtil {
      *
      * @author : 李泽聿
      * @since : 2025-11-18 14:26
-     * @param key
+     * @param key  : 缓存键
      * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
      */
     public List<GetBillListBo> getBillListOrderBySpecialMethod(String key) {

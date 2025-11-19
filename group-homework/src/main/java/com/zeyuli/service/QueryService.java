@@ -1,9 +1,8 @@
 package com.zeyuli.service;
 
 
-import com.zeyuli.enm.SearchTypeEnum;
-import com.zeyuli.pojo.vo.GetBillListOrderByDateVo;
-import org.springframework.stereotype.Service;
+import com.zeyuli.enm.QueryBillListTypeEnum;
+import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 
 import java.util.Map;
 
@@ -17,7 +16,7 @@ public interface QueryService {
 
     Map<String, Object> getSearchType();
 
-    Map<String, Object> getBillList(GetBillListOrderByDateVo vo, SearchTypeEnum searchType);
+    Map<String, Object> getBillList(GetBillListOrderBySpecificMethodVo vo, QueryBillListTypeEnum searchType);
 }
 
 

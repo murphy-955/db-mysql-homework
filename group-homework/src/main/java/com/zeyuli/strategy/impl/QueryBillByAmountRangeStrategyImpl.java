@@ -1,5 +1,6 @@
 package com.zeyuli.strategy.impl;
 
+
 import com.zeyuli.annotations.CheckUserToken;
 import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.mappers.QueryBillMapper;
@@ -15,14 +16,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 根据{@link QueryBillListTypeEnum#USAGE_TYPE}查询流水
+ * 根据金额范围查询账单列表
  *
  * @author 李泽聿
- * @since 2025-11-18 14:44
+ * @since 2025-11-19 07:57
  */
 @Component
 @RequiredArgsConstructor
-public class QueryBillByUsageTypeStrategyImpl implements BillQueryStrategy {
+public class QueryBillByAmountRangeStrategyImpl implements BillQueryStrategy {
     private final CacheUtil cacheUtil;
 
     private final QueryBillMapper queryBillMapper;
@@ -33,11 +34,11 @@ public class QueryBillByUsageTypeStrategyImpl implements BillQueryStrategy {
     private String billListCacheKey;
 
     /**
-     * 根据用途类型查询流水
+     * 根据金额范围查询账单列表
      *
      * @author : 李泽聿
-     * @since : 2025-11-19 08:49
-     * @param vo 包含了查询的用途类型，见 {@link com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo}
+     * @since : 2025-11-19 08:02
+     * @param vo 查询账单列表参数
      * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
      */
     @Override
@@ -48,24 +49,29 @@ public class QueryBillByUsageTypeStrategyImpl implements BillQueryStrategy {
         String key = String.format(billListCacheKey,
                 userId.substring(0,16),
                 type,
-                vo.getUsageEnum().name(),
+                vo.getMinAmount().toString(),
+                vo.getMaxAmount().toString(),
                 vo.getPage(),
                 vo.getLimit()
         );
+        // 从缓存中获取账单列表
         List<GetBillListBo> billList = cacheUtil.getBillListOrderBySpecialMethod(key);
-        if(billList != null){
+        if (billList != null) {
             return billList;
         }
-        billList = queryBillMapper.queryBillListOrderByUsageType(vo, userId);
-        if (billList != null){
-            cacheUtil.asyncCacheBillListOrderBySpecificMethod(key,billList);
+
+        // 从数据库查询列表
+         billList = queryBillMapper.queryBillListOrderByAmountRange(vo, userId);
+        if (billList != null) {
+            cacheUtil.asyncCacheBillListOrderBySpecificMethod(key, billList);
+            return billList;
         }
         cacheUtil.asyncCacheNullKey(key);
-        return billList;
+        return null;
     }
 
     @Override
     public String getSearchType() {
-        return QueryBillListTypeEnum.USAGE_TYPE.name();
+        return QueryBillListTypeEnum.AMOUNT_RANGE.name();
     }
 }
