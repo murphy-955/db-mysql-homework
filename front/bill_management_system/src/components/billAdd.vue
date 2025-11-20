@@ -26,21 +26,21 @@
     <div class="container">
       <div class="form-card">
         <h3 class="form-title">添加账单记录</h3>
-        
+
         <form @submit.prevent="submitBill" class="bill-form">
           <!-- 金额输入 -->
           <div class="form-group">
             <label class="form-label" for="amount">金额</label>
             <div class="amount-input-wrapper">
               <span class="currency-symbol">¥</span>
-              <input 
-                type="number" 
-                id="amount" 
-                v-model.number="billForm.amount" 
-                class="form-input" 
-                placeholder="请输入金额" 
-                step="0.01" 
-                min="0.01" 
+              <input
+                type="number"
+                id="amount"
+                v-model.number="billForm.amount"
+                class="form-input"
+                placeholder="请输入金额"
+                step="0.01"
+                min="0.01"
                 required
               >
             </div>
@@ -65,10 +65,10 @@
           <!-- 分类选择 -->
           <div class="form-group">
             <label class="form-label" for="category">分类</label>
-            <select 
-              id="category" 
-              v-model="billForm.category" 
-              class="form-select" 
+            <select
+              id="category"
+              v-model="billForm.category"
+              class="form-select"
               required
             >
               <option value="" disabled>请选择分类</option>
@@ -97,12 +97,12 @@
           <!-- 日期选择 -->
           <div class="form-group">
             <label class="form-label" for="date">日期</label>
-            <input 
-              type="date" 
-              id="date" 
-              v-model="billForm.date" 
-              class="form-input" 
-              max="{{ today }}" 
+            <input
+              type="date"
+              id="date"
+              v-model="billForm.date"
+              class="form-input"
+              max="{{ today }}"
               required
             >
             <span v-if="errors.date" class="error-message">{{ errors.date }}</span>
@@ -111,10 +111,10 @@
           <!-- 账户选择 -->
           <div class="form-group">
             <label class="form-label" for="account">账户</label>
-            <select 
-              id="account" 
-              v-model="billForm.account" 
-              class="form-select" 
+            <select
+              id="account"
+              v-model="billForm.account"
+              class="form-select"
               required
             >
               <option value="" disabled>请选择账户</option>
@@ -129,10 +129,10 @@
           <!-- 备注输入 -->
           <div class="form-group">
             <label class="form-label" for="remark">备注</label>
-            <textarea 
-              id="remark" 
-              v-model="billForm.remark" 
-              class="form-textarea" 
+            <textarea
+              id="remark"
+              v-model="billForm.remark"
+              class="form-textarea"
               placeholder="请输入备注信息（选填）"
               rows="3"
               maxlength="200"
@@ -196,31 +196,31 @@ export default {
     },
     validateForm() {
       this.errors = {};
-      
+
       // 验证金额
       if (!this.billForm.amount || this.billForm.amount <= 0) {
         this.errors.amount = '请输入有效的金额';
       }
-      
+
       // 验证分类
       if (!this.billForm.category) {
         this.errors.category = '请选择分类';
       }
-      
+
       // 验证日期
       if (!this.billForm.date) {
         this.errors.date = '请选择日期';
       }
-      
+
       return Object.keys(this.errors).length === 0;
     },
     async submitBill() {
       if (!this.validateForm()) {
         return;
       }
-      
+
       this.loading = true;
-      
+
       try {
         // 这里使用模拟数据，实际项目中应调用真实API
         const response = await axios.post('/api/bill/add', {
@@ -231,7 +231,7 @@ export default {
           account: this.billForm.account,
           remark: this.billForm.remark
         });
-        
+
         // 模拟成功响应
         // 实际项目中应该检查response.data.statusCode === 200
         this.showMessageModal('success', '账单添加成功！');
@@ -258,7 +258,7 @@ export default {
       this.messageType = type;
       this.messageText = text;
       this.showMessage = true;
-      
+
       setTimeout(() => {
         this.showMessage = false;
       }, 3000);

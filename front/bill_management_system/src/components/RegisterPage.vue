@@ -16,7 +16,10 @@
           <input id="confirm_password" v-model="confirm_password" type="password" required placeholder="请再次输入密码" />
           <div v-if="passwordMismatch" class="error">密码不匹配</div>
         </div>
-        <button type="submit">注册</button>
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <button type="submit" :disabled="loading">
+          {{ loading ? '注册中...' : '注 册' }}
+        </button>
       </form>
       <div class="links">
         <router-link to="/login">已有账户？去登录</router-link>
@@ -28,24 +31,47 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import backgroundImage from '@/assets/register/background.jpg';
 
 const acc_name = ref('');
 const password = ref('');
 const confirm_password = ref('');
 const passwordMismatch = ref(false);
+const loading = ref(false);
+const errorMessage = ref('');
 const router = useRouter();
 
 watchEffect(() => {
   passwordMismatch.value = password.value !== confirm_password.value;
 });
 
-const handleRegister = () => {
+const handleRegister = async () => {
   if (passwordMismatch.value) {
     return;
   }
-  alert('注册成功，正在返回登录界面...');
-  router.push('/login');
+
+  loading.value = true;
+  errorMessage.value = '';
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/user/register', {
+      username: acc_name.value,
+      password: password.value
+    });
+
+    if (response.data.statusCode === 200) {
+      alert('注册成功，正在返回登录界面...');
+      router.push('/login');
+    } else {
+      errorMessage.value = response.data.message || '注册失败';
+    }
+  } catch (error) {
+    console.error(error);
+    errorMessage.value = '注册请求失败，请检查网络或联系管理员';
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
