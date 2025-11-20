@@ -1,6 +1,7 @@
 package com.zeyuli.controller;
 
 
+import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import com.zeyuli.pojo.vo.UserLoginVo;
 import com.zeyuli.pojo.vo.UserRegisterVo;
 import com.zeyuli.service.UserService;
@@ -29,5 +30,10 @@ public class UserController {
     @PostMapping("login")
     public Map<String, Object> login(@RequestBody UserLoginVo vo) {
         return userService.login(vo);
+    }
+
+    @PostMapping("initAccountInfo")
+    public Map<String, Object> initAccountInfo(@RequestBody InitAccountInfoVo vo) {
+        return userService.initAccountInfo(vo);
     }
 }

@@ -1,9 +1,11 @@
 package com.zeyuli.service.impl;
 
 
+import com.zeyuli.annotations.CheckUserToken;
 import com.zeyuli.enm.StatusCodeEnum;
 import com.zeyuli.mappers.UserMapper;
 import com.zeyuli.pojo.po.UserPo;
+import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import com.zeyuli.pojo.vo.UserLoginVo;
 import com.zeyuli.pojo.vo.UserRegisterVo;
 import com.zeyuli.service.UserService;
@@ -97,5 +99,11 @@ public class UserServiceImpl implements UserService {
             return Response.success(token);
         }
         return Response.error(StatusCodeEnum.LOGIN_FAILED, null);
+    }
+
+    @Override
+    @CheckUserToken
+    public Map<String, Object> initAccountInfo(InitAccountInfoVo vo) {
+        String userId = jwtUtil.getUserInfo(vo.get)[0];
     }
 }

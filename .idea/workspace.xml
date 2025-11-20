@@ -4,18 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 完成/api/query的所有接口的开发">
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/annotations/LogOutPut.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/LogOutputAspect.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/AsyncTaskVirtualThreadConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/TomcatConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/VirtualThreadMonitorConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 开启tomcat服务器，异步任务虚拟线程配置">
+      <change afterPath="$PROJECT_DIR$/docs/uml/添加账单流程.puml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/InitAccountInfoVo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MarsCodeWorkspaceAppSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MarsCodeWorkspaceAppSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/接口文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/接口文档.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/dashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/dashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/QueryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/QueryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +106,7 @@
     "project.structure.last.edited": "模块",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "MavenSettings",
+    "settings.editor.selected.configurable": "com.codeverse.userSettings.AppSettingsConfigurable",
     "ts.external.directory.path": "C:\\Users\\13776\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
@@ -204,10 +204,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="npm.dev" />
-        <item itemvalue="HTTP 请求.Request | #3" />
-        <item itemvalue="HTTP 请求.Request | #4" />
         <item itemvalue="JUnit.TestDbConnect.testSqlSentence" />
         <item itemvalue="JUnit.TestDbConnect.testSimpleConnection" />
+        <item itemvalue="HTTP 请求.Request | #4" />
+        <item itemvalue="HTTP 请求.Request | #3" />
       </list>
     </recent_temporary>
   </component>
@@ -259,7 +259,9 @@
       <workItem from="1763533580277" duration="2887000" />
       <workItem from="1763536810965" duration="3972000" />
       <workItem from="1763564235086" duration="1006000" />
-      <workItem from="1763597082605" duration="1804000" />
+      <workItem from="1763597082605" duration="5647000" />
+      <workItem from="1763602824121" duration="931000" />
+      <workItem from="1763606947214" duration="3809000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -405,7 +407,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763515152992</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="feat: 开启tomcat服务器，异步任务虚拟线程配置">
+      <option name="closed" value="true" />
+      <created>1763599206784</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1763599206784</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -432,7 +442,8 @@
     <MESSAGE value="feat: 根据日期区间查询账单" />
     <MESSAGE value="fix: 修改dashboard页面显示错误问题" />
     <MESSAGE value="feat: 完成/api/query的所有接口的开发" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 完成/api/query的所有接口的开发" />
+    <MESSAGE value="feat: 开启tomcat服务器，异步任务虚拟线程配置" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 开启tomcat服务器，异步任务虚拟线程配置" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

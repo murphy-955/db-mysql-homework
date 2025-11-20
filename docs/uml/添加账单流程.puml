@@ -1,0 +1,33 @@
+@startuml
+!pragma layout smetana
+
+start
+
+:用户发起添加账单请求;
+
+:参数校验和token验证;
+
+:检查Redis中用户余额是否足够;
+
+if (余额不足?) then (是)
+  :返回余额不足错误;
+  stop
+else (否)
+  :在Redis中预扣减余额;
+  :生成账单ID;
+  :将账单加入Redis待刷盘队列;
+  :更新Redis中的账单缓存;
+  :异步预热热点数据到本地缓存;
+
+  fork
+    :立即返回操作成功;
+  fork again
+    :异步批量刷盘到openGauss;
+  end fork
+
+  :批量刷盘完成;
+endif
+
+stop
+
+@enduml

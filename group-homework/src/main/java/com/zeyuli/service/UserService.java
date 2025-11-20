@@ -1,6 +1,7 @@
 package com.zeyuli.service;
 
 
+import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import com.zeyuli.pojo.vo.UserLoginVo;
 import com.zeyuli.pojo.vo.UserRegisterVo;
 import org.springframework.stereotype.Service;
@@ -18,4 +19,6 @@ public interface UserService {
     Map<String, Object> register(UserRegisterVo vo);
 
     Map<String, Object> login(UserLoginVo vo);
+
+    Map<String, Object> initAccountInfo(InitAccountInfoVo vo);
 }

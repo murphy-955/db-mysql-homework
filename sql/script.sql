@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS bill_sys."user"
     user_id  CHAR(40)     NOT NULL,
     username VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
+    balance  NUMERIC(20, 2) NOT NULL DEFAULT 0,
     whether_it_is_disabled_or_not BOOLEAN NOT NULL DEFAULT FALSE
 );
 CREATE INDEX idx_user_user_id ON bill_sys."user"(user_id);
@@ -14,6 +15,7 @@ CREATE TABLE IF NOT EXISTS bill_sys."user_account"
     id       SERIAL PRIMARY KEY,
     user_id  CHAR(40)     NOT NULL,
     account VARCHAR(20) NOT NULL ,
+    balance  NUMERIC(20, 2) NOT NULL DEFAULT 0,
     description VARCHAR(50)
 );
 

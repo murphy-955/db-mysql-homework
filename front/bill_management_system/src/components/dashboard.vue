@@ -7,6 +7,9 @@
       </div>
       <nav class="nav-center">
         <a href="#" class="nav-link active">主页</a>
+        <a href="/bill-query" class="nav-link">账单查询</a>
+        <a href="/bill-add" class="nav-link">添加账单</a>
+        <a href="/statistics" class="nav-link">统计分析</a>
         <a href="#" class="nav-link">计划</a>
         <a href="#" class="nav-link">帮助</a>
         <a href="#" class="nav-link">邀请</a>
