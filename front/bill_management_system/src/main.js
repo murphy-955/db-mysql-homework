@@ -8,6 +8,8 @@ import DashboardPage from './components/dashboard.vue';
 import BillQueryPage from './components/billQuery.vue';
 import BillAddPage from './components/billAdd.vue';
 import StatisticsPage from './components/statistics.vue';
+import AdminLoginPage from './components/AdminLogin.vue';
+import RegisterPage from './components/RegisterPage.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -16,6 +18,8 @@ const routes = [
   { path: '/bill-query', component: BillQueryPage },
   { path: '/bill-add', component: BillAddPage },
   { path: '/statistics', component: StatisticsPage },
+  { path: '/admin-login', component: AdminLoginPage },
+  { path: '/register', component: RegisterPage },
 ];
 
 const router = createRouter({
