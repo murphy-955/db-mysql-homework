@@ -4,6 +4,7 @@ package com.zeyuli.controller;
 import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.service.QueryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.Map;
  * @author 李泽聿
  * @since 2025-11-17 21:15
  */
+@Slf4j
 @RestController
 @RequestMapping("api/query")
 public class QueryController {
@@ -23,6 +25,7 @@ public class QueryController {
 
     @GetMapping("getSearchType")
     public Map<String, Object> getSearchType() {
+        log.info(String.valueOf(Thread.currentThread()));
         return queryService.getSearchType();
     }
 

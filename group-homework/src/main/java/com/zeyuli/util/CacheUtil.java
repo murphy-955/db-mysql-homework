@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.zeyuli.annotations.LogOutPut;
 import com.zeyuli.expection.CachePenetrationExpectation;
 import com.zeyuli.pojo.bo.GetBillListBo;
 import com.zeyuli.pojo.po.BillPo;
@@ -56,6 +57,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-15 15:30
      */
+    @LogOutPut
     private long hotDataRandomTTL() {
         long randomOffset = (long) (Math.random() * basicExpireTime);
         return basicExpireTime * 4 + randomOffset;
@@ -69,6 +71,7 @@ public class CacheUtil {
      * @since : 2025-11-17 14:36
      */
     @Async
+    @LogOutPut
     public void asyncCacheHotBillToRedis(BillPo po) {
         String key = "bill:" + po.getId() + ":user:" + po.getUserId().substring(0, 16);
         redisTemplate.opsForValue().set(key, po, hotDataRandomTTL(), TimeUnit.MINUTES);
@@ -83,6 +86,7 @@ public class CacheUtil {
      * @since : 2025-11-17 14:38
      */
     @Async
+    @LogOutPut
     public void asyncCacheHotBillToLocalCache(BillPo po) {
         String key = "bill:" + po.getId() + ":user:" + po.getUserId().substring(0, 16);
         localBillCache.put(key, po);
@@ -101,6 +105,7 @@ public class CacheUtil {
      * @since : 2025-11-17 14:22
      */
     @Async
+    @LogOutPut
     public void asyncCacheBillToRedis(BillPo po) {
         String key = "bill:" + po.getId() + ":user:" + po.getUserId().substring(0, 16);
         redisTemplate.opsForValue().set(key, po, basicExpireTime, TimeUnit.MINUTES);
@@ -116,6 +121,7 @@ public class CacheUtil {
      * @since : 2025-11-17 08:43
      */
     @SuppressWarnings("unchecked")
+    @LogOutPut
     public List<GetBillListBo> getBillListFromLocalCache(String userId,
                                                          int limit) {
         // 只需要缓存第一页的数据，其他页的数据可以直接从redis或db中获取
@@ -134,6 +140,7 @@ public class CacheUtil {
      * @since : 2025-11-17 08:44
      */
     @SuppressWarnings("unchecked")
+    @LogOutPut
     public List<GetBillListBo> getBillListFromRedis(String userId, int page, int limit) {
         String key = cacheBillListKey + ":" + userId.substring(0, 16) + ":page:" + page + ":limit:" + limit;
         List<GetBillListBo> billList = (List<GetBillListBo>) redisTemplate.opsForValue().get(key);
@@ -152,6 +159,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 14:08
      */
+    @LogOutPut
     public BillPo getBillFromRedis(String userId, @NotNull(message = "账单ID不能为空") Long id) {
         String key = "bill:" + id + ":user:" + userId.substring(0, 16);
         return (BillPo) redisTemplate.opsForValue().get(key);
@@ -170,6 +178,7 @@ public class CacheUtil {
      * @since : 2025-11-17 09:40
      */
     @Async
+    @LogOutPut
     public void asyncWriteLocalCache(String userId, int page, int limit, List<GetBillListBo> billList) {
         String key = cacheBillListKey + ":" + userId.substring(0, 16) + ":page:" + page + ":limit:" + limit;
         localBillListCache.put(key, billList);
@@ -187,6 +196,7 @@ public class CacheUtil {
      * @since : 2025-11-17 09:41
      */
     @Async
+    @LogOutPut
     public void asyncWriteRedisCache(String userId, int page, int limit, List<GetBillListBo> billList) {
         String key = cacheBillListKey + ":" + userId.substring(0, 16) + ":page:" + page + ":limit:" + limit;
         redisTemplate.opsForValue().set(key, billList, basicExpireTime, TimeUnit.MINUTES);
@@ -201,6 +211,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 10:25
      */
+    @LogOutPut
     public void cacheNullKey(String userId, int page, int limit) {
         String key = cacheBillListKey + ":" + userId.substring(0, 16) + ":page:" + page + ":limit:" + limit;
         redisTemplate.opsForValue().set(key, nullData, nullCacheTime, TimeUnit.SECONDS);
@@ -214,6 +225,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 13:58
      */
+    @LogOutPut
     public void cacheNullKey(String userId, long id) {
         String key = "bill:" + id + ":user:" + userId.substring(0, 16);
         redisTemplate.opsForValue().set(key, nullData, nullCacheTime, TimeUnit.SECONDS);
@@ -229,6 +241,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 10:35
      */
+    @LogOutPut
     public void checkNullKey(String userId, int page, int limit) {
         String key = cacheBillListKey + ":" + userId.substring(0, 16) + ":page:" + page + ":limit:" + limit;
         Object value = redisTemplate.opsForValue().get(key);
@@ -246,6 +259,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 13:56
      */
+    @LogOutPut
     public boolean checkNullKey(String userId, long id) {
         String key = "bill:" + id + ":user:" + userId.substring(0, 16);
         Object value = redisTemplate.opsForValue().get(key);
@@ -268,6 +282,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 15:35
      */
+    @LogOutPut
     public void clearAllCache(String userId,
                               @NotNull(message = "账单ID不能为空") Long id,
                               int page,
@@ -295,6 +310,7 @@ public class CacheUtil {
      * @author : 李泽聿
      * @since : 2025-11-17 19:31
      */
+    @LogOutPut
     public List<GetBillListBo> getDeleteBillListFromRedis(String userId, int page, int limit) throws JsonProcessingException {
         String key = cacheBillListKey + ":" + userId.substring(0, 16) + ":page:" + page + ":limit:" + limit;
         String s = (String) redisTemplate.opsForValue().get(key);
@@ -317,6 +333,7 @@ public class CacheUtil {
      * @since : 2025-11-18 08:55
      */
     @SuppressWarnings("unchecked")
+    @LogOutPut
     public List<GetBillListBo> queryBillListOrderByDateFromRedisCache(String key) {
         return (List<GetBillListBo>) redisTemplate.opsForValue().get(key);
     }
@@ -332,6 +349,7 @@ public class CacheUtil {
      * @param billList  : 账单列表
      */
     @Async
+    @LogOutPut
     public void asyncCacheBillListOrderBySpecificMethod(String key, List<GetBillListBo> billList) {
         // 缓存热数据，过期时间为7天
         if (billList.getLast().getDate().isBefore(LocalDate.now().plusDays(7))) {
@@ -350,6 +368,7 @@ public class CacheUtil {
      * @param key   : 缓存键
      */
     @Async
+    @LogOutPut
     public void asyncCacheNullKey(String key) {
         redisTemplate.opsForValue().set(key, nullData, nullCacheTime, TimeUnit.SECONDS);
     }
@@ -362,6 +381,7 @@ public class CacheUtil {
      * @param key  : 缓存键
      * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
      */
+    @LogOutPut
     public List<GetBillListBo> getBillListOrderBySpecialMethod(String key) {
         // 1. 命中一级缓存
         List<GetBillListBo> billList = localBillListCache.getIfPresent(key);

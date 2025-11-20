@@ -96,11 +96,12 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  --bgcolor: rgba(0, 81, 255, 0.47);
 }
 
 .dashboard-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--bgcolor);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -189,7 +190,7 @@ export default {
 /* 功能卡片网格 */
 .card-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 

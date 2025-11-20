@@ -21,6 +21,10 @@ spring:
     type: caffeine
     caffeine:
       spec: maximumSize=1000,expireAfterWrite=300s
+  threads:
+    virtual:
+      enabled: true # tomcat启用虚拟线程
+
 
 mybatis:
   configuration:
