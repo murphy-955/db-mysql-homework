@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 开启tomcat服务器，异步任务虚拟线程配置">
-      <change afterPath="$PROJECT_DIR$/docs/uml/添加账单流程.puml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/InitAccountInfoVo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MarsCodeWorkspaceAppSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MarsCodeWorkspaceAppSettings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/接口文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/接口文档.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/dashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/dashboard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
-    </list>
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 前端账单显示的初步开发" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,54 +58,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "HTTP 请求.Request | #1.executor": "Run",
-    "HTTP 请求.Request | #2.executor": "Run",
-    "HTTP 请求.Request | #3.executor": "Run",
-    "HTTP 请求.Request | #4.executor": "Run",
-    "JUnit.TestDbConnect.testConnect.executor": "Run",
-    "JUnit.TestDbConnect.testConnection.executor": "Run",
-    "JUnit.TestDbConnect.testSimpleConnection.executor": "Run",
-    "JUnit.TestDbConnect.testSqlSentence.executor": "Run",
-    "Maven.group-homework [clean].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.Main.executor": "Run",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/fzu/mysql",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Run",
-    "npm.install.executor": "Run",
-    "onboarding.tips.debug.path": "D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "com.codeverse.userSettings.AppSettingsConfigurable",
-    "ts.external.directory.path": "C:\\Users\\13776\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;HTTP 请求.Request | #1.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #2.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #3.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #4.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testConnect.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testConnection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testSimpleConnection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testSqlSentence.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.group-homework [clean].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.Main.executor&quot;: &quot;Run&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/fzu/mysql&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.install.executor&quot;: &quot;Run&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.codeverse.userSettings.AppSettingsConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\13776\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "java.sql.Driver",
-      "postgresql",
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;java.sql.Driver&quot;,
+      &quot;postgresql&quot;,
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -261,7 +249,7 @@
       <workItem from="1763564235086" duration="1006000" />
       <workItem from="1763597082605" duration="5647000" />
       <workItem from="1763602824121" duration="931000" />
-      <workItem from="1763606947214" duration="3809000" />
+      <workItem from="1763606947214" duration="3900000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -415,7 +403,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763599206784</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="feat: 前端账单显示的初步开发">
+      <option name="closed" value="true" />
+      <created>1763611253907</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1763611253907</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -443,7 +439,8 @@
     <MESSAGE value="fix: 修改dashboard页面显示错误问题" />
     <MESSAGE value="feat: 完成/api/query的所有接口的开发" />
     <MESSAGE value="feat: 开启tomcat服务器，异步任务虚拟线程配置" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 开启tomcat服务器，异步任务虚拟线程配置" />
+    <MESSAGE value="feat: 前端账单显示的初步开发" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 前端账单显示的初步开发" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
