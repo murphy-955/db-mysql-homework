@@ -6,10 +6,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginPage from './components/login.vue';
 import DashboardPage from './components/dashboard.vue';
 import BillQueryPage from './components/billQuery.vue';
-import BillAddPage from './components/billAdd.vue';
 import StatisticsPage from './components/statistics.vue';
 import AdminLoginPage from './components/AdminLogin.vue';
 import RegisterPage from './components/RegisterPage.vue';
+import BillAddPage from './components/billAdd.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },

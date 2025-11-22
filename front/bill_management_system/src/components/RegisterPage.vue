@@ -105,6 +105,7 @@ const handleRegister = async () => {
 h1 {
   font-size: 28px;
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
 .form-group {

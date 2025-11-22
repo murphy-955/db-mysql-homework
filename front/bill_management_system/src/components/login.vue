@@ -3,7 +3,7 @@
   <div class="login-page" :style="{ backgroundImage: `url(${selectedBackground})` }">
     <div class="background">
       <div class="login-container">
-        <h1>来福记账本</h1>
+        <h1><img src="@/assets/icons/记账本icon.png" alt="记账本" style="width: 92px; height: 92px; margin-right: 10px;">来福记账本</h1>
         <form @submit.prevent="handleLogin">
           <div class="form-group">
             <label for="acc_name">账号</label>
@@ -132,6 +132,9 @@ export default {
 h1 {
   font-size: 32px;
   margin-bottom: 50px;  /* 增加间隔 */
+  display: flex;
+  align-items: center;
+  font-weight: bold;
 }
 
 .form-group {
