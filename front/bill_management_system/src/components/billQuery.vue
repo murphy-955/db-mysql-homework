@@ -1,135 +1,133 @@
 <template>
-  <div class="bill-query-page">
-    <!-- 顶部导航栏 -->
-    <header class="navbar">
-      <div class="nav-left">
-        <h2 class="logo">来福记账本</h2>
-      </div>
-      <nav class="nav-center">
-        <a href="/dashboard" class="nav-link">主页</a>
-        <a href="/bill-query" class="nav-link active">账单查询</a>
-        <a href="#" class="nav-link">添加账单</a>
-        <a href="#" class="nav-link">统计分析</a>
-        <a href="#" class="nav-link">账户管理</a>
-      </nav>
-      <div class="nav-right">
-        <button class="icon-btn">👤</button>
-      </div>
-    </header>
+  <div class="dashboard-layout">
+    <!-- 左侧侧边栏 -->
+    <Sidebar />
 
-    <!-- 查询区域 -->
-    <div class="container">
-      <div class="query-section">
-        <div class="section-header">
-          <h3>账单查询</h3>
-        </div>
-
-        <!-- 查询方式选择 -->
-        <div class="query-type-selector">
-          <label for="searchType">查询方式：</label>
-          <select id="searchType" v-model="queryParams.searchType" @change="onSearchTypeChange">
-            <option value="">请选择查询方式</option>
-            <option value="DATE">日期查询</option>
-            <option value="ACCOUNT">账户查询</option>
-            <option value="USAGE_TYPE">类型查询</option>
-            <option value="KEYWORD">关键字查询</option>
-            <option value="AMOUNT_RANGE">金额范围查询</option>
-          </select>
-        </div>
-
-        <!-- 动态查询条件 -->
-        <div class="query-conditions">
-          <!-- 日期查询 -->
-          <div v-if="queryParams.searchType === 'DATE'" class="condition-group">
-            <label>开始日期：</label>
-            <input type="date" v-model="queryParams.startDate" />
-            <label>结束日期：</label>
-            <input type="date" v-model="queryParams.endDate" />
+    <!-- 右侧主内容区 -->
+    <main class="main-content">
+      <div class="content-wrapper">
+        <!-- 查询区域 -->
+        <div class="query-section">
+          <div class="section-header">
+            <h3>账单查询</h3>
           </div>
 
-          <!-- 类型查询 -->
-          <div v-if="queryParams.searchType === 'USAGE_TYPE'" class="condition-group">
-            <label>账单类型：</label>
-            <select v-model="queryParams.type">
-              <option value="">请选择类型</option>
-              <option v-for="(label, value) in typeList" :key="value" :value="value">{{ label }}</option>
+          <!-- 查询方式选择 -->
+          <div class="query-type-selector">
+            <label for="searchType">查询方式：</label>
+            <select id="searchType" v-model="queryParams.searchType" @change="onSearchTypeChange">
+              <option value="">请选择查询方式</option>
+              <option value="DATE">日期查询</option>
+              <option value="ACCOUNT">账户查询</option>
+              <option value="USAGE_TYPE">类型查询</option>
+              <option value="KEYWORD">关键字查询</option>
+              <option value="AMOUNT_RANGE">金额范围查询</option>
             </select>
           </div>
 
-          <!-- 关键字查询 -->
-          <div v-if="queryParams.searchType === 'KEYWORD'" class="condition-group">
-            <label>关键字：</label>
-            <input type="text" v-model="queryParams.keyword" placeholder="请输入关键字" />
+          <!-- 动态查询条件 -->
+          <div class="query-conditions">
+            <!-- 日期查询 -->
+            <div v-if="queryParams.searchType === 'DATE'" class="condition-group">
+              <label>开始日期：</label>
+              <input type="date" v-model="queryParams.startDate" />
+              <label>结束日期：</label>
+              <input type="date" v-model="queryParams.endDate" />
+            </div>
+
+            <!-- 类型查询 -->
+            <div v-if="queryParams.searchType === 'USAGE_TYPE'" class="condition-group">
+              <label>账单类型：</label>
+              <select v-model="queryParams.type">
+                <option value="">请选择类型</option>
+                <option v-for="(label, value) in typeList" :key="value" :value="value">{{ label }}</option>
+              </select>
+            </div>
+
+            <!-- 关键字查询 -->
+            <div v-if="queryParams.searchType === 'KEYWORD'" class="condition-group">
+              <label>关键字：</label>
+              <input type="text" v-model="queryParams.keyword" placeholder="请输入关键字" />
+            </div>
+
+            <!-- 金额范围查询 -->
+            <div v-if="queryParams.searchType === 'AMOUNT_RANGE'" class="condition-group">
+              <label>最小金额：</label>
+              <input type="number" v-model.number="queryParams.minAmount" placeholder="请输入最小金额" />
+              <label>最大金额：</label>
+              <input type="number" v-model.number="queryParams.maxAmount" placeholder="请输入最大金额" />
+            </div>
           </div>
 
-          <!-- 金额范围查询 -->
-          <div v-if="queryParams.searchType === 'AMOUNT_RANGE'" class="condition-group">
-            <label>最小金额：</label>
-            <input type="number" v-model.number="queryParams.minAmount" placeholder="请输入最小金额" />
-            <label>最大金额：</label>
-            <input type="number" v-model.number="queryParams.maxAmount" placeholder="请输入最大金额" />
+          <!-- 分页设置 -->
+          <div class="pagination-settings">
+            <label>每页条数：</label>
+            <select v-model.number="queryParams.limit">
+              <option :value="10">10条</option>
+              <option :value="20">20条</option>
+              <option :value="50">50条</option>
+            </select>
+          </div>
+
+          <!-- 查询按钮 -->
+          <div class="query-actions">
+            <button class="btn btn-primary" @click="searchBills">查询</button>
+            <button class="btn btn-outline" @click="resetQuery">重置</button>
+            <button class="btn btn-success" @click="openAddModal">增加账单</button>
           </div>
         </div>
 
-        <!-- 分页设置 -->
-        <div class="pagination-settings">
-          <label>每页条数：</label>
-          <select v-model.number="queryParams.limit">
-            <option :value="10">10条</option>
-            <option :value="20">20条</option>
-            <option :value="50">50条</option>
-          </select>
-        </div>
+        <!-- 结果展示区域 -->
+        <div class="results-section">
+          <div class="section-header">
+            <h3>查询结果</h3>
+            <span class="result-count">共 {{ totalCount }} 条记录</span>
+          </div>
 
-        <!-- 查询按钮 -->
-        <div class="query-actions">
-          <button class="btn btn-primary" @click="searchBills">查询</button>
-          <button class="btn btn-outline" @click="resetQuery">重置</button>
+          <div v-if="loading" class="loading">加载中...</div>
+
+          <div v-else-if="bills.length === 0" class="no-data">暂无数据</div>
+
+          <table v-else class="bills-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>记录类型</th>
+                <th>金额</th>
+                <th>日期</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="bill in bills" :key="bill.id">
+                <td>{{ bill.id }}</td>
+                <td>{{ getRecordTypeName(bill.recordEnum) }}</td>
+                <td :class="bill.recordEnum === 'income' ? 'income-amount' : 'expenditure-amount'">
+                  {{ bill.recordEnum === 'income' ? '+' : '-' }}{{ bill.amount.toFixed(2) }}
+                </td>
+                <td>{{ bill.date }}</td>
+                <td>
+                  <button class="btn btn-small" @click="viewDetail(bill.id)">详情</button>
+                  <button class="btn btn-small btn-danger" @click="deleteBill(bill.id)">删除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 分页组件 -->
+          <div class="pagination" v-if="bills.length > 0">
+            <button class="btn btn-small" :disabled="queryParams.page <= 1" @click="changePage(queryParams.page - 1)">上一页</button>
+            <span>第 {{ queryParams.page }} 页 / 共 {{ totalPages }} 页</span>
+            <button class="btn btn-small" :disabled="queryParams.page >= totalPages" @click="changePage(queryParams.page + 1)">下一页</button>
+          </div>
         </div>
       </div>
+    </main>
 
-      <!-- 结果展示区域 -->
-      <div class="results-section">
-        <div class="section-header">
-          <h3>查询结果</h3>
-          <span class="result-count">共 {{ totalCount }} 条记录</span>
-        </div>
-
-        <div v-if="loading" class="loading">加载中...</div>
-
-        <div v-else-if="bills.length === 0" class="no-data">暂无数据</div>
-
-        <table v-else class="bills-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>记录类型</th>
-              <th>金额</th>
-              <th>日期</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="bill in bills" :key="bill.id">
-              <td>{{ bill.id }}</td>
-              <td>{{ getRecordTypeName(bill.recordEnum) }}</td>
-              <td :class="bill.recordEnum === 'income' ? 'income-amount' : 'expenditure-amount'">
-                {{ bill.recordEnum === 'income' ? '+' : '-' }}{{ bill.amount.toFixed(2) }}
-              </td>
-              <td>{{ bill.date }}</td>
-              <td>
-                <button class="btn btn-small" @click="viewDetail(bill.id)">详情</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- 分页组件 -->
-        <div class="pagination" v-if="bills.length > 0">
-          <button class="btn btn-small" :disabled="queryParams.page <= 1" @click="changePage(queryParams.page - 1)">上一页</button>
-          <span>第 {{ queryParams.page }} 页 / 共 {{ totalPages }} 页</span>
-          <button class="btn btn-small" :disabled="queryParams.page >= totalPages" @click="changePage(queryParams.page + 1)">下一页</button>
-        </div>
+    <!-- 添加账单弹窗 -->
+    <div v-if="showAddModal" class="modal-overlay" @click.self="closeAddModal">
+      <div class="modal-content">
+        <BillAdd @success="handleAddSuccess" @cancel="closeAddModal" />
       </div>
     </div>
   </div>
@@ -137,9 +135,15 @@
 
 <script>
 import axios from 'axios';
+import BillAdd from './billAdd.vue';
+import Sidebar from './Sidebar.vue';
 
 export default {
   name: 'BillQueryPage',
+  components: {
+    BillAdd,
+    Sidebar
+  },
   data() {
     return {
       // 查询参数
@@ -161,7 +165,9 @@ export default {
       loading: false,
       // 类型枚举数据
       typeList: {},
-      recordTypeList: {}
+      recordTypeList: {},
+      // 弹窗控制
+      showAddModal: false
     };
   },
   computed: {
@@ -219,6 +225,36 @@ export default {
       this.totalCount = 0;
     },
 
+    // 打开添加账单弹窗
+    openAddModal() {
+      this.showAddModal = true;
+    },
+
+    // 关闭添加账单弹窗
+    closeAddModal() {
+      this.showAddModal = false;
+    },
+
+    // 添加成功回调
+    handleAddSuccess() {
+      this.closeAddModal();
+      // 如果当前有查询条件，刷新当前查询；否则重置查询显示最新数据
+      if (this.queryParams.searchType) {
+        this.searchBills();
+      } else {
+        // 默认查询最近的账单
+        this.queryParams.searchType = 'DATE';
+        // 设置默认日期范围为当月
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        
+        this.queryParams.startDate = firstDay.toISOString().split('T')[0];
+        this.queryParams.endDate = lastDay.toISOString().split('T')[0];
+        this.searchBills();
+      }
+    },
+
     // 查询账单
     async searchBills() {
       if (!this.queryParams.searchType) {
@@ -259,6 +295,35 @@ export default {
     viewDetail(id) {
       // 这里可以实现查看详情的逻辑，暂时用alert提示
       alert(`查看账单ID: ${id} 的详情`);
+    },
+
+    // 删除账单
+    deleteBill(billId) {
+      if (confirm('确定要删除这条账单吗？')) {
+        fetch('http://localhost:8080/api/bill', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token: localStorage.getItem('token'),
+            id: billId
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.statusCode === 200) {
+            alert('删除成功');
+            this.searchBills(); // 刷新列表
+          } else {
+            alert('删除失败: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('删除失败');
+        });
+      }
     },
 
     // 切换页码
@@ -333,91 +398,42 @@ export default {
 </script>
 
 <style scoped>
-/* 基础样式 */
-.bill-query-page {
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f5f7fa;
-}
-
-.navbar {
+/* 基础布局样式 */
+.dashboard-layout {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0 20px;
-  height: 60px;
+  height: 100vh;
+  width: 100vw; /* 确保占满全屏 */
+  background-color: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  overflow: hidden; /* 防止整体滚动，让main-content滚动 */
 }
 
-.logo {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1890ff;
+/* 右侧主内容区 */
+.main-content {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto; /* 内容区滚动 */
+  padding: 40px;
+  background-color: #f0f2f5;
 }
 
-.nav-center {
+.content-wrapper {
+  max-width: 1600px; /* 放宽最大宽度 */
+  margin: 0 auto;
+  height: 100%;
   display: flex;
-  gap: 20px;
+  flex-direction: column;
 }
 
-.nav-link {
-  text-decoration: none;
-  color: #666;
-  padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s;
-}
-
-.nav-link:hover {
-  color: #1890ff;
-}
-
-.nav-link.active {
-  color: #1890ff;
-  background-color: #e6f7ff;
-}
-
-.nav-right {
-  display: flex;
-  gap: 10px;
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 30px;
-  }
-
-
-
-  .modal-content {
-    position: relative;
-    background-color: white;
-    border-radius: 8px;
-    padding: 0;
-    width: 600px;
-    max-height: 70vh;
-    overflow-y: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1001;
-  }
-
+/* 查询和结果区域样式 */
 .query-section,
 .results-section {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border: 1px solid #f0f0f0;
 }
 
 .section-header {
@@ -457,11 +473,11 @@ export default {
 }
 
 .condition-group {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-  }
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
 
 .condition-group label {
   color: #666;
@@ -528,13 +544,13 @@ export default {
   font-size: 12px;
 }
 
-.btn-view {
-  background-color: #52c41a;
+.btn-danger {
+  background-color: #ff4d4f;
   color: white;
 }
 
-.btn-view:hover {
-  background-color: #73d13d;
+.btn-danger:hover {
+  background-color: #ff7875;
 }
 
 .loading,
@@ -544,23 +560,9 @@ export default {
   color: #999;
 }
 
-/* 表格样式优化 */
-.results-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.table-responsive {
-  overflow-x: auto;
-  border-radius: 4px;
-  border: 1px solid #f0f0f0;
-}
-
 .bills-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px;
 }
 
 .bills-table th,
@@ -575,9 +577,6 @@ export default {
   font-weight: 500;
   color: #333;
   font-size: 14px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
 }
 
 .bills-table tbody tr:hover {
@@ -594,41 +593,6 @@ export default {
   font-weight: 500;
 }
 
-.remarks-column {
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* 记录类型标签 */
-.record-type-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.record-type-tag.income-tag {
-  background-color: #f6ffed;
-  color: #52c41a;
-  border: 1px solid #b7eb8f;
-}
-
-.record-type-tag.expenditure-tag {
-  background-color: #fff1f0;
-  color: #ff4d4f;
-  border: 1px solid #ffccc7;
-}
-
-.record-type-tag.transfer-tag {
-  background-color: #e6f7ff;
-  color: #1890ff;
-  border: 1px solid #91d5ff;
-}
-
-/* 分页组件样式 */
 .pagination {
   display: flex;
   justify-content: space-between;
@@ -656,128 +620,33 @@ export default {
   color: white;
 }
 
-.page-jump {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-left: 10px;
-  font-size: 14px;
-}
-
-.page-input {
-  width: 50px;
-  padding: 4px;
-  text-align: center;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-}
-
-/* 模态框样式 */
-.modal {
+/* 弹窗样式 */
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+.modal-content {
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e8e8e8;
-}
-
-.modal-header h4 {
-  margin: 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #999;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  transition: all 0.3s;
-}
-
-.close-btn:hover {
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.modal-body {
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: transparent;
   padding: 20px;
 }
 
-.detail-item {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.detail-item:last-child {
-  border-bottom: none;
+/* 确保弹窗内的卡片样式适配 */
+.modal-content :deep(.form-card) {
   margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-.detail-item.full-width {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.detail-item label {
-  width: 80px;
-  color: #666;
-  font-weight: 500;
-  margin-right: 10px;
-  flex-shrink: 0;
-}
-
-.detail-item span {
-  color: #333;
-  flex: 1;
-}
-
-.remarks-content {
-  color: #333;
-  margin-top: 5px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  line-height: 1.5;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  padding: 15px 20px;
-  border-top: 1px solid #e8e8e8;
-  background-color: #fafafa;
+  max-height: calc(90vh - 40px);
+  overflow-y: auto;
 }
 </style>

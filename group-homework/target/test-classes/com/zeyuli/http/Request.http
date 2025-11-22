@@ -1,0 +1,31 @@
+###
+POST http://localhost:8080/api/admin/login
+Content-Type: application/json
+
+{
+  "username": "yiyangchen",
+  "password": "597e86f4dc5fb25de4b53e13268b136c9dc2342db1f50a3d19046f20878ecd50"
+}
+
+###
+POST http://localhost:8080/api/admin/getUserList
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_6tWKi5NUrJSMjQwMjYwNDI2V9JRKi1OLfJLzE0FCldmVibmpSdnpOYBxQvKU8qAYmZJlkZmqUB-akWBkpWhuZmxobmhpbFlLQDdFImUTAAAAA.ko8wsI_HxM1VpsusOwxaqIE3D6YHKNMZgMwgmMGZKbdBmVJjUPwXprNzLIwT7eQqoWKM5gCoS77q01ErG356qg"
+}
+
+###
+GET http://localhost:8080/api/query/getSearchType
+
+###
+POST http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_6tWKi5NUrJSMjQwMjYwNDI2V9JRKi1OLfJLzE0FCldmVibmpSdnpOYBxQvKU8qAYmZJlkZmqUB-akWBkpWhuZmxobmhpbFlLQDdFImUTAAAAA.ko8wsI_HxM1VpsusOwxaqIE3D6YHKNMZgMwgmMGZKbdBmVJjUPwXprNzLIwT7eQqoWKM5gCoS77q01ErG356qg",
+  "page": 1,
+  "limit": 10,
+  "startDate": "2021-10-10",
+  "endDate": "2021-10-11"
+}
