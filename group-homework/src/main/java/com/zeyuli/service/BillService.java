@@ -21,14 +21,6 @@ public interface BillService {
 
     Map<String, Object> getBillDetail(UserOperateBillDetailVo vo);
 
-    Map<String, Object> deleteBill(UserOperateBillDetailVo vo, int page, int limit) throws InterruptedException;
-
-    Map<String, Object> getDeleteBillList(UserQueryBillVo vo, int page, int limit) throws JsonProcessingException;
-
-    Map<String, Object> recoverBill(UserOperateBillDetailVo vo);
-
-    Map<String, Object> modifyBill(ModifyBillVo vo, int page, int limit)throws InterruptedException;
-
     Map<String, Object> addBillList(AddBillListVo vo);
 
     Map<String, Object> getRecordType();

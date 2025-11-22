@@ -9,6 +9,7 @@ import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import com.zeyuli.pojo.vo.UserLoginVo;
 import com.zeyuli.pojo.vo.UserRegisterVo;
 import com.zeyuli.service.UserService;
+import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
 import com.zeyuli.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +46,16 @@ public class UserServiceImpl implements UserService {
 
     @Value("${cache.redis.baseKey.user.login}")
     private String userBaseLoginKey;
+    @Autowired
+    private CacheUtil cacheUtil;
 
     /**
      * 用户注册
      *
-     * @author : 李泽聿
-     * @since : 2025-11-14 08:53
      * @param vo {@link UserRegisterVo}
      * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-14 08:53
      */
     @Override
     public Map<String, Object> register(UserRegisterVo vo) {
@@ -79,10 +82,10 @@ public class UserServiceImpl implements UserService {
      * 用户登录<br>
      * 返回token，并将toke存入redis中
      *
-     * @author : 李泽聿
-     * @since : 2025-11-14 08:54
      * @param vo {@link UserLoginVo}
      * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-14 08:54
      */
     @Override
     public Map<String, Object> login(UserLoginVo vo) {
@@ -101,9 +104,25 @@ public class UserServiceImpl implements UserService {
         return Response.error(StatusCodeEnum.LOGIN_FAILED, null);
     }
 
+    /**
+     * 初始化用户账户信息<br>
+     * 包括设置初始密码，设置初始余额，设置初始账单记录类型
+     *
+     * @param vo {@link InitAccountInfoVo}
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-22 13:44
+     */
     @Override
     @CheckUserToken
     public Map<String, Object> initAccountInfo(InitAccountInfoVo vo) {
-        String userId = jwtUtil.getUserInfo(vo.get)[0];
+        String userId = jwtUtil.getUserInfo(vo.getToken())[0];
+        int res = userMapper.initAccountInfo(userId, vo.getAccount(), vo.getBalance(), vo.getDescription());
+        if (res > 0) {
+            // 拼接的key：
+            redisTemplate.opsForValue().set("user:" + userId.substring(0,16) + "account:" + vo.getAccount(), vo);
+            return Response.success(null);
+        }
+        return Response.error(StatusCodeEnum.INIT_ACCOUNT_INFO_FAILED);
     }
 }

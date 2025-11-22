@@ -19,5 +19,22 @@
         WHERE username = #{username}
         AND password = #{password}
     </select>
+
+    <insert id="initAccountInfo">
+        INSERT INTO bill_sys."user_account" (user_id,account,balance,description)
+        VALUES (#{userId},#{account},#{initBalance},#{description})
+    </insert>
+
+    <update id="addAccountBalance">
+        UPDATE bill_sys."user_account"
+        SET balance = balance + #{amount}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="modifyAccountBalance">
+        UPDATE bill_sys."user_account"
+        SET balance = balance - #{amount}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>
 

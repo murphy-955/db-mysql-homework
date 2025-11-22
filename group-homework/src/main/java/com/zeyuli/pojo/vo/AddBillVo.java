@@ -25,7 +25,7 @@ public class AddBillVo {
     private RecordEnum recordEnum;
 
     @NotNull(message = "金额不能为空")
-    private BigDecimal amount;
+    private Double amount;
 
     @NotNull(message = "账户不能为空")
     private String account;

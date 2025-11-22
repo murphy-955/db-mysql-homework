@@ -21,4 +21,9 @@ public interface UserMapper {
                  @NotNull(message = "密码不能为空") String password);
 
     UserPo selectUser(String userId);
+
+    int initAccountInfo(String userId,
+                        @NotNull(message = "账户不能为空") String account,
+                        @NotNull(message = "初始余额不能为空") Double initBalance,
+                        @NotNull(message = "账单记录类型不能为空") String description);
 }

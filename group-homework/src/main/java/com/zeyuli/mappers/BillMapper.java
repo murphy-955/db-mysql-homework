@@ -49,4 +49,9 @@ public interface BillMapper {
 
     List<BillPo> addBillList(@Param("vo") AddBillListVo vo,
                        @Param("userId") String userId);
+
+    int addAccountBalance(String userId,
+                          @NotNull(message = "金额不能为空") Double amount);
+
+    int modifyAccountBalance(String userId, @NotNull(message = "金额不能为空") Double amount);
 }

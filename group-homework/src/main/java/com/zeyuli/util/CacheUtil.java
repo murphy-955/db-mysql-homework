@@ -6,9 +6,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.zeyuli.annotations.LogOutPut;
+import com.zeyuli.enm.RecordEnum;
 import com.zeyuli.expection.CachePenetrationExpectation;
 import com.zeyuli.pojo.bo.GetBillListBo;
 import com.zeyuli.pojo.po.BillPo;
+import com.zeyuli.pojo.vo.AddBillVo;
+import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -324,6 +327,7 @@ public class CacheUtil {
         }
         return null;
     }
+
     /**
      * 从redis缓存中查询依据日期的账单列表
      *
@@ -343,10 +347,10 @@ public class CacheUtil {
      * 缓存热数据，过期时间为{@code  hotDataRandomTTL()}分钟<br>
      * 缓存冷数据，过期时间为{@code basicExpireTime}分钟
      *
+     * @param key      : 缓存键
+     * @param billList : 账单列表
      * @author : 李泽聿
      * @since : 2025-11-18 11:47
-     * @param key  : 缓存键
-     * @param billList  : 账单列表
      */
     @Async
     @LogOutPut
@@ -363,9 +367,9 @@ public class CacheUtil {
     /**
      * 异步缓存空值，过期时间为{@code nullCacheTime}秒
      *
+     * @param key : 缓存键
      * @author : 李泽聿
      * @since : 2025-11-18 11:46
-     * @param key   : 缓存键
      */
     @Async
     @LogOutPut
@@ -376,10 +380,10 @@ public class CacheUtil {
     /**
      * 从缓存中查询依据账号的账单列表
      *
+     * @param key : 缓存键
+     * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
      * @author : 李泽聿
      * @since : 2025-11-18 14:26
-     * @param key  : 缓存键
-     * @return : java.util.List<com.zeyuli.pojo.bo.GetBillListBo>
      */
     @LogOutPut
     public List<GetBillListBo> getBillListOrderBySpecialMethod(String key) {
@@ -391,5 +395,142 @@ public class CacheUtil {
         // 2. 命中二级缓存
         billList = queryBillListOrderByDateFromRedisCache(key);
         return billList;
+    }
+
+    /**
+     * 处理添加账单时的缓存操作，包括：
+     * 1. 将账单加入Redis待刷盘队列
+     * 2. 更新Redis中的账单缓存
+     * 3. 根据日期判断是否需要预热热点数据到本地缓存
+     * 4. 异步执行批量刷盘检查
+     *
+     * @param billPo 账单对象
+     * @author : 李泽聿
+     * @since : 2025-11-18
+     */
+    @LogOutPut
+    public void handleBillCacheOperations(BillPo billPo) {
+        // 1. 将账单加入Redis待刷盘队列
+        String billId = String.valueOf(billPo.getId());
+        redisTemplate.opsForList().rightPush("bill:batch:flush", billId);
+
+        // 2. 更新Redis中的账单缓存
+        asyncCacheBillToRedis(billPo);
+
+        // 3. 根据日期判断是否需要预热热点数据到本地缓存
+        if (billPo.getDate().isBefore(LocalDate.now().plusDays(7))) {
+            asyncCacheHotBillToLocalCache(billPo);
+        }
+
+        // 4. 异步执行批量刷盘检查
+        asyncPerformBatchFlushCheck();
+    }
+
+    /**
+     * 异步执行批量刷盘检查
+     * 检查待刷盘队列的大小，如果超过阈值或者距离上次刷盘时间超过阈值，则执行批量刷盘
+     *
+     * @author : 李泽聿
+     * @since : 2025-11-18
+     */
+    @Async
+    @LogOutPut
+    public void asyncPerformBatchFlushCheck() {
+        // 实现批量刷盘检查逻辑
+        // 这里是简化实现，实际项目中可能需要更复杂的逻辑
+        String queueKey = "bill:batch:flush";
+        String lastFlushTimeKey = "bill:batch:last_flush_time";
+
+        // 检查队列大小
+        Long queueSize = redisTemplate.opsForList().size(queueKey);
+        if (queueSize != null && queueSize >= 10) { // 队列大小阈值设为10
+            performBatchFlush();
+            return;
+        }
+
+        // 检查距离上次刷盘时间
+        Object lastFlushTimeObj = redisTemplate.opsForValue().get(lastFlushTimeKey);
+        if (lastFlushTimeObj != null) {
+            long lastFlushTime = Long.parseLong(lastFlushTimeObj.toString());
+            long currentTime = System.currentTimeMillis();
+            // 如果距离上次刷盘时间超过5分钟，则执行批量刷盘
+            if (currentTime - lastFlushTime >= 5 * 60 * 1000) {
+                performBatchFlush();
+            }
+        } else {
+            // 第一次执行，设置初始时间
+            redisTemplate.opsForValue().set(lastFlushTimeKey, String.valueOf(System.currentTimeMillis()));
+        }
+    }
+
+    /**
+     * 执行批量刷盘操作
+     * 从队列中取出所有待刷盘的账单ID，并执行相应的数据库更新操作
+     *
+     * @author : 李泽聿
+     * @since : 2025-11-18
+     */
+    @LogOutPut
+    private void performBatchFlush() {
+        // 这里是简化实现，实际项目中需要根据具体的业务逻辑进行批量刷盘操作
+        String queueKey = "bill:batch:flush";
+        String lastFlushTimeKey = "bill:batch:last_flush_time";
+
+        // 更新最后刷盘时间
+        redisTemplate.opsForValue().set(lastFlushTimeKey, String.valueOf(System.currentTimeMillis()));
+
+        // 清空队列（实际项目中应该先取出队列中的所有元素，然后执行刷盘操作，最后再清空队列）
+        redisTemplate.delete(queueKey);
+    }
+
+    /**
+     * 检查缓存中的余额是否足够
+     *
+     * @param key : 缓存键{@code user:userId前17位:account:account}
+     * @return : boolean 是否有足够余额
+     * @author : 李泽聿
+     * @since : 2025-11-22 14:00
+     */
+    public boolean checkBalance(String key, Double amount) {
+        InitAccountInfoVo res = (InitAccountInfoVo) redisTemplate.opsForValue().get(key);
+        if (res != null) {
+            return res.getBalance() >= amount;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param key : 缓存键{@code user:userId前17位:account}
+     * @param vo  : 添加账单VO对象
+     * @author : 李泽聿
+     * @since : 2025-11-22 14:16
+     */
+    public void updateBalance(String key, AddBillVo vo) {
+        InitAccountInfoVo res = (InitAccountInfoVo) redisTemplate.opsForValue().get(key);
+        if (vo.getRecordEnum().equals(RecordEnum.EXPENDITURE)) {
+            // 支出，余额减少
+            if (res != null) {
+                double newBalance = res.getBalance() - vo.getAmount();
+                InitAccountInfoVo initAccountInfoVo = new InitAccountInfoVo();
+                initAccountInfoVo.setToken(res.getToken());
+                initAccountInfoVo.setAccount(res.getAccount());
+                initAccountInfoVo.setBalance(newBalance);
+                initAccountInfoVo.setDescription(res.getDescription());
+                redisTemplate.opsForValue().set(key, initAccountInfoVo);
+            }
+        }
+        if (vo.getRecordEnum().equals(RecordEnum.INCOME)) {
+            // 收入，余额增加
+            if (res != null) {
+                double newBalance = res.getBalance() + vo.getAmount();
+                InitAccountInfoVo initAccountInfoVo = new InitAccountInfoVo();
+                initAccountInfoVo.setToken(res.getToken());
+                initAccountInfoVo.setAccount(res.getAccount());
+                initAccountInfoVo.setBalance(newBalance);
+                initAccountInfoVo.setDescription(res.getDescription());
+                redisTemplate.opsForValue().set(key, initAccountInfoVo);
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.zeyuli.service.impl;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zeyuli.annotations.CheckUserToken;
 import com.zeyuli.enm.RecordEnum;
 import com.zeyuli.enm.StatusCodeEnum;
@@ -13,8 +12,12 @@ import com.zeyuli.service.BillService;
 import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
 import com.zeyuli.util.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -29,6 +32,8 @@ import java.util.Map;
  */
 @Service
 public class BillServiceImpl implements BillService {
+    private static final Logger logger = LoggerFactory.getLogger(BillServiceImpl.class);
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -39,29 +44,40 @@ public class BillServiceImpl implements BillService {
     private CacheUtil cacheUtil;
 
     /**
-     * 将账单信息添加到数据库中<br>
-     * 将热点数据缓存到一级缓存（caffeine）中
+     * 添加账单主方法<br>
+     * 按照UML流程图实现的完整添加账单流程：<br>
+     * 1. 参数校验和token验证（通过@CheckUserToken注解）<br>
+     * 2. 检查Redis中用户余额是否足够（仅针对支出类型）<br>
+     * 3. 在Redis中预扣减余额<br>
+     * 4. 生成账单ID并添加到数据库<br>
+     * 5. 将账单加入Redis待刷盘队列<br>
+     * 6. 更新Redis中的账单缓存<br>
+     * 7. 异步预热热点数据到本地缓存<br>
+     * 8. 异步执行批量刷盘检查<br>
+     * 9. 立即返回操作成功
      *
-     * @param vo {@link AddBillVo}
-     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @param vo {@link AddBillVo} 账单信息对象
+     * @return 操作结果Map
      * @author : 李泽聿
      * @since : 2025-11-16 14:29
      */
     @Override
     @CheckUserToken
+    @Transactional
     public Map<String, Object> addBill(AddBillVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
-        BillPo res = billMapper.addBill(vo, userId);
-        if (res != null) {
-            // TODO 防止缓存雪崩
-            // 我们认为离当前天数7天内的账单是热点数据，需要进行预热
-            LocalDate date = vo.getDate();
-            if (date.isBefore(LocalDate.now().plusDays(7))) {
-                // 缓存预热代码
-                cacheUtil.asyncCacheHotBillToLocalCache(res);
+        String key = "user:" + userId.substring(0, 16) + "account:" + vo.getAccount();
+        // 支出时检察余额是否足够
+        if (vo.getRecordEnum().equals(RecordEnum.EXPENDITURE)) {
+            if (!cacheUtil.checkBalance(key, vo.getAmount())) {
+                // 返回余额不足
+                return Response.error(StatusCodeEnum.BALANCE_NOT_ENOUGH);
             }
-            return Response.success(null);
         }
+        // 异步执行批量刷盘检查
+        asynchronousBrushing(vo, userId);
+        // 更新Redis中的余额
+        cacheUtil.updateBalance(key, vo);
         return Response.error(StatusCodeEnum.INSERT_BILL_FAILED);
     }
 
@@ -159,140 +175,12 @@ public class BillServiceImpl implements BillService {
     }
 
     /**
-     * 删除账单<br>
-     * 是假删除，只是将状态改为删除，并不删除数据库中的数据<br>
-     * 由于业务条件，插入和读取较多，而修改和删除操作较少，为保障强一致性，所以采用延时双删，延时100ms
-     *
-     * @param vo {@link UserOperateBillDetailVo}
-     * @return : java.util.Map<java.lang.String,java.lang.Object>
-     * @author : 李泽聿
-     * @since : 2025-11-17 15:03
-     */
-    @Override
-    @CheckUserToken
-    public Map<String, Object> deleteBill(UserOperateBillDetailVo vo, int page, int limit) throws InterruptedException {
-        String userId = jwtUtil.getUserInfo(String.valueOf(vo.getToken()))[0];
-        cacheUtil.clearAllCache(userId, vo.getId(), page, limit);
-        int res = billMapper.deleteBill(vo.getId(), userId);
-        if (res > 0) {
-            Thread.sleep(100);
-            cacheUtil.clearAllCache(userId, vo.getId(), page, limit);
-            return Response.success(null);
-        }
-        cacheUtil.clearAllCache(userId, vo.getId(), page, limit);
-        return Response.error(StatusCodeEnum.DELETE_BILL_FAILED);
-    }
-
-    /**
-     * 获取删除账单列表<br>
-     * 只需要放二级缓存中即可，不用放一级缓存<br>
-     *
-     * @param vo    {@link UserQueryBillVo}
-     * @param page  页码
-     * @param limit 每页条数
-     * @return : java.util.Map<java.lang.String,java.lang.Object>
-     * @author : 李泽聿
-     * @since : 2025-11-17 19:29
-     */
-    @Override
-    @CheckUserToken
-    public Map<String, Object> getDeleteBillList(UserQueryBillVo vo, int page, int limit) throws JsonProcessingException {
-        // 1. 从redis中获取账单列表
-        String userId = jwtUtil.getUserInfo(vo.getToken())[0];
-        List<GetBillListBo> redisBillList = cacheUtil.getDeleteBillListFromRedis(userId, page, limit);
-        if (redisBillList != null) {
-            return Response.success(StatusCodeEnum.SUCCESS, redisBillList);
-        }
-        // 2. 从数据库中获取账单列表
-        List<GetBillListBo> billList = billMapper.getDeleteBillList(page, limit, userId);
-        if (billList == null) {
-            cacheUtil.cacheNullKey(userId, page, limit);
-            return Response.error(StatusCodeEnum.GET_DATA_FAILED);
-        }
-        // 3.异步写入缓存
-        if (page == 1 && !billList.isEmpty()) {
-            cacheUtil.asyncWriteRedisCache(userId, page, limit, billList);
-        }
-        cacheUtil.asyncWriteRedisCache(userId, page, limit, billList);
-        return Response.success(StatusCodeEnum.SUCCESS, billList);
-    }
-
-    /**
-     * 恢复账单<br>
-     * 先从数据库中查询，如果查询不到，缓存空值。然后更新状态为正常，并更新缓存<br>
-     *
-     * @param vo {@link UserOperateBillDetailVo}
-     * @return : java.util.Map<java.lang.String,java.lang.Object>
-     * @author : 李泽聿
-     * @since : 2025-11-17 20:00
-     */
-    @Override
-    @CheckUserToken
-    public Map<String, Object> recoverBill(UserOperateBillDetailVo vo) {
-        String userId = jwtUtil.getUserInfo(String.valueOf(vo.getToken()))[0];
-        BillPo billPo = billMapper.recoverBill(vo.getId(), userId);
-        if (billPo != null) {
-            if (billPo.getDate().isBefore(LocalDate.now().plusDays(7))) {
-                // 异步写入本地缓存和redis缓存，并设置随机过期时间
-                cacheUtil.asyncCacheHotBillToLocalCache(billPo);
-            }
-            // 异步写入redis缓存
-            cacheUtil.asyncCacheBillToRedis(billPo);
-            return Response.success(StatusCodeEnum.SUCCESS, null);
-        }
-        // 未找到账单,缓存空值
-        cacheUtil.checkNullKey(userId, vo.getId());
-        return Response.error(StatusCodeEnum.GET_DATA_FAILED);
-    }
-
-    /**
-     * 修改账单<br>
-     * 还是使用延时双删
-     *
-     * @param vo {@link ModifyBillVo}
-     * @return : java.util.Map<java.lang.String,java.lang.Object>
-     * @author : 李泽聿
-     * @since : 2025-11-17 20:16
-     */
-    @Override
-    @CheckUserToken
-    public Map<String, Object> modifyBill(ModifyBillVo vo, int page, int limit) throws InterruptedException {
-        String userId = jwtUtil.getUserInfo(vo.getToken())[0];
-        // 1.先删缓存
-        cacheUtil.clearAllCache(userId, vo.getId(), page, limit);
-
-        // 2. 更新数据库
-        BillPo billPo = billMapper.modifyBill(vo, userId);
-
-        // 3. 分别为账单id和分页缓存空值，防止缓存穿透
-        if (billPo == null) {
-            cacheUtil.cacheNullKey(userId,vo.getId());
-            cacheUtil.cacheNullKey(userId, page, limit);
-            return Response.error(StatusCodeEnum.GET_DATA_FAILED);
-        }
-
-        // 4. 延时双删
-        Thread.sleep(100);
-        cacheUtil.clearAllCache(userId, vo.getId(), page, limit);
-
-        // 5. 异步写入缓存
-        if (billPo.getDate().isBefore(LocalDate.now().plusDays(7))) {
-            // 异步写入本地缓存和redis缓存，并设置随机过期时间
-            cacheUtil.asyncCacheHotBillToLocalCache(billPo);
-        }
-
-        // 6.异步写入redis缓存
-        cacheUtil.asyncCacheBillToRedis(billPo);
-        return Response.success(StatusCodeEnum.SUCCESS, null);
-    }
-
-    /**
      * 添加账单列表
      *
-     * @author : 李泽聿
-     * @since : 2025-11-17 20:56
      * @param vo {@link AddBillListVo}
      * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-17 20:56
      */
     @Override
     @CheckUserToken
@@ -307,18 +195,48 @@ public class BillServiceImpl implements BillService {
                 // 异步写入本地缓存和redis缓存，并设置随机过期时间
                 cacheUtil.asyncCacheHotBillToLocalCache(i);
             }
-                // 异步写入redis缓存
-                cacheUtil.asyncCacheBillToRedis(i);
+            // 异步写入redis缓存
+            cacheUtil.asyncCacheBillToRedis(i);
         }
         return Response.success(StatusCodeEnum.SUCCESS, null);
     }
 
     @Override
     public Map<String, Object> getRecordType() {
-        Map<String,Object> res = new HashMap<>();
+        Map<String, Object> res = new HashMap<>();
         for (RecordEnum recordEnum : RecordEnum.values()) {
             res.put(recordEnum.name(), recordEnum.getRecordDescription());
         }
         return Response.success(StatusCodeEnum.SUCCESS, res);
+    }
+
+    /**
+     * 异步刷写账单<br>
+     * 当用户进行支出操作时，需要检查用户余额是否足够。如果足够，就异步刷写账单到数据库。<br>
+     * 异步刷写账单的目的是为了提高系统的吞吐量，避免阻塞用户操作。<br>
+     *
+     * @param vo     {@link AddBillVo}
+     * @param userId {@link String}
+     * @author : 李泽聿
+     * @since : 2025-11-22 14:12
+     *
+     */
+    @Async
+    protected synchronized void asynchronousBrushing(AddBillVo vo, String userId) {
+        BillPo res = billMapper.addBill(vo, userId);
+        if (vo.getRecordEnum() == RecordEnum.INCOME) {
+            int insertRes = billMapper.addAccountBalance(userId, vo.getAmount());
+        }
+        if (vo.getRecordEnum() == RecordEnum.EXPENDITURE) {
+            int insertRes = billMapper.modifyAccountBalance(userId, vo.getAmount());
+        }
+        if (res != null) {
+            // 我们认为离当前天数7天内的账单是热点数据，需要进行预热
+            LocalDate date = vo.getDate();
+            if (date.isBefore(LocalDate.now().plusDays(7))) {
+                // 缓存预热代码
+                cacheUtil.asyncCacheHotBillToLocalCache(res);
+            }
+        }
     }
 }

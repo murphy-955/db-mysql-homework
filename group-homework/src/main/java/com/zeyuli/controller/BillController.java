@@ -1,8 +1,5 @@
 package com.zeyuli.controller;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.zeyuli.enm.RecordEnum;
 import com.zeyuli.pojo.vo.*;
 import com.zeyuli.service.BillService;
 import com.zeyuli.util.Response;
@@ -11,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,33 +47,6 @@ public class BillController {
     @PostMapping("getBillDetail")
     public Map<String, Object> getBillDetail(@RequestBody UserOperateBillDetailVo vo) {
         return billService.getBillDetail(vo);
-    }
-
-    @PostMapping
-    public Map<String, Object> deleteBill(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                          @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
-                                          @RequestBody UserOperateBillDetailVo vo) throws InterruptedException {
-        return billService.deleteBill(vo, page, limit);
-    }
-
-    @PostMapping("getDeleteBillList")
-    public Map<String, Object> getDeleteBillList(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                                 @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
-                                                 @RequestBody UserQueryBillVo vo) throws JsonProcessingException {
-        return billService.getDeleteBillList(vo, page, limit);
-    }
-
-    @PostMapping("recoverBill")
-    public Map<String, Object> recoverBill(@RequestBody UserOperateBillDetailVo vo) {
-        return billService.recoverBill(vo);
-    }
-
-    @PostMapping("modifyBill")
-    public Map<String, Object> modifyBill(
-            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
-            @RequestBody ModifyBillVo vo) throws InterruptedException{
-        return billService.modifyBill(vo,page,limit);
     }
 
     @PostMapping("addBillList")
