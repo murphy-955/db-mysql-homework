@@ -1,137 +1,124 @@
 <template>
-  <div class="bill-modifier">
-    <div class="form-card">
-      <h3 class="form-title">添加账单记录</h3>
-
-      <form @submit.prevent="submitBill" class="bill-form">
-        <!-- 金额输入 -->
-        <div class="form-group">
-          <label class="form-label" for="amount">金额</label>
-          <div class="amount-input-wrapper">
-            <span class="currency-symbol">¥</span>
-            <input
-              type="number"
-              id="amount"
-              v-model.number="billForm.amount"
-              class="form-input"
-              placeholder="请输入金额"
-              step="0.01"
-              min="0.01"
-              required
-            >
-          </div>
-          <span v-if="errors.amount" class="error-message">{{ errors.amount }}</span>
-        </div>
-
-        <!-- 类型选择 -->
-        <div class="form-group">
-          <label class="form-label">类型</label>
-          <div class="type-selector">
-            <label class="type-option">
-              <input type="radio" v-model="billForm.type" value="支出" required>
-              <span class="type-text">支出</span>
-            </label>
-            <label class="type-option">
-              <input type="radio" v-model="billForm.type" value="收入" required>
-              <span class="type-text">收入</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- 分类选择 -->
-        <div class="form-group">
-          <label class="form-label" for="category">分类</label>
-          <select
-            id="category"
-            v-model="billForm.category"
-            class="form-select"
-            required
-          >
-            <option value="" disabled>请选择分类</option>
-            <template v-if="billForm.type === '支出'">
-              <option value="餐饮">餐饮</option>
-              <option value="交通">交通</option>
-              <option value="购物">购物</option>
-              <option value="娱乐">娱乐</option>
-              <option value="医疗">医疗</option>
-              <option value="教育">教育</option>
-              <option value="居住">居住</option>
-              <option value="其他">其他</option>
-            </template>
-            <template v-else>
-              <option value="工资">工资</option>
-              <option value="奖金">奖金</option>
-              <option value="投资">投资</option>
-              <option value="兼职">兼职</option>
-              <option value="礼金">礼金</option>
-              <option value="其他">其他</option>
-            </template>
-          </select>
-          <span v-if="errors.category" class="error-message">{{ errors.category }}</span>
-        </div>
-
-        <!-- 日期选择 -->
-        <div class="form-group">
-          <label class="form-label" for="date">日期</label>
-          <input
-            type="date"
-            id="date"
-            v-model="billForm.date"
-            class="form-input"
-            max="{{ today }}"
-            required
-          >
-          <span v-if="errors.date" class="error-message">{{ errors.date }}</span>
-        </div>
-
-        <!-- 账户选择 -->
-        <div class="form-group">
-          <label class="form-label" for="account">账户</label>
-          <select
-            id="account"
-            v-model="billForm.account"
-            class="form-select"
-            required
-          >
-            <option value="" disabled>请选择账户</option>
-            <option value="现金">现金</option>
-            <option value="银行卡">银行卡</option>
-            <option value="支付宝">支付宝</option>
-            <option value="微信">微信</option>
-            <option value="其他">其他</option>
-          </select>
-        </div>
-
-        <!-- 备注输入 -->
-        <div class="form-group">
-          <label class="form-label" for="remark">备注</label>
-          <textarea
-            id="remark"
-            v-model="billForm.remark"
-            class="form-textarea"
-            placeholder="请输入备注信息（选填）"
-            rows="3"
-            maxlength="200"
-          ></textarea>
-          <span class="char-count">{{ billForm.remark.length }}/200</span>
-        </div>
-
-        <!-- 提交按钮 -->
-        <div class="form-actions">
-          <button type="button" class="btn btn-cancel" @click="cancel">取消</button>
-          <button type="submit" class="btn btn-primary" :disabled="loading">{{ loading ? '提交中...' : '提交' }}</button>
-        </div>
-      </form>
+  <!-- 单独上传表单 -->
+  <form @submit.prevent="submitBill" class="bill-form">
+    <!-- 金额输入 -->
+    <div class="form-group">
+      <label class="form-label" for="amount">金额</label>
+      <div class="amount-input-wrapper">
+        <span class="currency-symbol">¥</span>
+        <input
+          type="number"
+          id="amount"
+          v-model.number="billForm.amount"
+          class="form-input"
+          placeholder="请输入金额"
+          step="0.01"
+          min="0.01"
+          required
+        >
+      </div>
+      <span v-if="errors.amount" class="error-message">{{ errors.amount }}</span>
     </div>
 
-    <!-- 提示弹窗 -->
-    <div v-if="showMessage" class="message-modal" :class="messageType">
-      <div class="message-content">
-        <span class="message-icon">{{ messageIcon }}</span>
-        <p>{{ messageText }}</p>
+    <!-- 类型选择 -->
+    <div class="form-group">
+      <label class="form-label">类型</label>
+      <div class="type-selector">
+        <label class="type-option">
+          <input type="radio" v-model="billForm.type" value="支出" required>
+          <span class="type-text">支出</span>
+        </label>
+        <label class="type-option">
+          <input type="radio" v-model="billForm.type" value="收入" required>
+          <span class="type-text">收入</span>
+        </label>
       </div>
     </div>
-  </div>
+
+    <!-- 分类选择 -->
+    <div class="form-group">
+      <label class="form-label" for="category">分类</label>
+      <select
+        id="category"
+        v-model="billForm.category"
+        class="form-select"
+        required
+      >
+        <option value="" disabled>请选择分类</option>
+        <template v-if="billForm.type === '支出'">
+          <option value="餐饮">餐饮</option>
+          <option value="交通">交通</option>
+          <option value="购物">购物</option>
+          <option value="娱乐">娱乐</option>
+          <option value="医疗">医疗</option>
+          <option value="教育">教育</option>
+          <option value="居住">居住</option>
+          <option value="其他">其他</option>
+        </template>
+        <template v-else>
+          <option value="工资">工资</option>
+          <option value="奖金">奖金</option>
+          <option value="投资">投资</option>
+          <option value="兼职">兼职</option>
+          <option value="礼金">礼金</option>
+          <option value="其他">其他</option>
+        </template>
+      </select>
+      <span v-if="errors.category" class="error-message">{{ errors.category }}</span>
+    </div>
+
+    <!-- 日期选择 -->
+    <div class="form-group">
+      <label class="form-label" for="date">日期</label>
+      <input
+        type="date"
+        id="date"
+        v-model="billForm.date"
+        class="form-input"
+        max="{{ today }}"
+        required
+      >
+      <span v-if="errors.date" class="error-message">{{ errors.date }}</span>
+    </div>
+
+    <!-- 账户选择 -->
+    <div class="form-group">
+      <label class="form-label" for="account">账户</label>
+      <select
+        id="account"
+        v-model="billForm.account"
+        class="form-select"
+        required
+      >
+        <option value="" disabled>请选择账户</option>
+        <option value="现金">现金</option>
+        <option value="银行卡">银行卡</option>
+        <option value="支付宝">支付宝</option>
+        <option value="微信">微信</option>
+        <option value="其他">其他</option>
+      </select>
+    </div>
+
+    <!-- 备注输入 -->
+    <div class="form-group">
+      <label class="form-label" for="remark">备注</label>
+      <textarea
+        id="remark"
+        v-model="billForm.remark"
+        class="form-textarea"
+        placeholder="请输入备注信息（选填）"
+        rows="3"
+        maxlength="200"
+      ></textarea>
+      <span class="char-count">{{ billForm.remark.length }}/200</span>
+    </div>
+
+    <!-- 提交按钮 -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-cancel" @click="cancel">取消</button>
+      <button type="submit" class="btn btn-primary" :disabled="loading">{{ loading ? '提交中...' : '提交' }}</button>
+    </div>
+  </form>
 </template>
 
 <script>
@@ -150,18 +137,12 @@ export default {
         remark: ''
       },
       errors: {},
-      loading: false,
-      showMessage: false,
-      messageText: '',
-      messageType: 'success' // success, error
+      loading: false
     };
   },
   computed: {
     today() {
       return this.getTodayDate();
-    },
-    messageIcon() {
-      return this.messageType === 'success' ? '✓' : '✗';
     }
   },
   methods: {
@@ -211,14 +192,13 @@ export default {
         const response = await axios.post('http://localhost:8080/api/bill/add', requestData);
 
         if (response.data.statusCode === 200) {
-          this.showMessageModal('success', '账单添加成功！');
           this.$emit('success');
         } else {
-          this.showMessageModal('error', response.data.message || '操作失败');
+          this.$emit('error', response.data.message || '操作失败');
         }
       } catch (error) {
         console.error('添加账单失败:', error);
-        this.showMessageModal('error', '操作失败，请重试');
+        this.$emit('error', '操作失败，请重试');
       } finally {
         this.loading = false;
       }
@@ -236,39 +216,12 @@ export default {
         remark: ''
       };
       this.errors = {};
-    },
-    showMessageModal(type, text) {
-      this.messageType = type;
-      this.messageText = text;
-      this.showMessage = true;
-
-      setTimeout(() => {
-        this.showMessage = false;
-      }, 3000);
     }
   }
 };
 </script>
 
 <style scoped>
-/* 表单卡片样式 */
-.form-card {
-  background: white;
-  border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  border: 1px solid #f0f0f0;
-  margin-bottom: 32px;
-}
-
-.form-title {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 30px;
-  text-align: center;
-  font-weight: 600;
-}
-
 /* 表单样式 */
 .bill-form {
   display: flex;
@@ -404,7 +357,7 @@ export default {
 }
 
 .btn-cancel:hover {
-  background-color: #e5e5e5;
+  background-color: #e5e5f5;
 }
 
 /* 错误消息样式 */
@@ -412,41 +365,5 @@ export default {
   font-size: 14px;
   color: #ff4d4f;
   margin-top: 4px;
-}
-
-/* 消息弹窗样式 */
-.message-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px 30px;
-  border-radius: 8px;
-  color: white;
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 300px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.message-modal.success {
-  background-color: #52c41a;
-}
-
-.message-modal.error {
-  background-color: #ff4d4f;
-}
-
-.message-icon {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.message-content p {
-  font-size: 16px;
-  margin: 0;
 }
 </style>
