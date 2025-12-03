@@ -88,13 +88,6 @@
               <button class="btn-bills-overview" @click="moveToStatistics">点击此查看历史账单情况</button>
             </div>
 
-            <!-- 2. 快捷操作 -->
-            <div class="card action-card">
-              <button class="btn-add-bill" @click="openAddModal">
-                <span class="icon">🖊</span> 记一笔
-              </button>
-            </div>
-
           </div>
         </div>
       </div>

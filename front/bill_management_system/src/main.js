@@ -8,6 +8,7 @@ import DashboardPage from './components/Dashboard.vue';
 import BillDashboardPage from './components/BillDashboard.vue';
 import StatisticsPage from './components/Statistics.vue';
 import AdminLoginPage from './components/AdminLogin.vue';
+import AdminDashboardPage from './components/AdminDashboard.vue';
 import RegisterPage from './components/RegisterPage.vue';
 import BillAddWindow from './components/BillAddWindow.vue';
 
@@ -19,6 +20,7 @@ const routes = [
   { path: '/bill-add', component: BillAddWindow, meta: { title: '添加账单' } },
   { path: '/statistics', component: StatisticsPage, meta: { title: '统计' } },
   { path: '/admin-login', component: AdminLoginPage, meta: { title: '管理员登录' } },
+  { path: '/admin-dashboard', component: AdminDashboardPage, meta: { title: '管理员控制台' } },
   { path: '/register', component: RegisterPage, meta: { title: '注册' } },
 ];
 
