@@ -5,6 +5,8 @@ import com.zeyuli.pojo.po.UserPo;
 import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 用户持久层接口
  *
@@ -26,4 +28,6 @@ public interface UserMapper {
                         @NotNull(message = "账户不能为空") String account,
                         @NotNull(message = "初始余额不能为空") Double initBalance,
                         @NotNull(message = "账单记录类型不能为空") String description);
+
+    List<UserPo> selectAllUsers();
 }

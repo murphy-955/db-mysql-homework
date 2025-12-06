@@ -9,7 +9,6 @@ import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import com.zeyuli.pojo.vo.UserLoginVo;
 import com.zeyuli.pojo.vo.UserRegisterVo;
 import com.zeyuli.service.UserService;
-import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
 import com.zeyuli.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -46,8 +45,6 @@ public class UserServiceImpl implements UserService {
 
     @Value("${cache.redis.baseKey.user.login}")
     private String userBaseLoginKey;
-    @Autowired
-    private CacheUtil cacheUtil;
 
     /**
      * 用户注册
@@ -73,7 +70,9 @@ public class UserServiceImpl implements UserService {
             // 设置token的过期时间为24小时
             redisTemplate.opsForValue().set(key, token, tokenExpiration, TimeUnit.HOURS);
 
-            return Response.success(token);
+            HashMap<Object, Object> map = new HashMap<>();
+            map.put("token", token);
+            return Response.success(map);
         }
         return Response.error(StatusCodeEnum.REGISTER_FAILED, null);
     }
@@ -99,7 +98,9 @@ public class UserServiceImpl implements UserService {
             // 设置token的过期时间为24小时
             redisTemplate.opsForValue().set(key, token, tokenExpiration, TimeUnit.HOURS);
 
-            return Response.success(token);
+            HashMap<Object, Object> map = new HashMap<>();
+            map.put("token", token);
+            return Response.success(map);
         }
         return Response.error(StatusCodeEnum.LOGIN_FAILED, null);
     }
@@ -120,7 +121,7 @@ public class UserServiceImpl implements UserService {
         int res = userMapper.initAccountInfo(userId, vo.getAccount(), vo.getBalance(), vo.getDescription());
         if (res > 0) {
             // 拼接的key：
-            redisTemplate.opsForValue().set("user:" + userId.substring(0,16) + "account:" + vo.getAccount(), vo);
+            redisTemplate.opsForValue().set("user:" + userId.substring(0, 16) + "account:" + vo.getAccount(), vo);
             return Response.success(null);
         }
         return Response.error(StatusCodeEnum.INIT_ACCOUNT_INFO_FAILED);

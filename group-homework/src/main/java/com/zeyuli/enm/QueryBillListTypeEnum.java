@@ -16,7 +16,6 @@ public enum QueryBillListTypeEnum {
     DATE_RANGE( "日期范围查询"),
     AMOUNT_RANGE( "金额范围查询"),
     USAGE_TYPE( "用途类型查询"),
-    // TODO 待实现
     KEYWORD( "关键词查询"),
     ACCOUNT( "账户查询");
     private final String description;

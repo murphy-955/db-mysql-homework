@@ -58,8 +58,8 @@ public class CheckUserTokenAspect {
         String key = userInfo[0]
                 .concat(":")
                 .concat(userBaseKey);
-        String redisToken = Objects.requireNonNull(redisTemplate.opsForValue().get(key)).toString();
-        if (redisToken.equals(token)) {
+        String redisToken = (String) redisTemplate.opsForValue().get(key);
+        if (redisToken != null && redisToken.equals(token)) {
             return;
         }
         UserPo res = userMapper.selectUser(userInfo[0]);

@@ -21,11 +21,11 @@ import java.util.List;
  */
 @Mapper
 public interface BillMapper {
-    BillPo addBill(@Param("vo") AddBillVo vo,
+    Long addBill(@Param("vo") AddBillVo vo,
                    @Param("userId") String userId);
 
     List<GetBillListBo> getBillList(@Param("limit") int limit,
-                                    @Param("page") int page,
+                                    @Param("offset") Long offset,
                                     @Param("userId") String userId,
                                     @Param("lastId") Long lastId,
                                     @Param("lastDate") LocalDate lastDate
@@ -47,7 +47,7 @@ public interface BillMapper {
     BillPo modifyBill(@Param("vo") ModifyBillVo vo,
                       @Param("userId") String userId);
 
-    List<BillPo> addBillList(@Param("vo") AddBillListVo vo,
+    int addBillList(@Param("vo") AddBillListVo vo,
                        @Param("userId") String userId);
 
     int addAccountBalance(String userId,

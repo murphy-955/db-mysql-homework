@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -56,6 +57,10 @@ public class BillController {
 
     @GetMapping("getTypeList")
     public Map<String, Object> getTypeList() {
-        return Response.success(UsageEnum.values());
+        HashMap<String, Object> map = new HashMap<>();
+        for (UsageEnum usageEnum : UsageEnum.values()) {
+            map.put(usageEnum.name(), usageEnum.getDescription());
+        }
+        return Response.success(map);
     }
 }

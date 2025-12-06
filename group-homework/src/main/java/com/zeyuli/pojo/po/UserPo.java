@@ -15,4 +15,5 @@ public class UserPo {
     private String userId;
     private String username;
     private String password;
+    private boolean whetherItIsDisabledOrNot;
 }
