@@ -189,7 +189,7 @@ export default {
           remarks: this.billForm.remark
         };
 
-        const response = await axios.post('http://localhost:8080/api/bill/add', requestData);
+        const response = await axios.post('http://localhost:8080/api/bill/addBill', requestData);
 
         if (response.data.statusCode === 200) {
           this.$emit('success');

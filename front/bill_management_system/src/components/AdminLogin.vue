@@ -61,7 +61,7 @@ export default {
 
       // 对密码进行SHA256加密
       const encryptedPassword = await sha256(this.admin_pwd);
-      
+
       const loginData = {
         username: this.admin_name,
         password: encryptedPassword,
@@ -74,10 +74,10 @@ export default {
           localStorage.setItem('adminToken', response.data.data.token);
           this.$router.push('/admin-dashboard');
         } else {
-          this.error = response.data.message;
+          alert(response.data.message);
         }
       } catch (err) {
-        this.error = '管理员登录失败，请重试';
+        alert('管理员登录失败，请重试');
         console.error(err);
       } finally {
         this.loading = false;

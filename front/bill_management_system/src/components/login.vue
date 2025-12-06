@@ -63,7 +63,7 @@ export default {
 
       // 对密码进行SHA256加密
       const encryptedPassword = await sha256(this.password);
-      
+
       const loginData = {
         username: this.acc_name,
         password: encryptedPassword,
@@ -76,10 +76,10 @@ export default {
           localStorage.setItem('token', response.data.data.token);
           this.$router.push('/dashboard');
         } else {
-          this.error = response.data.message;
+          alert(response.data.message);
         }
       } catch (err) {
-        this.error = '登录失败，请重试';
+        alert('登录失败，请重试');
         console.error(err);
       } finally {
         this.loading = false;

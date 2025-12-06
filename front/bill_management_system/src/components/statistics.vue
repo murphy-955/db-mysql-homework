@@ -129,15 +129,11 @@
             </div>
             <div class="chart-content">
               <div v-if="loading" class="chart-loading">加载中...</div>
+              <div v-else-if="expenseCategories.length === 0" class="chart-empty">暂无支出数据</div>
               <div v-else class="pie-chart-container">
                 <div class="pie-chart">
-                  <!-- 简化的饼图表示 -->
-                  <div class="pie-chart-simplified">
-                    <div v-for="(category, index) in expenseCategories" :key="index"
-                         class="pie-slice"
-                         :style="{ backgroundColor: category.color, transform: `rotate(${getPieSliceRotation(index)})` }"
-                         :title="`${category.name}: ¥${category.amount} (${category.percentage}%)`">
-                    </div>
+                  <!-- 动态生成饼图 -->
+                  <div class="pie-chart-simplified" :style="{ background: getPieChartGradient() }">
                   </div>
                 </div>
                 <div class="category-list">
@@ -244,16 +240,22 @@ export default {
           startDate: this.getDateRangeStart(),
           endDate: this.getDateRangeEnd(),
           page: 1,
-          limit: 1000
+          limit: 10000 // 增加limit以获取所有数据
         };
 
+        console.log('请求统计数据:', requestBody); // 调试日志
         const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', requestBody);
+        console.log('接收到的数据:', response.data); // 调试日志
+
         this.bills = response.data.data || [];
+        console.log('账单数量:', this.bills.length); // 调试日志
+
         this.calculateStatistics();
         this.updateTrendChart();
       } catch (error) {
         console.error('加载统计数据失败:', error);
-        // 数据保持为默认值 0
+        this.bills = [];
+        this.calculateStatistics();
         this.updateTrendChart();
       } finally {
         this.loading = false;
@@ -265,13 +267,13 @@ export default {
         case 'week':
           return new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
         case 'month':
-          return new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+          return new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 修复：最近一个月应该是30天前
         case 'quarter':
-          return new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1).toISOString().split('T')[0];
+          return new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 修复：最近三个月应该是90天前
         case 'halfYear':
-          return new Date(today.getFullYear(), today.getMonth() < 6 ? 0 : 6, 1).toISOString().split('T')[0];
+          return new Date(today.getTime() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 修复：最近半年应该是180天前
         case 'year':
-          return new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
+          return new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]; // 修复：最近一年应该是365天前
         case 'custom':
           return this.startDate;
         default:
@@ -352,9 +354,21 @@ export default {
       const data = [];
       const today = new Date();
 
+      // 根据选择的日期范围确定显示的天数
+      let daysToShow = 7; // 默认7天
+      if (this.dateRange === 'month') {
+        daysToShow = 30; // 一个月显示30天
+      } else if (this.dateRange === 'quarter') {
+        daysToShow = 90; // 三个月显示90天
+      } else if (this.dateRange === 'halfYear') {
+        daysToShow = 180; // 半年显示180天
+      } else if (this.dateRange === 'year') {
+        daysToShow = 365; // 一年显示365天
+      }
+
       if (this.trendChartType === 'daily') {
-        // 最近7天
-        for (let i = 6; i >= 0; i--) {
+        // 显示最近 daysToShow 天的每日数据
+        for (let i = daysToShow - 1; i >= 0; i--) {
           const date = new Date(today);
           date.setDate(today.getDate() - i);
           const dateStr = date.toISOString().split('T')[0];
@@ -421,13 +435,31 @@ export default {
       this.trendData = { labels, data };
     },
     getBarHeight(value) {
-      const maxValue = Math.max(...this.trendData.data.map(item => Math.max(item.expense, item.income)));
+      const maxValue = Math.max(...this.trendData.data.map(item => Math.max(item.expense, item.income)), 1); // 防止除以0
+      if (maxValue === 0) return '0%';
       return `${(value / maxValue) * 100}%`;
     },
+    getPieChartGradient() {
+      if (this.expenseCategories.length === 0) return 'transparent';
+
+      let gradientParts = [];
+      let currentPercentage = 0;
+
+      this.expenseCategories.forEach((category, index) => {
+        const startPercent = currentPercentage;
+        currentPercentage += parseFloat(category.percentage);
+        const endPercent = currentPercentage;
+
+        gradientParts.push(`${category.color} ${startPercent}% ${endPercent}%`);
+      });
+
+      return `conic-gradient(${gradientParts.join(', ')})`;
+    },
     getPieSliceRotation(index) {
+      // 这个方法现在不需要了，但保留以防万一
       let rotation = 0;
       for (let i = 0; i < index; i++) {
-        rotation += this.expenseCategories[i].percentage * 3.6; // 360度 / 100%
+        rotation += parseFloat(this.expenseCategories[i].percentage) * 3.6;
       }
       return `${rotation}deg`;
     },
@@ -789,17 +821,17 @@ export default {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: conic-gradient(
-    #FF6384 0% 30.2%,
-    #36A2EB 30.2% 39.7%,
-    #FFCE56 39.7% 59.6%,
-    #4BC0C0 59.6% 73.9%,
-    #9966FF 73.9% 80.7%,
-    #FF9F40 80.7% 90.2%,
-    #8AC926 90.2% 96.6%,
-    #6C757D 96.6% 100%
-  );
+  /* 移除硬编码的background，改为动态生成 */
   position: relative;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  font-size: 16px;
 }
 
 .pie-slice {
