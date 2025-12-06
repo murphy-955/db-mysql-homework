@@ -241,14 +241,13 @@ export default {
         const token = localStorage.getItem('token');
         const requestBody = {
           token: token,
-          searchType: 'DATE',
           startDate: this.getDateRangeStart(),
           endDate: this.getDateRangeEnd(),
           page: 1,
           limit: 1000
         };
 
-        const response = await axios.post('http://localhost:8080/api/query/getBillList', requestBody);
+        const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', requestBody);
         this.bills = response.data.data || [];
         this.calculateStatistics();
         this.updateTrendChart();
