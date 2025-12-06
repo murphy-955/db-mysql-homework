@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS bill_sys."user_bill"
 SELECT id, record_enum, amount, date
 FROM bill_sys.user_bill
 WHERE user_id = '202511271319ac58bdcc4b8681e3e39474d26aff'
-  AND date BETWEEN '2021-10-10' AND '2025-10-11'
+  AND date BETWEEN '2025-11-30' AND '2025-12-01'
 ORDER BY date DESC;
 
 

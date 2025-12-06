@@ -55,8 +55,9 @@ public class QueryServiceImpl implements QueryService {
             return Response.error(StatusCodeEnum.GET_DATA_FAILED, null);
         }
         if (getBillListBos.isEmpty()) {
-            return Response.success(StatusCodeEnum.SUCCESS, getBillListBos);
+            return Response.error(StatusCodeEnum.GET_DATA_FAILED, null);
         }
-        return Response.error(StatusCodeEnum.GET_DATA_FAILED, null);
+
+        return Response.success(StatusCodeEnum.SUCCESS, getBillListBos);
     }
 }

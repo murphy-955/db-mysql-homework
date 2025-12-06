@@ -5,96 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix: 修复sql分页方言的错误">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.cache/.Apifox_Helper/.toolWindow.db" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.cache/.Apifox_Helper/.toolWindow.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/mysql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mysql.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/AdminLogin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/AdminLogin.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/RegisterPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/RegisterPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/BillController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/BillController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/QueryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/QueryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/RedisConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/QueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/QueryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByDateStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByDateStrategyImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/application-dev.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/application.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/annotations/CheckAdminToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/annotations/CheckUserToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/annotations/LogOutPut.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/asspect/CheckAdminTokenAspect.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/asspect/CheckUserTokenAspect.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/asspect/LogOutputAspect.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/config/AsyncTaskVirtualThreadConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/config/LocalCacheConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/config/RedisConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/config/TomcatConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/config/VirtualThreadMonitorConfig.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/controller/AdminController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/controller/BillController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/controller/QueryController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/controller/UserController.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/enm/QueryBillListTypeEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/enm/RecordEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/enm/StatusCodeEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/enm/UsageEnum.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/expection/AdminTokenException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/expection/CachePenetrationExpectation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/expection/SearchTypeNotAllowedExpectation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/expection/UserTokenException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/handler/GlobalExceptionHandler.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/mappers/AdminMapper.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/mappers/BillMapper.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/mappers/QueryBillMapper.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/mappers/UserMapper.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/Test.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/bo/GetBillListBo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/po/BillPo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/po/UserPo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/AddBillListVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/AddBillVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/AdminGetUserListVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/AdminLoginVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/AdminManageUserVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/InitAccountInfoVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/ModifyBillVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/UserLoginVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/UserOperateBillDetailVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/UserQueryBillVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/pojo/vo/UserRegisterVo.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/AdminService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/BillService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/QueryService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/UserService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/impl/AdminServiceImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/impl/BillServiceImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/impl/QueryServiceImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/service/impl/UserServiceImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/BillQueryStrategy.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/BillQueryStrategyFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/impl/QueryBillByAccountStrategyImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/impl/QueryBillByAmountRangeStrategyImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/impl/QueryBillByDateStrategyImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/impl/QueryBillByUsageTypeStrategyImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/strategy/impl/QueryBillOrderByKeywordStrategyImpl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/util/CacheUtil$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/util/CacheUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/util/JwtUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/com/zeyuli/util/Response.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/mappers/AdminMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/mappers/BillMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/mappers/QueryBillMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/classes/mappers/UserMapper.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/target/test-classes/com/zeyuli/test/TestDbConnect.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -180,7 +96,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.Main.executor": "Debug",
+    "Spring Boot.Main.executor": "Run",
     "extract.method.default.visibility": "private",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
@@ -366,7 +282,7 @@
       <workItem from="1764593894980" duration="318000" />
       <workItem from="1764639302500" duration="14000" />
       <workItem from="1764807060808" duration="81000" />
-      <workItem from="1765000003409" duration="4765000" />
+      <workItem from="1765000003409" duration="7648000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -568,7 +484,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765004751028</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="fix: 修复sql分页方言的错误">
+      <option name="closed" value="true" />
+      <created>1765005320461</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1765005320461</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -612,9 +536,9 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByDateStrategyImpl.java</url>
-          <line>63</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/QueryServiceImpl.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

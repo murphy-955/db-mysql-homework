@@ -340,11 +340,12 @@ public class CacheUtil {
     @SuppressWarnings("unchecked")
     @LogOutPut
     public List<GetBillListBo> queryBillListOrderByDateFromRedisCache(String key) {
-        List<GetBillListBo> listBos = (List<GetBillListBo>) redisTemplate.opsForValue().get(key);
+        Object listBos = redisTemplate.opsForValue().get(key);
         if (listBos == null) {
             return new ArrayList<>();
         }
-        return listBos;
+        System.out.println(listBos);
+        return (List<GetBillListBo>) listBos;
     }
 
     /**
