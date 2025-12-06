@@ -14,9 +14,6 @@
       <div class="nav-item" :class="{ active: currentPath === '/bill-query' }" @click="navigate('/bill-query')">
         <span>账单管理</span>
       </div>
-      <div class="nav-item">
-        <span>用户信息</span>
-      </div>
     </nav>
 
     <div class="sidebar-footer">

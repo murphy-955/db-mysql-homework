@@ -6,6 +6,42 @@
     <!-- 右侧主内容区 -->
     <main class="main-content">
       <div class="content-wrapper">
+        <!-- 顶部概览区域 -->
+        <div class="dashboard-header">
+          <div class="header-title">
+            <h2>账单仪表盘</h2>
+            <span class="subtitle">管理您的每一笔收支</span>
+          </div>
+          <button class="btn btn-primary btn-lg" @click="openAddModal">
+            <span class="icon">+</span> 记一笔
+          </button>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-cards">
+          <div class="stat-card income">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <span class="label">本页收入</span>
+              <span class="value">+{{ currentIncome.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="stat-card expense">
+            <div class="stat-icon">💸</div>
+            <div class="stat-info">
+              <span class="label">本页支出</span>
+              <span class="value">-{{ currentExpenditure.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="stat-card balance">
+            <div class="stat-icon">⚖️</div>
+            <div class="stat-info">
+              <span class="label">本页结余</span>
+              <span class="value">{{ currentBalance >= 0 ? '+' : '' }}{{ currentBalance.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
         <!-- 查询区域 -->
         <div class="query-section">
           <div class="section-header">
@@ -73,7 +109,6 @@
           <div class="query-actions">
             <button class="btn btn-primary" @click="searchBills">查询</button>
             <button class="btn btn-outline" @click="resetQuery">重置</button>
-            <button class="btn btn-success" @click="openAddModal">增加账单</button>
           </div>
         </div>
 
@@ -124,24 +159,23 @@
       </div>
     </main>
 
-    <!-- 添加账单弹窗 -->
-    <div v-if="showAddModal" class="modal-overlay" @click.self="closeAddModal">
-      <div class="modal-content">
-        <BillAdd @success="handleAddSuccess" @cancel="closeAddModal" />
-      </div>
-    </div>
+    <BillAddWindow
+      v-if="showAddModal"
+      @success="handleAddSuccess"
+      @cancel="closeAddModal"
+    />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import BillAdd from './billAdd.vue';
+import BillAddWindow from './BillAddWindow.vue';
 import Sidebar from './Sidebar.vue';
 
 export default {
   name: 'BillQueryPage',
   components: {
-    BillAdd,
+    BillAddWindow,
     Sidebar
   },
   data() {
@@ -173,11 +207,31 @@ export default {
   computed: {
     totalPages() {
       return Math.ceil(this.totalCount / this.queryParams.limit);
+    },
+    // 新增统计计算属性
+    currentIncome() {
+      return this.bills
+        .filter(b => b.recordEnum === 'income')
+        .reduce((sum, b) => sum + b.amount, 0);
+    },
+    currentExpenditure() {
+      return this.bills
+        .filter(b => b.recordEnum === 'expenditure')
+        .reduce((sum, b) => sum + b.amount, 0);
+    },
+    currentBalance() {
+      return this.currentIncome - this.currentExpenditure;
     }
   },
   async mounted() {
     // 获取类型枚举数据
     await this.fetchTypeLists();
+
+    // 检查路由参数，如果是从仪表盘跳转过来的添加操作，则自动打开弹窗
+    if (this.$route.query.action === 'add') {
+      this.showAddModal = true;
+      this.$router.replace({ query: {} });
+    }
   },
   methods: {
     // 获取类型枚举列表
@@ -235,7 +289,7 @@ export default {
       this.showAddModal = false;
     },
 
-    // 添加成功回调
+    // 添加成功回调 (统一处理单次和批量)
     handleAddSuccess() {
       this.closeAddModal();
       // 如果当前有查询条件，刷新当前查询；否则重置查询显示最新数据
@@ -248,7 +302,7 @@ export default {
         const now = new Date();
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
         const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        
+
         this.queryParams.startDate = firstDay.toISOString().split('T')[0];
         this.queryParams.endDate = lastDay.toISOString().split('T')[0];
         this.searchBills();
@@ -423,7 +477,97 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 24px; /* 增加间距 */
 }
+
+/* 顶部头部样式 */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.header-title h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #1f1f1f;
+}
+
+.subtitle {
+  color: #8c8c8c;
+  font-size: 14px;
+  margin-top: 4px;
+  display: block;
+}
+
+.btn-lg {
+  padding: 10px 24px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(24, 144, 255, 0.3);
+}
+
+/* 统计卡片样式 */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #f0f0f0;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.stat-icon {
+  font-size: 32px;
+  margin-right: 20px;
+  background: #f5f5f5;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-info .label {
+  color: #8c8c8c;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.stat-info .value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.stat-card.income .stat-icon { background: #f6ffed; }
+.stat-card.income .value { color: #52c41a; }
+
+.stat-card.expense .stat-icon { background: #fff1f0; }
+.stat-card.expense .value { color: #ff4d4f; }
+
+.stat-card.balance .stat-icon { background: #e6f7ff; }
+.stat-card.balance .value { color: #1890ff; }
 
 /* 查询和结果区域样式 */
 .query-section,
@@ -431,7 +575,7 @@ export default {
   background: white;
   border-radius: 16px;
   padding: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 0; /* 由gap控制间距 */
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   border: 1px solid #f0f0f0;
 }

@@ -460,7 +460,7 @@ export default {
   width: 100vw; /* 确保占满全屏 */
   background-color: #f0f2f5;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  overflow: hidden; /* 防止整体滚动，让main-content滚动 */
+  /* overflow: hidden; */ /* 移除此行以允许整个页面滚动 */
 }
 
 /* 右侧主内容区 */
@@ -478,6 +478,7 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 40px; /* 增加section之间的距离 */
 }
 
 /* 筛选区域样式 */
@@ -549,7 +550,7 @@ export default {
 .overview-section {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 30px; /* 增加概览卡片之间的距离 */
   flex-shrink: 0;
 }
 

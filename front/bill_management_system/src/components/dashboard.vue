@@ -16,69 +16,85 @@
           </div>
         </div>
 
-        <!-- 仪表盘卡片区域 -->
+        <!-- 新增：7:3 分栏布局区域 -->
         <div class="dashboard-grid">
-          <!-- 财务概览卡片 -->
-          <div class="card overview-card" @click="$router.push('/statistics')">
-            <div class="card-header">
-              <h4>财务概览</h4>
-              <span class="more-link">查看详情 ></span>
+
+          <!-- 左侧：财务概览 (70%) -->
+          <div class="left-panel">
+
+            <!-- 1. 顶部数据卡片 -->
+            <div class="stats-cards">
+              <div class="card stat-item income">
+                <div class="stat-label">本月收入</div>
+                <div class="stat-value">¥ {{ totalIncome.toFixed(2) }}</div>
+              </div>
+              <div class="card stat-item expense">
+                <div class="stat-label">本月支出</div>
+                <div class="stat-value">¥ {{ totalExpense.toFixed(2) }}</div>
+              </div>
+              <div class="card stat-item balance">
+                <div class="stat-label">结余</div>
+                <div class="stat-value">¥ {{ (totalIncome - totalExpense).toFixed(2) }}</div>
+              </div>
             </div>
-            <div class="chart-placeholder">
-              <div v-if="loading" class="chart-loading">加载中...</div>
-              <div v-else class="trend-chart">
-                <div class="chart-bars">
+
+            <!-- 2. 趋势图表 (使用 CSS 模拟简单的柱状图) -->
+            <div class="card chart-section">
+              <div class="card-header">
+                <h4>近5日收支趋势</h4>
+              </div>
+              <div class="chart-container">
+                <div v-if="chartData.length === 0" class="no-data">暂无数据</div>
+                <div v-else class="bars-wrapper">
                   <div v-for="(item, index) in chartData" :key="index" class="bar-group">
-                    <div class="expense-bar" :style="{ height: getBarHeight(item.expense) }" :title="`支出: ¥${item.expense}`"></div>
-                    <div class="income-bar" :style="{ height: getBarHeight(item.income) }" :title="`收入: ¥${item.income}`"></div>
-                  </div>
-                </div>
-                <div class="chart-legend">
-                  <div class="legend-item">
-                    <span class="legend-color expense"></span>
-                    <span class="legend-text">支出</span>
-                  </div>
-                  <div class="legend-item">
-                    <span class="legend-color income"></span>
-                    <span class="legend-text">收入</span>
+                    <div class="bar-column">
+                      <div class="bar income-bar" :style="{ height: getBarHeight(item.income) }" :title="'收入: ' + item.income"></div>
+                      <div class="bar expense-bar" :style="{ height: getBarHeight(item.expense) }" :title="'支出: ' + item.expense"></div>
+                    </div>
+                    <div class="bar-date">{{ item.date.slice(5) }}</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="card-stats">
-              <div class="stat-item">
-                <span class="label">本月支出</span>
-                <span class="value expense">¥ {{ totalExpense.toLocaleString() }}</span>
+
+            <!-- 3. 最近账单列表 -->
+            <div class="card recent-bills">
+              <div class="card-header">
+                <h4>最近账单</h4>
               </div>
-              <div class="stat-item">
-                <span class="label">本月收入</span>
-                <span class="value income">¥ {{ totalIncome.toLocaleString() }}</span>
-              </div>
+              <ul class="bill-list">
+                <li v-for="bill in recentBills" :key="bill.id" class="bill-item">
+                  <div class="bill-info">
+                    <span class="bill-category">{{ bill.category }}</span>
+                    <span class="bill-desc">{{ bill.description }}</span>
+                  </div>
+                  <div class="bill-amount" :class="bill.type === '支出' ? 'text-expense' : 'text-income'">
+                    {{ bill.type === '支出' ? '-' : '+' }}{{ bill.amount }}
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <!-- 快速记账卡片 -->
-          <div class="card action-card" @click="$router.push('/bill-add')">
-            <div class="icon-wrapper blue">
-              <span class="big-icon">✏️</span>
-            </div>
-            <h4>记一笔</h4>
-            <p>快速记录今天的每一笔收支</p>
-            <button class="action-btn">立即记录</button>
-          </div>
+          <!-- 右侧：工具与日历 (30%) -->
+          <div class="right-panel">
 
-          <!-- 账单查询卡片 -->
-          <div class="card action-card" @click="$router.push('/bill-query')">
-            <div class="icon-wrapper purple">
-              <span class="big-icon">🔍</span>
+            <!-- 1. 日历/日期卡片 -->
+            <div class="card calendar-section">
+              <h4 class="calendar-subtitle">欢迎回来！今天是 {{ currentDate }}</h4>
+
+              <Calendar @date-selected="handleDateSelected" :initialDate="selectedDate" />
+
+              <button class="btn-bills-overview" @click="moveToStatistics">点击此查看历史账单情况</button>
             </div>
-            <h4>查账单</h4>
-            <p>回顾历史消费，分析支出去向</p>
-            <button class="action-btn secondary">查看明细</button>
+
           </div>
         </div>
       </div>
     </main>
+
+    <!-- 添加账单弹窗 -->
+    <BillAddWindow v-if="showAddModal" @success="handleAddSuccess" @cancel="closeAddModal" />
   </div>
 </template>
 
@@ -87,11 +103,15 @@ import axios from 'axios';
 import quotesData from '@/assets/quotes/quote_zh.json';
 import quoteBanner from '@/assets/quotes/quote_banner.png';
 import Sidebar from './Sidebar.vue';
+import BillAddWindow from './BillAddWindow.vue';
+import Calendar from './Calendar.vue';
 
 export default {
   name: 'DashboardPage',
   components: {
-    Sidebar
+    Sidebar,
+    BillAddWindow,
+    Calendar
   },
   data() {
     return {
@@ -106,7 +126,17 @@ export default {
       totalExpense: 0,
       totalIncome: 0,
       loading: false,
-      bills: []
+      bills: [],
+      showAddModal: false,
+      userName: localStorage.getItem('userName') || '用户',
+      currentDate: new Date().toLocaleDateString(),
+      categoryStats: [],
+      yearlyExpense: 0,
+      yearlyIncome: 0,
+      yearlyChartData: [],
+      recentBills: [],
+      yearlyBills: [],
+      selectedDate: new Date()
     };
   },
   mounted() {
@@ -125,6 +155,7 @@ export default {
 
     // 加载财务概览数据
     this.loadOverviewData();
+    this.loadYearlyData();
   },
   methods: {
     async loadOverviewData() {
@@ -146,16 +177,61 @@ export default {
         this.calculateStats();
       } catch (error) {
         console.error('加载账单数据失败:', error);
-        // 如果接口失败，使用模拟数据
-        this.generateMockData();
       } finally {
         this.loading = false;
       }
+    },
+    async loadYearlyData() {
+      try {
+        const token = localStorage.getItem('token');
+        const requestBody = {
+          token: token,
+          searchType: 'DATE',
+          startDate: new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0],
+          endDate: new Date().toISOString().split('T')[0],
+          page: 1,
+          limit: 1000 // 假设足够全年数据
+        };
+
+        const response = await axios.post('http://localhost:8080/api/query/getBillList', requestBody);
+        this.yearlyBills = response.data.data || [];
+        this.calculateYearlyStats();
+      } catch (error) {
+        console.error('加载年度账单数据失败:', error);
+      }
+    },
+    moveToStatistics() {
+      this.$router.push({ name: 'statistics' });
+    },
+    calculateYearlyStats() {
+      let totalExpense = 0;
+      let totalIncome = 0;
+      const monthlyData = {};
+
+      this.yearlyBills.forEach(bill => {
+        const month = new Date(bill.date).getMonth();
+        if (!monthlyData[month]) {
+          monthlyData[month] = { expense: 0, income: 0 };
+        }
+        if (bill.type === '支出') {
+          monthlyData[month].expense += bill.amount;
+          totalExpense += bill.amount;
+        } else if (bill.type === '收入') {
+          monthlyData[month].income += bill.amount;
+          totalIncome += bill.amount;
+        }
+      });
+
+      this.yearlyExpense = totalExpense;
+      this.yearlyIncome = totalIncome;
+
+      this.yearlyChartData = Array.from({ length: 12 }, (_, i) => monthlyData[i] || { expense: 0, income: 0 });
     },
     calculateStats() {
       let totalExpense = 0;
       let totalIncome = 0;
       const dailyData = {};
+      let categoryMap = {};
 
       this.bills.forEach(bill => {
         const date = bill.date.split(' ')[0];
@@ -165,6 +241,10 @@ export default {
         if (bill.type === '支出') {
           dailyData[date].expense += bill.amount;
           totalExpense += bill.amount;
+
+          const category = bill.category || '其他';
+          if (!categoryMap[category]) categoryMap[category] = 0;
+          categoryMap[category] += bill.amount;
         } else if (bill.type === '收入') {
           dailyData[date].income += bill.amount;
           totalIncome += bill.amount;
@@ -176,24 +256,42 @@ export default {
 
       // 取最近5天的数据
       const dates = Object.keys(dailyData).sort().slice(-5);
-      this.chartData = dates.map(date => dailyData[date]);
-    },
-    generateMockData() {
-      // 模拟数据
-      this.totalExpense = 2340;
-      this.totalIncome = 8500;
-      this.chartData = [
-        { expense: 2340, income: 8500 },
-        { expense: 1800, income: 9200 },
-        { expense: 2100, income: 8700 },
-        { expense: 2500, income: 8900 },
-        { expense: 2000, income: 9100 }
-      ];
+      this.chartData = dates.map(date => ({
+        date: date,
+        ...dailyData[date]
+      }));
+
+      // 计算类别统计
+      this.categoryStats = Object.entries(categoryMap).map(([category, amount]) => ({
+        category,
+        amount,
+        percentage: this.totalExpense > 0 ? (amount / this.totalExpense * 100).toFixed(1) : 0
+      })).sort((a, b) => b.amount - a.amount);
+
+      // 计算最近账单
+      this.recentBills = this.bills.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
     },
     getBarHeight(value) {
       if (this.chartData.length === 0) return '0%';
       const maxValue = Math.max(...this.chartData.flatMap(item => [item.expense, item.income]));
+      if (maxValue === 0) return '0%';
       return `${(value / maxValue) * 100}%`;
+    },
+    getYearlyBarHeight(value) {
+      if (this.yearlyChartData.length === 0) return '0%';
+      const maxValue = Math.max(...this.yearlyChartData.flatMap(item => [item.expense, item.income]));
+      return `${(value / maxValue) * 100}%`;
+    },
+    openAddModal() {
+      this.showAddModal = true;
+    },
+    closeAddModal() {
+      this.showAddModal = false;
+    },
+    handleAddSuccess() {
+      this.closeAddModal();
+      // 刷新财务概览数据
+      this.loadOverviewData();
     }
   }
 };
@@ -203,23 +301,27 @@ export default {
 .dashboard-layout {
   display: flex;
   height: 100vh;
-  width: 100vw; /* 确保占满全屏 */
+  width: 100vw;
+  /* 确保占满全屏 */
   background-color: #f0f2f5;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  overflow: hidden; /* 防止整体滚动，让main-content滚动 */
+  overflow: hidden;
+  /* 防止整体滚动，让main-content滚动 */
 }
 
 /* 右侧主内容区 */
 .main-content {
   flex: 1;
   height: 100%;
-  overflow-y: auto; /* 内容区滚动 */
+  overflow-y: auto;
+  /* 内容区滚动 */
   padding: 40px;
   background-color: #f0f2f5;
 }
 
 .content-wrapper {
-  max-width: 1600px; /* 放宽最大宽度 */
+  max-width: 1600px;
+  /* 放宽最大宽度 */
   margin: 0 auto;
   height: 100%;
   display: flex;
@@ -245,13 +347,16 @@ export default {
   margin: 0 0 12px 0;
   font-size: 28px;
   opacity: 0.9;
-  color: #ffff01; /* 棕色，适合暗黄背景 */
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3); /* 添加阴影模拟水墨效果 */
+  color: #ffff01;
+  /* 棕色，适合暗黄背景 */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  /* 添加阴影模拟水墨效果 */
 }
 
 .quote-content p {
   margin: 0;
-  font-size: 28px; /* 墛大名言字体 */
+  font-size: 28px;
+  /* 墛大名言字体 */
   font-style: italic;
   font-weight: 500;
   line-height: 1.4;
@@ -261,8 +366,10 @@ export default {
   font-family: 'KaiTi', '楷体', serif;
   white-space: pre-wrap;
   font-size: 22px;
-  color: #fffb00; /* 棕色 */
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.3); /* 水墨阴影 */
+  color: #fffb00;
+  /* 棕色 */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  /* 水墨阴影 */
 }
 
 .quote-line {
@@ -273,51 +380,84 @@ export default {
   text-align: right;
 }
 
-/* 仪表盘网格 - 纯PC布局 */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 固定三列 */
-  gap: 32px;
-  width: 100%;
+  grid-template-columns: 7fr 3fr;
+  gap: 20px;
 }
 
-/* 移除之前的媒体查询，强制PC布局 */
-
-/* 财务概览卡片样式 */
-.overview-card {
-  grid-column: span 2; /* 占据两列 */
-  min-height: 400px; /* 增加高度 */
-}
-
-.chart-placeholder {
-  height: 200px; /* 墛大图表高度 */
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.left-panel, .right-panel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  gap: 20px;
 }
 
-.chart-loading {
+.calendar-subtitle {
   font-size: 16px;
-  color: #999;
+  margin-bottom: 10px;
+  color: #555;
+  margin-top: -5px;
+  margin-bottom: 20px;
 }
 
-.trend-chart {
-  width: 100%;
+.overview-card {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.chart-bars {
+.btn-bills-overview {
+  margin-top: 15px;
+  background: linear-gradient(45deg, #2196f3, #21cbf3);
+  border: none;
+  color: #ffffff;
+  padding:10px 20px;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-top: 30px;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 60px;
+}
+
+.stats-cards {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 20px;
+  color: #888;
+}
+
+.stat-value {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-between;
   align-items: flex-end;
-  height: 100%;
-  width: 100%;
+  height: 200px;
+  margin-top: 40px;
 }
 
 .bar-group {
@@ -326,210 +466,137 @@ export default {
   align-items: center;
 }
 
-.expense-bar {
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
   width: 20px;
-  background-color: #ff4d4f;
-  border-radius: 4px 4px 0 0;
-  margin-bottom: 4px;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 4px;
 }
 
 .income-bar {
-  width: 20px;
-  background-color: #52c41a;
-  border-radius: 4px 4px 0 0;
+  background-color: #4caf50;
 }
 
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
+.expense-bar {
+  background-color: #f44336;
 }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
+.bar-date {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #888;
 }
 
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 6px;
-}
-
-.legend-color.expense {
-  background-color: #ff4d4f;
-}
-
-.legend-color.income {
-  background-color: #52c41a;
-}
-
-.card-stats {
-  display: flex;
-  justify-content: space-around;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stat-item .label {
-  font-size: 14px;
-  color: #999;
-  margin-bottom: 6px;
-}
-
-.stat-item .value {
-  font-size: 24px; /* 墛大数值 */
-  font-weight: bold;
-}
-
-.value.expense { color: #ff4d4f; }
-.value.income { color: #52c41a; }
-
-/* 动作卡片样式 */
-.action-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.no-data {
   text-align: center;
-  min-height: 300px; /* 墛大高度 */
-  padding: 32px 24px; /* 墛大内边距 */
+  color: #888;
 }
 
-.icon-wrapper {
-  width: 80px; /* 墛大图标容器 */
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
+.bill-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.icon-wrapper.blue { background-color: #e6f7ff; color: #1890ff; }
-.icon-wrapper.purple { background-color: #f9f0ff; color: #722ed1; }
-
-.big-icon {
-  font-size: 36px; /* 墛大图标 */
-}
-
-.action-card h4 {
-  margin: 0 0 12px 0;
-  font-size: 20px; /* 墛大标题 */
-}
-
-.action-card p {
-  color: #999;
-  font-size: 16px; /* 墛大描述 */
-  margin: 0 0 24px 0;
-  line-height: 1.5;
-}
-
-.action-btn {
-  padding: 12px 32px; /* 墛大按钮 */
-  border-radius: 24px;
-  border: none;
-  background-color: #1890ff;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s;
-  font-size: 16px; /* 墛大字体 */
-}
-
-.action-btn:hover {
-  background-color: #40a9ff;
-}
-
-.action-btn.secondary {
-  background-color: #f0f2f5;
-  color: #666;
-}
-
-.action-btn.secondary:hover {
-  background-color: #e6e6e6;
-}
-
-/* 钱包信息样式 */
-.info-card {
-  min-height: 300px;
-  padding: 32px 24px;
-}
-
-.wallet-item {
-  display: flex;
-  align-items: center;
-  padding: 16px 0; /* 墛大间距 */
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.wallet-item:last-child {
-  border-bottom: none;
-}
-
-.wallet-icon {
-  font-size: 28px; /* 墛大图标 */
-  margin-right: 16px;
-  background: #f5f5f5;
-  width: 50px; /* 墛大容器 */
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-
-.wallet-detail {
-  display: flex;
-  flex-direction: column;
-}
-
-.wallet-name {
-  font-size: 16px;
-  color: #666;
-}
-
-.wallet-balance {
-  font-size: 18px; /* 墛大余额 */
-  font-weight: bold;
-  color: #333;
-}
-
-/* 卡片通用样式 */
-.card {
-  background: white;
-  border-radius: 16px; /* 墛大圆角 */
-  padding: 32px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  transition: transform 0.3s, box-shadow 0.3s;
-  border: 1px solid #f0f0f0;
-  cursor: pointer;
-}
-
-.card:hover {
-  transform: translateY(-6px); /* 墛大悬停效果 */
-  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-}
-
-.card-header {
+.bill-item {
   display: flex;
   justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.bill-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.bill-category {
+  font-weight: bold;
+}
+
+.bill-desc {
+  font-size: 12px;
+  color: #888;
+}
+
+.bill-amount {
+  font-weight: bold;
+}
+
+.text-expense {
+  color: #f44336;
+}
+
+.text-income {
+  color: #4caf50;
+}
+
+.calendar-card {
+  text-align: center;
+}
+
+.calendar-header {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.calendar-body {
+  display: flex;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 10px;
+  font-size: 24px;
 }
 
-.card-header h4 {
-  margin: 0;
-  font-size: 18px; /* 墛大标题 */
-  color: #333;
+.today-date {
+  font-size: 36px;
+  font-weight: bold;
 }
 
-.more-link {
+.today-day {
+  font-size: 18px;
+  color: #888;
+}
+
+.current-full-date {
+  margin-top: 10px;
   font-size: 14px;
-  color: #999;
+  color: #888;
+}
+
+.action-card {
+  text-align: center;
+}
+
+.btn-add-bill {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-add-bill .icon {
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.yearly-summary {
+  font-size: 14px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 </style>
