@@ -18,7 +18,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   height: 100vh !important;
-  display: flex !important;
+  /* display: flex !important; */
   justify-content: center !important;
   align-items: center !important;
   margin: 0 !important;

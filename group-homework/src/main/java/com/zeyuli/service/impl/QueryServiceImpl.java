@@ -26,9 +26,9 @@ public class QueryServiceImpl implements QueryService {
     /**
      * 获取查询方式
      *
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
      * @author : 李泽聿
      * @since : 2025-11-17 21:33
-     * @return : java.util.Map<java.lang.String,java.lang.Object>
      */
     @Override
     public Map<String, Object> getSearchType() {
@@ -42,18 +42,21 @@ public class QueryServiceImpl implements QueryService {
     /**
      * 查询账单列表,包含
      *
-     * @author : 李泽聿
-     * @since : 2025-11-18 08:29
      * @param vo 包含了查询的日期范围，见 {@link GetBillListOrderBySpecificMethodVo}
      * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-11-18 08:29
      */
     @Override
     public Map<String, Object> getBillList(GetBillListOrderBySpecificMethodVo vo, QueryBillListTypeEnum searchType) {
         BillQueryStrategy billQueryStrategy = BillQueryStrategyFactory.getBillQueryStrategy(searchType.name());
         List<GetBillListBo> getBillListBos = billQueryStrategy.queryBillList(vo);
+        if (getBillListBos == null) {
+            return Response.error(StatusCodeEnum.GET_DATA_FAILED, null);
+        }
         if (getBillListBos.isEmpty()) {
             return Response.success(StatusCodeEnum.SUCCESS, getBillListBos);
         }
-        return Response.error(StatusCodeEnum.DELETE_BILL_FAILED, null);
+        return Response.error(StatusCodeEnum.GET_DATA_FAILED, null);
     }
 }

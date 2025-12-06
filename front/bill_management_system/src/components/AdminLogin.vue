@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios';
+import { sha256 } from '@/util/crypto';
 import han from '@/assets/adminLogin/汉朝.jpg';
 import carthage from '@/assets/adminLogin/迦太基.jpg';
 import qajar from '@/assets/adminLogin/卡扎尔.jpg';
@@ -58,9 +59,12 @@ export default {
       this.loading = true;
       this.error = null;
 
+      // 对密码进行SHA256加密
+      const encryptedPassword = await sha256(this.admin_pwd);
+      
       const loginData = {
         username: this.admin_name,
-        password: this.admin_pwd,
+        password: encryptedPassword,
       };
 
       try {

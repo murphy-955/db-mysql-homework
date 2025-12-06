@@ -23,7 +23,7 @@ POST http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE
 Content-Type: application/json
 
 {
-  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_6tWKi5NUrJSMjQwMjYwNDI2V9JRKi1OLfJLzE0FCldmVibmpSdnpOYBxQvKU8qAYmZJlkZmqUB-akWBkpWhuZmxobmhpbFlLQDdFImUTAAAAA.ko8wsI_HxM1VpsusOwxaqIE3D6YHKNMZgMwgmMGZKbdBmVJjUPwXprNzLIwT7eQqoWKM5gCoS77q01ErG356qg",
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_xWLSQqAMAwA_5Kzhybdoo_wD22T3oRicQHx79bbzMA80I8MC5Ahj0gRLc6peM5SisscGNWqnV10QiHVChMcXfc1bTquH-1I7ZJzqEhQr8P1brBgDN4wR0PvB2I0xBtmAAAA.OIJ_8ZwmVVeAs1UAvX269L4_pfO9Lcq3vrzFuG_izhmY9i9BpHM0dwvuE4RUuPJ_puwYHG9OjkYxhTsDHhn4PQ",
   "page": 1,
   "limit": 10,
   "startDate": "2021-10-10",

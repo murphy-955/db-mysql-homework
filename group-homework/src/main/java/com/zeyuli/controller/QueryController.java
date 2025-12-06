@@ -19,6 +19,8 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("api/query")
+// todo 仅测试时启用
+@CrossOrigin
 public class QueryController {
     @Autowired
     private QueryService queryService;
@@ -30,7 +32,7 @@ public class QueryController {
     }
 
     @PostMapping("getBillList")
-    public Map<String, Object> getBillList(@RequestParam(value = "searchType",required = true,defaultValue = "UNDEFINED") QueryBillListTypeEnum searchType,
+    public Map<String, Object> getBillList(@RequestParam(value = "searchType", required = false, defaultValue = "UNDEFINED") QueryBillListTypeEnum searchType,
                                            @RequestBody GetBillListOrderBySpecificMethodVo vo) {
         return queryService.getBillList(vo, searchType);
     }

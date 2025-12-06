@@ -36,7 +36,6 @@ DROP TABLE IF EXISTS bill_sys."user_account";
 
 
 
-
 CREATE TABLE IF NOT EXISTS bill_sys."user_bill"
 (
     id          SERIAL PRIMARY KEY,
@@ -50,11 +49,11 @@ CREATE TABLE IF NOT EXISTS bill_sys."user_bill"
     deleted     BOOLEAN        NOT NULL DEFAULT FALSE
 );
 
-SELECT *
-FROM bill_sys."user_bill";
-
-SELECT count(*)
-FROM bill_sys."user_bill";
+SELECT id, record_enum, amount, date
+FROM bill_sys.user_bill
+WHERE user_id = '202511271319ac58bdcc4b8681e3e39474d26aff'
+  AND date BETWEEN '2021-10-10' AND '2025-10-11'
+ORDER BY date DESC;
 
 
 DROP TABLE IF EXISTS bill_sys."user_bill";

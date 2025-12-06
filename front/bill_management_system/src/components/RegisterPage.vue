@@ -32,6 +32,7 @@
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import { sha256 } from '@/util/crypto';
 import backgroundImage from '@/assets/register/background.jpg';
 
 const acc_name = ref('');
@@ -55,9 +56,12 @@ const handleRegister = async () => {
   errorMessage.value = '';
 
   try {
+    // 对密码进行SHA256加密
+    const encryptedPassword = await sha256(password.value);
+    
     const response = await axios.post('http://localhost:8080/api/user/register', {
       username: acc_name.value,
-      password: password.value
+      password: encryptedPassword
     });
 
     if (response.data.statusCode === 200) {

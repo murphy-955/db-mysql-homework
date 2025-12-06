@@ -19,6 +19,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("api/bill")
+// todo 仅测试时启用
+@CrossOrigin
 public class BillController {
     @Autowired
     private BillService billService;

@@ -3,54 +3,67 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
-<!--namespace: 命名空间，用于区分不同的mapper-->
 <mapper namespace="com.zeyuli.mappers.QueryBillMapper">
-    <!--声明sql语句-->
-    <!--注意Mapper.xml文件中引用的方法不能重载，否则会报错-->
+
+    <!-- 按日期区间 -->
     <select id="queryBillListOrderByDate" resultType="com.zeyuli.pojo.bo.GetBillListBo">
         SELECT id, record_enum, amount, date
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
-        AND date BETWEEN #{vo.startDate} AND #{vo.endDate}
-        ORDER BY date DESC
-        LIMIT #{vo.page} ,#{vo.limit}
+        AND deleted = FALSE
+        <if test="vo.startDate != null and vo.endDate != null">
+            AND date BETWEEN #{vo.startDate} AND #{vo.endDate}
+        </if>
+        ORDER BY date DESC, id DESC
+        LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>
 
+    <!-- 按账户 -->
     <select id="queryBillListOrderByAccount" resultType="com.zeyuli.pojo.bo.GetBillListBo">
         SELECT id, record_enum, amount, date
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
+        AND deleted = FALSE
         AND account = #{vo.account}
-        ORDER BY date DESC
-        LIMIT #{vo.page} ,#{vo.limit}
+        ORDER BY date DESC, id DESC
+        LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>
 
+    <!-- 按金额区间 -->
     <select id="queryBillListOrderByAmountRange" resultType="com.zeyuli.pojo.bo.GetBillListBo">
         SELECT id, record_enum, amount, date
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
-        AND amount BETWEEN #{vo.startAmount} AND #{vo.endAmount}
-        ORDER BY date DESC
-        LIMIT #{vo.page} ,#{vo.limit}
+        AND deleted = FALSE
+        <if test="vo.startAmount != null and vo.endAmount != null">
+            AND amount BETWEEN #{vo.startAmount} AND #{vo.endAmount}
+        </if>
+        ORDER BY date DESC, id DESC
+        LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>
 
+    <!-- 按收支类型 -->
     <select id="queryBillListOrderByUsageType" resultType="com.zeyuli.pojo.bo.GetBillListBo">
         SELECT id, record_enum, amount, date
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
+        AND deleted = FALSE
         AND record_enum = #{vo.usageEnum}
-        ORDER BY date DESC
-        LIMIT #{vo.page} ,#{vo.limit}
+        ORDER BY date DESC, id DESC
+        LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>
 
+    <!-- 按关键字模糊搜索 -->
     <select id="queryBillListOrderByKeyword" resultType="com.zeyuli.pojo.bo.GetBillListBo">
         SELECT id, record_enum, amount, date
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
-        AND (remarks LIKE '%#{vo.keyword}%')
-        ORDER BY date DESC
-        LIMIT #{vo.page} ,#{vo.limit}
+        AND deleted = FALSE
+        <if test="vo.keyword != null and vo.keyword != ''">
+            AND remarks LIKE '%' || #{vo.keyword} || '%'
+        </if>
+        ORDER BY date DESC, id DESC
+        LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>
-</mapper>
 
+</mapper>

@@ -18,6 +18,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("api/user")
+// todo 仅测试时启用
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;

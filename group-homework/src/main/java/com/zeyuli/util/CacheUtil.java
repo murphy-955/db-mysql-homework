@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import com.zeyuli.config.LocalCacheConfig;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -339,7 +340,11 @@ public class CacheUtil {
     @SuppressWarnings("unchecked")
     @LogOutPut
     public List<GetBillListBo> queryBillListOrderByDateFromRedisCache(String key) {
-        return (List<GetBillListBo>) redisTemplate.opsForValue().get(key);
+        List<GetBillListBo> listBos = (List<GetBillListBo>) redisTemplate.opsForValue().get(key);
+        if (listBos == null) {
+            return new ArrayList<>();
+        }
+        return listBos;
     }
 
     /**

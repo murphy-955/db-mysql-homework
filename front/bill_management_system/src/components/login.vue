@@ -33,6 +33,7 @@
 
 <script>
 import axios from 'axios';
+import { sha256 } from '@/util/crypto';
 import beach from '@/assets/login/beach.jpg';
 import dandelion from '@/assets/login/dandelion.jpg';
 import sunset from '@/assets/login/sunset.jpg';
@@ -60,9 +61,12 @@ export default {
       this.loading = true;
       this.error = null;
 
+      // 对密码进行SHA256加密
+      const encryptedPassword = await sha256(this.password);
+      
       const loginData = {
         username: this.acc_name,
-        password: this.password,
+        password: encryptedPassword,
       };
 
       try {

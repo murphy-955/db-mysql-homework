@@ -18,6 +18,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("api/")
+// todo 仅测试时启用
+@CrossOrigin
 public class AdminController {
     @Autowired
     private AdminService adminService;

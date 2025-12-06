@@ -62,7 +62,7 @@ public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
         // 1,2. 命中一级,二级缓存
         List<GetBillListBo> billList;
         billList = cacheUtil.getBillListOrderBySpecialMethod(key);
-        if (billList != null) {
+        if (!billList.isEmpty()) {
             return billList;
         }
 
