@@ -40,4 +40,6 @@ public class AddBillVo {
     private String remarks;
 
     private String userId;
+
+    private Long id;
 }

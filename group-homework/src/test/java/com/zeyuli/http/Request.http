@@ -29,3 +29,62 @@ Content-Type: application/json
   "startDate": "2021-10-10",
   "endDate": "2021-10-11"
 }
+
+###
+POST http://localhost:8080/api/user/register
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+}
+
+###
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+  "username": "user3",
+  "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+}
+
+###
+POST http://localhost:8080/api/user/initAccountInfo
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_xWLSQqAMAwA_5KzhyRtU-sj_EMk6U0oiguIf7feZgbmgf1YYAJGTkScJYRKpjlwiZG0qhJyQExSWGo2GODYfZt19X79SD21y86uZuLJu_vdYKIskccyYnk_zDDYu2YAAAA.89cZi4EluO6jfUu5PO_CDb6qIp6gf6tNDvzGVWiCUP62Yci3C7zFpSfGC1ANDq58zqbcuy7tIvhZXI7e4pdZnQ",
+  "account": "1234567890",
+  "balance": 100000,
+  "description": "建行卡"
+}
+
+###
+POST http://localhost:8080/api/bill/addBill
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_xWLSQqAMAwA_5KzhyRtU-sj_EMk6U0oiguIf7feZgbmgf1YYAJGTkScJYRKpjlwiZG0qhJyQExSWGo2GODYfZt19X79SD21y86uZuLJu_vdYKIskccyYnk_zDDYu2YAAAA.89cZi4EluO6jfUu5PO_CDb6qIp6gf6tNDvzGVWiCUP62Yci3C7zFpSfGC1ANDq58zqbcuy7tIvhZXI7e4pdZnQ",
+  "recordEnum": "INCOME",
+  "amount": 1000,
+  "account": "1234567890",
+  "type": "FOOD",
+  "date": "2021-10-21",
+  "remarks": "吃了顿美食",
+  "userId": "",
+  "id": 0
+}
+
+###
+GET http://localhost:8080/api/bill/getRecordType
+
+###
+POST http://localhost:8080/api/bill/getBillList?page=1&limit=10&lastId=0
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_xWLSQqAMAwA_5KzhyRtU-sj_EMk6U0oiguIf7feZgbmgf1YYAJGTkScJYRKpjlwiZG0qhJyQExSWGo2GODYfZt19X79SD21y86uZuLJu_vdYKIskccyYnk_zDDYu2YAAAA.89cZi4EluO6jfUu5PO_CDb6qIp6gf6tNDvzGVWiCUP62Yci3C7zFpSfGC1ANDq58zqbcuy7tIvhZXI7e4pdZnQ"
+}
+
+###
+GET http://localhost:8080/api/bill/getTypeList

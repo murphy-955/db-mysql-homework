@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,18 +68,11 @@ public class BillServiceImpl implements BillService {
     public Map<String, Object> addBill(AddBillVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         String key = "user:" + userId.substring(0, 16) + "account:" + vo.getAccount();
-        // 支出时检察余额是否足够
-        if (vo.getRecordEnum().equals(RecordEnum.EXPENDITURE)) {
-            if (!cacheUtil.checkBalance(key, vo.getAmount())) {
-                // 返回余额不足
-                return Response.error(StatusCodeEnum.BALANCE_NOT_ENOUGH);
-            }
-        }
         // 异步执行批量刷盘检查
         asynchronousBrushing(vo, userId);
         // 更新Redis中的余额
         cacheUtil.updateBalance(key, vo);
-        return Response.error(StatusCodeEnum.INSERT_BILL_FAILED);
+        return Response.success(new ArrayList<>());
     }
 
 
@@ -112,7 +106,8 @@ public class BillServiceImpl implements BillService {
         }
 
         // 3. 从数据库中获取账单列表
-        List<GetBillListBo> billList = billMapper.getBillList(page, limit, userId, lastId, lastDate);
+        Long offset = (long) (page - 1) * limit;
+        List<GetBillListBo> billList = billMapper.getBillList(limit, offset, userId, lastId, lastDate);
         // 防止缓存击穿
         if (billList == null) {
             cacheUtil.cacheNullKey(userId, page, limit);
@@ -186,17 +181,9 @@ public class BillServiceImpl implements BillService {
     @CheckUserToken
     public Map<String, Object> addBillList(AddBillListVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
-        List<BillPo> res = billMapper.addBillList(vo, userId);
-        if (res == null) {
+        int res = billMapper.addBillList(vo, userId);
+        if (res == 0) {
             return Response.error(StatusCodeEnum.GET_DATA_FAILED);
-        }
-        for (BillPo i : res) {
-            if (i.getDate().isBefore(LocalDate.now().plusDays(7))) {
-                // 异步写入本地缓存和redis缓存，并设置随机过期时间
-                cacheUtil.asyncCacheHotBillToLocalCache(i);
-            }
-            // 异步写入redis缓存
-            cacheUtil.asyncCacheBillToRedis(i);
         }
         return Response.success(StatusCodeEnum.SUCCESS, null);
     }
@@ -221,14 +208,20 @@ public class BillServiceImpl implements BillService {
      * @since : 2025-11-22 14:12
      *
      */
+    // todo synchronized 会导致addBill方法的事务失效
     @Async
     protected synchronized void asynchronousBrushing(AddBillVo vo, String userId) {
-        BillPo res = billMapper.addBill(vo, userId);
+        Long id = billMapper.addBill(vo, userId);
+        BillPo res = billMapper.getBillDetail(id, userId);
+        int insertRes = 0;
         if (vo.getRecordEnum() == RecordEnum.INCOME) {
-            int insertRes = billMapper.addAccountBalance(userId, vo.getAmount());
+            insertRes = billMapper.addAccountBalance(userId, vo.getAmount());
         }
         if (vo.getRecordEnum() == RecordEnum.EXPENDITURE) {
-            int insertRes = billMapper.modifyAccountBalance(userId, vo.getAmount());
+            insertRes = billMapper.modifyAccountBalance(userId, vo.getAmount());
+        }
+        if (insertRes == 0) {
+            throw new RuntimeException("更新用户余额失败，用户ID：" + userId + "，账单ID：" + id);
         }
         if (res != null) {
             // 我们认为离当前天数7天内的账单是热点数据，需要进行预热

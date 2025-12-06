@@ -9,12 +9,11 @@
     <!--声明sql语句-->
     <!--注意Mapper.xml文件中引用的方法不能重载，否则会报错-->
 
-    <insert id="addBill" parameterType="map">
+    <insert id="addBill" useGeneratedKeys="true" keyProperty="vo.id">
         INSERT INTO bill_sys.user_bill
         (user_id, record_enum, amount, account, type, date, remarks)
         VALUES
         (#{userId}, #{vo.recordEnum}, #{vo.amount}, #{vo.account}, #{vo.type}, #{vo.date}, #{vo.remarks})
-        RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
     </insert>
 
     <select id="getBillList" resultType="com.zeyuli.pojo.bo.GetBillListBo">
@@ -23,11 +22,11 @@
         WHERE user_id = #{userId}
         AND deleted = FALSE
         AND (
-            date &lt; #{lastDate}
-            OR date = #{lastDate} AND id &lt; #{lastId}
+        date &lt; #{lastDate} OR date = #{lastDate}
+        AND id > #{lastId} OR id = 0
         )
         ORDER BY date DESC, id DESC
-        LIMIT #{page}, #{limit}
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="getBillDetail" resultType="com.zeyuli.pojo.po.BillPo">
@@ -64,11 +63,11 @@
     <update id="modifyBill" parameterType="map">
         UPDATE bill_sys.user_bill
         SET record_enum = #{vo.recordEnum},
-            amount = #{vo.amount},
-            account = #{vo.account},
-            type = #{vo.type},
-            date = #{vo.date},
-            remarks = #{vo.remarks}
+        amount = #{vo.amount},
+        account = #{vo.account},
+        type = #{vo.type},
+        date = #{vo.date},
+        remarks = #{vo.remarks}
         WHERE id = #{id}
         AND user_id = #{userId}
         RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
@@ -77,12 +76,23 @@
     <insert id="addBillList" parameterType="map">
         INSERT INTO bill_sys.user_bill
         (user_id, record_enum, amount, account, type, date, remarks)
-        <foreach collection="voList" item="vo" separator=";">
-            VALUES
+        VALUES
+        <foreach collection="vo.billList" item="vo" separator=",">
             (#{vo.userId}, #{vo.recordEnum}, #{vo.amount}, #{vo.account}, #{vo.type}, #{vo.date}, #{vo.remarks})
         </foreach>
-        RETURNING id, user_id AS userId, record_enum AS recordEnum, amount, account, type, date, remarks
     </insert>
+
+    <update id="addAccountBalance">
+        UPDATE bill_sys."user_account"
+        SET balance = balance + #{amount}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="modifyAccountBalance">
+        UPDATE bill_sys."user_account"
+        SET balance = balance - #{amount}
+        WHERE user_id = #{userId}
+    </update>
 
 </mapper>
 

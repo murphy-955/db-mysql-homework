@@ -13,6 +13,12 @@
         VALUES (#{id},#{username},#{password})
     </insert>
 
+    <select id="selectUser" resultType="com.zeyuli.pojo.po.UserPo">
+        SELECT user_id, username, password, whether_it_is_disabled_or_not
+        FROM bill_sys.user
+        WHERE user_id = #{userId}
+    </select>
+
     <select id="login" resultType="com.zeyuli.pojo.po.UserPo">
         SELECT user_id, username, password
         FROM bill_sys.user
@@ -25,16 +31,11 @@
         VALUES (#{userId},#{account},#{initBalance},#{description})
     </insert>
 
-    <update id="addAccountBalance">
-        UPDATE bill_sys."user_account"
-        SET balance = balance + #{amount}
-        WHERE user_id = #{userId}
-    </update>
 
-    <update id="modifyAccountBalance">
-        UPDATE bill_sys."user_account"
-        SET balance = balance - #{amount}
-        WHERE user_id = #{userId}
-    </update>
+
+    <select id="selectAllUsers" resultType="com.zeyuli.pojo.po.UserPo">
+        SELECT user_id, username, password, whether_it_is_disabled_or_not
+        FROM bill_sys.user
+    </select>
 </mapper>
 

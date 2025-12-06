@@ -1,9 +1,18 @@
 spring:
   datasource:
-    url: jdbc:opengauss://139.9.131.107:26000/mydb
+    url: jdbc:opengauss://139.9.131.107:26000/mydb?allowMultiQueries=true&socketTimeout=15000&connectTimeout=10000
     username: zeyu
     password: '102301237lzy.'
     driver-class-name: org.opengauss.Driver
+    hikari:
+      # 比服务端 idle_session_timeout 短（默认 10min 可设 8min）
+      idle-timeout: 480000          # 8min
+      max-lifetime: 540000         # 9min
+      validation-timeout: 3000
+      connection-test-query: "SELECT 1"
+      # 每次拿出连接前验证
+      test-while-idle: true
+      test-on-borrow: true
   jackson:
     default-property-inclusion: non_null
   data:
@@ -21,16 +30,16 @@ spring:
     type: caffeine
     caffeine:
       spec: maximumSize=1000,expireAfterWrite=300s
-  threads:
-    virtual:
-      enabled: true # tomcat启用虚拟线程
+  #threads:
+    #virtual:
+      #enabled: true # tomcat启用虚拟线程
 
 
 mybatis:
   configuration:
     auto-mapping-behavior: full
     map-underscore-to-camel-case: true
-  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   type-aliases-package: com.zeyuli.pojo
   mapper-locations: classpath:/mappers/*.xml
 
@@ -54,4 +63,10 @@ cache:
       # 用户的key后缀
       user:
         login: "user:token:"
-    nullData : "EMPTY"
+    nullData: "EMPTY"
+
+#logging:
+#  level:
+#    root: warn
+#    com.zeyuli.test: warn        # 你自己的测试包
+#    org.springframework.jdbc: warn
