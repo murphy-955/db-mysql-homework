@@ -192,7 +192,7 @@ export default {
           limit: 1000 // 假设足够全年数据
         };
 
-        const response = await axios.post('http://localhost:8080/api/query/getBillList', requestBody);
+        const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', requestBody);
         this.yearlyBills = response.data.data || [];
         this.calculateYearlyStats();
       } catch (error) {

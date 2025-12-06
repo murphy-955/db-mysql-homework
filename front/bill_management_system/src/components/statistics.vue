@@ -235,7 +235,7 @@ export default {
 
       try {
         const token = localStorage.getItem('token');
-        const requestBody = {
+        const currentRequestBody = {
           token: token,
           startDate: this.getDateRangeStart(),
           endDate: this.getDateRangeEnd(),
@@ -243,19 +243,35 @@ export default {
           limit: 10000 // 增加limit以获取所有数据
         };
 
-        console.log('请求统计数据:', requestBody); // 调试日志
-        const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', requestBody);
-        console.log('接收到的数据:', response.data); // 调试日志
+        console.log('请求当前期统计数据:', currentRequestBody); // 调试日志
+        const currentResponse = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', currentRequestBody);
+        console.log('接收到的当前期数据:', currentResponse.data); // 调试日志
 
-        this.bills = response.data.data || [];
-        console.log('账单数量:', this.bills.length); // 调试日志
+        this.bills = currentResponse.data.data || [];
+        console.log('当前期账单数量:', this.bills.length); // 调试日志
 
-        this.calculateStatistics();
+        // 获取上期数据用于计算趋势
+        const previousRequestBody = {
+          token: token,
+          startDate: this.getPreviousPeriodStart(),
+          endDate: this.getPreviousPeriodEnd(),
+          page: 1,
+          limit: 10000
+        };
+
+        console.log('请求上期统计数据:', previousRequestBody); // 调试日志
+        const previousResponse = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', previousRequestBody);
+        console.log('接收到的上期数据:', previousResponse.data); // 调试日志
+
+        const previousBills = previousResponse.data.data || [];
+        console.log('上期账单数量:', previousBills.length); // 调试日志
+
+        this.calculateStatistics(previousBills);
         this.updateTrendChart();
       } catch (error) {
         console.error('加载统计数据失败:', error);
         this.bills = [];
-        this.calculateStatistics();
+        this.calculateStatistics([]);
         this.updateTrendChart();
       } finally {
         this.loading = false;
@@ -289,7 +305,42 @@ export default {
           return today.toISOString().split('T')[0];
       }
     },
-    calculateStatistics() {
+    getPreviousPeriodStart() {
+      const today = new Date();
+      const periodLength = this.getPeriodLengthInDays();
+      const endDate = new Date(this.getDateRangeStart());
+      endDate.setDate(endDate.getDate() - 1); // 上期结束日期为当前期开始前一天
+      const startDate = new Date(endDate);
+      startDate.setDate(endDate.getDate() - periodLength + 1);
+      return startDate.toISOString().split('T')[0];
+    },
+    getPreviousPeriodEnd() {
+      const startDate = new Date(this.getDateRangeStart());
+      startDate.setDate(startDate.getDate() - 1);
+      return startDate.toISOString().split('T')[0];
+    },
+    getPeriodLengthInDays() {
+      switch (this.dateRange) {
+        case 'week':
+          return 7;
+        case 'month':
+          return 30;
+        case 'quarter':
+          return 90;
+        case 'halfYear':
+          return 180;
+        case 'year':
+          return 365;
+        case 'custom':
+          // 对于自定义，计算天数差
+          const start = new Date(this.startDate);
+          const end = new Date(this.endDate);
+          return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+        default:
+          return 30;
+      }
+    },
+    calculateStatistics(previousBills = []) {
       let totalExpense = 0;
       let totalIncome = 0;
       let expenseCount = 0;
@@ -321,6 +372,21 @@ export default {
         }
       });
 
+      // 计算上期统计
+      let previousExpense = 0;
+      let previousIncome = 0;
+      previousBills.forEach(bill => {
+        if (bill.type === '支出') {
+          previousExpense += bill.amount;
+        } else if (bill.type === '收入') {
+          previousIncome += bill.amount;
+        }
+      });
+
+      // 计算趋势
+      const expenseTrend = previousExpense > 0 ? ((totalExpense - previousExpense) / previousExpense * 100) : 0;
+      const incomeTrend = previousIncome > 0 ? ((totalIncome - previousIncome) / previousIncome * 100) : 0;
+
       this.statistics = {
         totalExpense,
         totalIncome,
@@ -328,8 +394,8 @@ export default {
         expenseCount,
         incomeCount,
         totalCount: expenseCount + incomeCount,
-        expenseTrend: 0, // 暂时设为0，可计算环比
-        incomeTrend: 0
+        expenseTrend: parseFloat(expenseTrend.toFixed(1)),
+        incomeTrend: parseFloat(incomeTrend.toFixed(1))
       };
 
       // 计算支出分类
