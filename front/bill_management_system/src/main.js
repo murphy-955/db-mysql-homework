@@ -6,7 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginPage from './components/Login.vue';
 import DashboardPage from './components/Dashboard.vue';
 import BillDashboardPage from './components/BillDashboard.vue';
-import StatisticsPage from './components/Statistics.vue';
+import StatisticsPage from './components/ShowStatistics.vue';
 import AdminLoginPage from './components/AdminLogin.vue';
 import AdminDashboardPage from './components/AdminDashboard.vue';
 import RegisterPage from './components/RegisterPage.vue';

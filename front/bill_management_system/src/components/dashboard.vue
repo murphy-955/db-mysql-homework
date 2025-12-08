@@ -16,29 +16,26 @@
           </div>
         </div>
 
-        <!-- 新增：7:3 分栏布局区域 -->
         <div class="dashboard-grid">
 
-          <!-- 左侧：财务概览 (70%) -->
           <div class="left-panel">
 
-            <!-- 1. 顶部数据卡片 -->
+            <!-- 顶部数据卡片 -->
             <div class="stats-cards">
               <div class="card stat-item income">
                 <div class="stat-label">本月收入</div>
-                <div class="stat-value">¥ {{ totalIncome.toFixed(2) }}</div>
+                <div class="stat-value">¥ {{ statistics.totalIncome.toFixed(2) }}</div>
               </div>
               <div class="card stat-item expense">
                 <div class="stat-label">本月支出</div>
-                <div class="stat-value">¥ {{ totalExpense.toFixed(2) }}</div>
+                <div class="stat-value">¥ {{ statistics.totalExpense.toFixed(2) }}</div>
               </div>
               <div class="card stat-item balance">
                 <div class="stat-label">结余</div>
-                <div class="stat-value">¥ {{ (totalIncome - totalExpense).toFixed(2) }}</div>
+                <div class="stat-value">¥ {{ (statistics.totalIncome - statistics.totalExpense).toFixed(2) }}</div>
               </div>
             </div>
 
-            <!-- 2. 趋势图表 (使用 CSS 模拟简单的柱状图) -->
             <div class="card chart-section">
               <div class="card-header">
                 <h4>近5日收支趋势</h4>
@@ -65,11 +62,11 @@
               <ul class="bill-list">
                 <li v-for="bill in recentBills" :key="bill.id" class="bill-item">
                   <div class="bill-info">
-                    <span class="bill-category">{{ bill.category }}</span>
-                    <span class="bill-desc">{{ bill.description }}</span>
+                    <span class="bill-category">{{ bill.type }}</span>
+                    <span class="bill-desc">{{ bill.remarks }}</span>
                   </div>
-                  <div class="bill-amount" :class="bill.type === '支出' ? 'text-expense' : 'text-income'">
-                    {{ bill.type === '支出' ? '-' : '+' }}{{ bill.amount }}
+                  <div class="bill-amount" :class="bill.recordEnum === 'expenditure' ? 'text-expense' : 'text-income'">
+                    {{ bill.recordEnum === 'expenditure' ? '-' : '+' }}{{ bill.amount }}
                   </div>
                 </li>
               </ul>
@@ -98,202 +95,131 @@
   </div>
 </template>
 
-<script>
-import axios from 'axios';
+<script setup>
 import quotesData from '@/assets/quotes/quote_zh.json';
 import quoteBanner from '@/assets/quotes/quote_banner.png';
 import Sidebar from './Sidebar.vue';
 import BillAddWindow from './BillAddWindow.vue';
 import Calendar from './Calendar.vue';
+import { ref, onMounted, computed } from 'vue';
+import { useStatistics } from '@/composables/useStatistics';
 
-export default {
-  name: 'DashboardPage',
-  components: {
-    Sidebar,
-    BillAddWindow,
-    Calendar
-  },
-  data() {
-    return {
-      quotes: quotesData.quotes,
-      currentQuote: "",
-      selectedQuote: {
-        text: "",
-        source: ""
-      },
-      bannerUrl: quoteBanner,
-      chartData: [],
-      totalExpense: 0,
-      totalIncome: 0,
-      loading: false,
-      bills: [],
-      showAddModal: false,
-      userName: localStorage.getItem('userName') || '用户',
-      currentDate: new Date().toLocaleDateString(),
-      categoryStats: [],
-      yearlyExpense: 0,
-      yearlyIncome: 0,
-      yearlyChartData: [],
-      recentBills: [],
-      yearlyBills: [],
-      selectedDate: new Date()
-    };
-  },
-  mounted() {
-    // 随机选择一条名言
-    const quote = this.quotes[Math.floor(Math.random() * this.quotes.length)];
-    const text = quote.text;
-    const periodIndex = text.lastIndexOf('。');
-    if (periodIndex !== -1) {
-      const spaces = ' '.repeat(periodIndex);
-      this.currentQuote = text + '\n' + spaces + '—— ' + quote.source;
-    } else {
-      this.currentQuote = text + '\n—— ' + quote.source;
+// ==================== 使用共享的统计逻辑 ====================
+const { loading, statistics, allBills, loadStatistics } = useStatistics();
+
+// ==================== Dashboard 特有的响应式数据 ====================
+const quotes = quotesData.quotes;
+const selectedQuote = ref({ text: "", source: "" });
+const bannerUrl = quoteBanner;
+const showAddModal = ref(false);
+const userName = localStorage.getItem('userName') || '用户';
+const currentDate = new Date().toLocaleDateString();
+const selectedDate = ref(new Date());
+
+// ==================== 计算属性 ====================
+// 近5日趋势数据（从 allBills 计算）
+const chartData = computed(() => {
+  if (allBills.value.length === 0) return [];
+
+  const dailyData = {};
+  allBills.value.forEach(bill => {
+    const date = bill.date.split(' ')[0];
+    if (!dailyData[date]) {
+      dailyData[date] = { expense: 0, income: 0 };
     }
-    this.selectedQuote.text = quote.text;
-    this.selectedQuote.source = quote.source;
 
-    // 加载财务概览数据
-    this.loadOverviewData();
-    this.loadYearlyData();
-  },
-  methods: {
-    async loadOverviewData() {
-      this.loading = true;
-
-      try {
-        const token = localStorage.getItem('token');
-        const requestBody = {
-          token: token,
-          startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-          endDate: new Date().toISOString().split('T')[0],
-          page: 1,
-          limit: 100
-        };
-
-        const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', requestBody);
-        this.bills = response.data.data || [];
-        this.calculateStats();
-      } catch (error) {
-        console.error('加载账单数据失败:', error);
-      } finally {
-        this.loading = false;
-      }
-    },
-    async loadYearlyData() {
-      try {
-        const token = localStorage.getItem('token');
-        const requestBody = {
-          token: token,
-          searchType: 'DATE',
-          startDate: new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0],
-          endDate: new Date().toISOString().split('T')[0],
-          page: 1,
-          limit: 1000 // 假设足够全年数据
-        };
-
-        const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=DATE_RANGE', requestBody);
-        this.yearlyBills = response.data.data || [];
-        this.calculateYearlyStats();
-      } catch (error) {
-        console.error('加载年度账单数据失败:', error);
-      }
-    },
-    moveToStatistics() {
-      this.$router.push({ name: 'statistics' });
-    },
-    calculateYearlyStats() {
-      let totalExpense = 0;
-      let totalIncome = 0;
-      const monthlyData = {};
-
-      this.yearlyBills.forEach(bill => {
-        const month = new Date(bill.date).getMonth();
-        if (!monthlyData[month]) {
-          monthlyData[month] = { expense: 0, income: 0 };
-        }
-        if (bill.type === '支出') {
-          monthlyData[month].expense += bill.amount;
-          totalExpense += bill.amount;
-        } else if (bill.type === '收入') {
-          monthlyData[month].income += bill.amount;
-          totalIncome += bill.amount;
-        }
-      });
-
-      this.yearlyExpense = totalExpense;
-      this.yearlyIncome = totalIncome;
-
-      this.yearlyChartData = Array.from({ length: 12 }, (_, i) => monthlyData[i] || { expense: 0, income: 0 });
-    },
-    calculateStats() {
-      let totalExpense = 0;
-      let totalIncome = 0;
-      const dailyData = {};
-      let categoryMap = {};
-
-      this.bills.forEach(bill => {
-        const date = bill.date.split(' ')[0];
-        if (!dailyData[date]) {
-          dailyData[date] = { expense: 0, income: 0 };
-        }
-        if (bill.type === '支出') {
-          dailyData[date].expense += bill.amount;
-          totalExpense += bill.amount;
-
-          const category = bill.category || '其他';
-          if (!categoryMap[category]) categoryMap[category] = 0;
-          categoryMap[category] += bill.amount;
-        } else if (bill.type === '收入') {
-          dailyData[date].income += bill.amount;
-          totalIncome += bill.amount;
-        }
-      });
-
-      this.totalExpense = totalExpense;
-      this.totalIncome = totalIncome;
-
-      // 取最近5天的数据
-      const dates = Object.keys(dailyData).sort().slice(-5);
-      this.chartData = dates.map(date => ({
-        date: date,
-        ...dailyData[date]
-      }));
-
-      // 计算类别统计
-      this.categoryStats = Object.entries(categoryMap).map(([category, amount]) => ({
-        category,
-        amount,
-        percentage: this.totalExpense > 0 ? (amount / this.totalExpense * 100).toFixed(1) : 0
-      })).sort((a, b) => b.amount - a.amount);
-
-      // 计算最近账单
-      this.recentBills = this.bills.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-    },
-    getBarHeight(value) {
-      if (this.chartData.length === 0) return '0%';
-      const maxValue = Math.max(...this.chartData.flatMap(item => [item.expense, item.income]));
-      if (maxValue === 0) return '0%';
-      return `${(value / maxValue) * 100}%`;
-    },
-    getYearlyBarHeight(value) {
-      if (this.yearlyChartData.length === 0) return '0%';
-      const maxValue = Math.max(...this.yearlyChartData.flatMap(item => [item.expense, item.income]));
-      return `${(value / maxValue) * 100}%`;
-    },
-    openAddModal() {
-      this.showAddModal = true;
-    },
-    closeAddModal() {
-      this.showAddModal = false;
-    },
-    handleAddSuccess() {
-      this.closeAddModal();
-      // 刷新财务概览数据
-      this.loadOverviewData();
+    if (bill.recordEnum === 'EXPENDITURE') {
+      dailyData[date].expense += bill.amount;
+    } else if (bill.recordEnum === 'INCOME') {
+      dailyData[date].income += bill.amount;
     }
-  }
+  });
+
+  // 取最近5天的数据
+  const dates = Object.keys(dailyData).sort().slice(-5);
+  return dates.map(date => ({
+    date: date,
+    ...dailyData[date]
+  }));
+});
+
+// 最近账单（最近5笔）
+const recentBills = computed(() => {
+  return [...allBills.value].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+});
+
+// ==================== 业务逻辑方法 ====================
+
+/**
+ * 计算柱状图高度
+ */
+const getBarHeight = (value) => {
+  if (chartData.value.length === 0) return '0%';
+  const maxValue = Math.max(...chartData.value.flatMap(item => [item.expense, item.income]));
+  if (maxValue === 0) return '0%';
+  return `${(value / maxValue) * 100}%`;
 };
+
+/**
+ * 跳转到统计页面
+ */
+const moveToStatistics = () => {
+  window.location.href = '/statistics';
+};
+
+/**
+ * 打开添加账单弹窗
+ */
+const openAddModal = () => {
+  showAddModal.value = true;
+};
+
+/**
+ * 关闭添加账单弹窗
+ */
+const closeAddModal = () => {
+  showAddModal.value = false;
+};
+
+/**
+ * 账单添加成功后的回调
+ */
+const handleAddSuccess = () => {
+  closeAddModal();
+  loadOverviewData();
+};
+
+/**
+ * 日历日期选择回调
+ */
+const handleDateSelected = (date) => {
+  selectedDate.value = date;
+  console.log('选中日期:', date);
+};
+
+/**
+ * 加载本月财务概览数据
+ */
+const loadOverviewData = () => {
+  // 获取本月的日期范围
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const endDate = now.toISOString().split('T')[0];
+
+  // 调用共享的 loadStatistics 方法，传入自定义日期
+  loadStatistics('month', startDate, endDate);
+};
+
+// ==================== 生命周期 ====================
+onMounted(() => {
+  // 随机选择一条名言
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  selectedQuote.value.text = quote.text;
+  selectedQuote.value.source = quote.source;
+
+  // 加载财务概览数据（调用共享逻辑）
+  loadOverviewData();
+});
 </script>
 
 <style scoped>
