@@ -94,5 +94,14 @@
         WHERE user_id = #{userId}
     </update>
 
+    <select id="getReport"
+            resultType="com.zeyuli.pojo.po.BillPo">
+        SELECT id, user_id, record_enum, amount, account, type, date, remarks
+        FROM bill_sys.user_bill
+        WHERE user_id = #{userId}
+        AND date BETWEEN #{startDate} AND #{endDate}
+        AND deleted = FALSE
+    </select>
+
 </mapper>
 

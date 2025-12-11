@@ -180,7 +180,7 @@ export function useStatistics() {
 
       while (hasMore) {
         const billsResponse = await axios.post(
-          `/api/query/getBillList?searchType=DATE&page=${page}&limit=${limit}`,
+          `/api/query/getBillList?searchType=DATE_RANGE&page=${page}&limit=${limit}`,
           {
             token,
             page,

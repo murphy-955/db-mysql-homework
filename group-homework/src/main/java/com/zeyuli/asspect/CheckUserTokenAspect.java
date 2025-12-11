@@ -9,6 +9,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,12 +45,15 @@ public class CheckUserTokenAspect {
     @Value("${jwt.token.tokenExpiration}")
     private long tokenExpiration;
 
+    private static final Logger log = LoggerFactory.getLogger(CheckUserTokenAspect.class);
+
     @Pointcut("@annotation(com.zeyuli.annotations.CheckUserToken)")
     public void markedCheckUserToken() {
     }
 
     @Before("markedCheckUserToken()")
     public void checkUserToken(JoinPoint jp) {
+        long start = System.nanoTime();
         String token = JwtUtil.getToken(jp);
         // 校验token是否过期
         if (jwtUtil.isExpiration(token)) {
@@ -60,6 +65,7 @@ public class CheckUserTokenAspect {
                 .concat(userBaseKey);
         String redisToken = (String) redisTemplate.opsForValue().get(key);
         if (redisToken != null && redisToken.equals(token)) {
+            log.info("token校验命中缓存，耗时:{}", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
             return;
         }
         UserPo res = userMapper.selectUser(userInfo[0]);
@@ -67,9 +73,9 @@ public class CheckUserTokenAspect {
         if (userInfo[1].equals(res.getUsername())
                 && userInfo[2].equals(hash)) {
             redisTemplate.opsForValue().set(key, token, tokenExpiration, TimeUnit.HOURS);
+            log.info("token校验，未命中缓存，耗时:{}", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
             return;
         }
-
         throw new UserTokenException("用户token校验失败");
     }
 

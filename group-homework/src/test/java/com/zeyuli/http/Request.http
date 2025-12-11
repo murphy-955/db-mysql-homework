@@ -88,3 +88,13 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/bill/getTypeList
+
+###
+POST http://localhost:8080/api/query/getReport
+Content-Type: application/json
+
+{
+    "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_xWLQQ6AIAzA_rKzB7fBQB_hH4DNm4mRoCbGv4u3tkkfqC3DDDSSR6SAjFMqPmYtxeUoEY2NJxeckqR1hQFatWNJm_XrR-5pv_TsqirmrbvdO8wYxDMLk3s_4oRnJWYAAAA.z45FS1n-ERmaZ20mcIpvni7BB8fGbTO9cxyiqSMasFi58RxEpysHx4aJE-gZynipxqQfFuUjik2YdPQKznsfrw",
+    "startDate": "2025-10-10",
+    "endDate": "2025-10-10"
+}

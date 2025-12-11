@@ -5,6 +5,7 @@ import com.zeyuli.pojo.bo.GetBillListBo;
 import com.zeyuli.pojo.po.BillPo;
 import com.zeyuli.pojo.vo.AddBillListVo;
 import com.zeyuli.pojo.vo.AddBillVo;
+import com.zeyuli.pojo.vo.GetReportVo;
 import com.zeyuli.pojo.vo.ModifyBillVo;
 import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,14 +23,14 @@ import java.util.List;
 @Mapper
 public interface BillMapper {
     Long addBill(@Param("vo") AddBillVo vo,
-                   @Param("userId") String userId);
+                 @Param("userId") String userId);
 
     List<GetBillListBo> getBillList(@Param("limit") int limit,
                                     @Param("offset") Long offset,
                                     @Param("userId") String userId,
                                     @Param("lastId") Long lastId,
                                     @Param("lastDate") LocalDate lastDate
-                                    );
+    );
 
     BillPo getBillDetail(@Param("id") Long id,
                          @Param("userId") String userId);
@@ -48,10 +49,12 @@ public interface BillMapper {
                       @Param("userId") String userId);
 
     int addBillList(@Param("vo") AddBillListVo vo,
-                       @Param("userId") String userId);
+                    @Param("userId") String userId);
 
     int addAccountBalance(String userId,
                           @NotNull(message = "金额不能为空") Double amount);
 
     int modifyAccountBalance(String userId, @NotNull(message = "金额不能为空") Double amount);
+
+    List<BillPo> getReport(LocalDate startDate, LocalDate endDate, String userId);
 }

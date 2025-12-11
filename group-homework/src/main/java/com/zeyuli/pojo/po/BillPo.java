@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Data
 public class BillPo {
     // 自增主键
-    private int id;
+    private Long id;
     // 用户id
     private String userId;
     // 花销方式枚举
@@ -32,4 +32,6 @@ public class BillPo {
     private LocalDate date;
     // 备注
     private String remarks;
+    // 是否删除
+    private boolean deleted;
 }

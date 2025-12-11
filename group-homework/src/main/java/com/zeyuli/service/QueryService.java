@@ -3,6 +3,7 @@ package com.zeyuli.service;
 
 import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
+import com.zeyuli.pojo.vo.GetReportVo;
 
 import java.util.Map;
 
@@ -17,6 +18,8 @@ public interface QueryService {
     Map<String, Object> getSearchType();
 
     Map<String, Object> getBillList(GetBillListOrderBySpecificMethodVo vo, QueryBillListTypeEnum searchType);
+
+    Map<String, Object> getReport(GetReportVo vo);
 }
 
 

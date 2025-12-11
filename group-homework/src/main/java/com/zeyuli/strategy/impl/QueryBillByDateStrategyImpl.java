@@ -9,11 +9,14 @@ import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.strategy.BillQueryStrategy;
 import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 根据<b>日期范围</b>查询账单信息的实现类
@@ -32,9 +35,10 @@ public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
     @Autowired
     private QueryBillMapper queryBillMapper;
 
-
     @Value("${cache.baseKey.billList}")
     private String baseCacheBillListKey;
+
+    private static final Logger log = LoggerFactory.getLogger(QueryBillByDateStrategyImpl.class);
 
     /**
      * 先读缓存，缓存中没有再查询数据库，如果数据库中也没有数据，则返回空列表，并缓存空值
@@ -47,22 +51,24 @@ public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
     @Override
     @CheckUserToken
     public List<GetBillListBo> queryBillList(GetBillListOrderBySpecificMethodVo vo) {
+        long start = System.nanoTime();
         String type = getSearchType();
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         // 缓存key
         // 格式：bill:list:id（前16位）:DATE_RANGE:startDate:endDate
-        String key = String.format(baseCacheBillListKey,
+        String key = String.format("%s:%s:%s:%s:%s:%d:%d",
+                baseCacheBillListKey,
                 userId.substring(0, 16),
                 type,
                 vo.getEndDate().replace("-", ""),
                 vo.getStartDate().replace("-", ""),
                 vo.getPage(),
-                vo.getLimit()
-        );
-        // 1,2. 命中一级,二级缓存
+                vo.getLimit());// 1,2. 命中一级,二级缓存
         List<GetBillListBo> billList;
         billList = cacheUtil.getBillListOrderBySpecialMethod(key);
         if (!billList.isEmpty()) {
+            long cacheTime = System.nanoTime() - start;
+            log.info("命中缓存，耗时：{}ms", TimeUnit.NANOSECONDS.toMillis(cacheTime));
             return billList;
         }
 
@@ -74,6 +80,9 @@ public class QueryBillByDateStrategyImpl implements BillQueryStrategy {
         }
         // 4. 缓存空值
         cacheUtil.asyncCacheNullKey(key);
+        System.out.println("未命中缓存，从数据库中查询");
+        long dbTime = System.nanoTime() - start;
+        log.info("未命中缓存，从数据库中查询，耗时：{}ms", TimeUnit.NANOSECONDS.toMillis(dbTime));
         return null;
     }
 

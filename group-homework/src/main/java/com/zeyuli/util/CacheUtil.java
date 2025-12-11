@@ -344,7 +344,6 @@ public class CacheUtil {
         if (listBos == null) {
             return new ArrayList<>();
         }
-        System.out.println(listBos);
         return (List<GetBillListBo>) listBos;
     }
 
@@ -396,6 +395,7 @@ public class CacheUtil {
         // 1. 命中一级缓存
         List<GetBillListBo> billList = localBillListCache.getIfPresent(key);
         if (billList != null) {
+            System.out.println("命中一级缓存");
             return billList;
         }
         // 2. 命中二级缓存

@@ -96,12 +96,14 @@ public class BillServiceImpl implements BillService {
         // 1. 尝试从一级缓存中获取第一条数据
         localCache = cacheUtil.getBillListFromLocalCache(userId, limit);
         if (localCache != null && !localCache.isEmpty()) {
+            System.out.println("命中一级缓存");
             return Response.success(localCache);
         }
 
         // 2. 从redis中获取账单列表
         localCache = cacheUtil.getBillListFromRedis(userId, page, limit);
         if (localCache != null) {
+            System.out.println("命中二级缓存");
             return Response.success(localCache);
         }
 
@@ -118,6 +120,7 @@ public class BillServiceImpl implements BillService {
             cacheUtil.asyncWriteLocalCache(userId, page, limit, billList);
         }
         cacheUtil.asyncWriteRedisCache(userId, page, limit, billList);
+        System.out.println("未命中缓存，从数据库中查询");
         return Response.success(billList);
     }
 

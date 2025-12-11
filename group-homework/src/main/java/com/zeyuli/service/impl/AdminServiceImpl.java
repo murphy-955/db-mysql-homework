@@ -75,7 +75,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @CheckAdminToken
-    // TODO: 待测试
     public Map<String, Object> getUserList(AdminGetUserListVo vo, Integer page, Integer limit) {
         List<UserPo> userList = adminMapper.getUserList(page, limit);
         if (userList == null || userList.isEmpty()) {
@@ -94,7 +93,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @CheckAdminToken
-    // TODO: 待测试
     public Map<String, Object> getUserInfoCount(AdminGetUserListVo vo, Integer limit) {
         int count = adminMapper.getUserInfoCount(limit);
         return Response.success(count / limit + 1);

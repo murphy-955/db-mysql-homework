@@ -3,6 +3,7 @@ package com.zeyuli.controller;
 
 import com.zeyuli.enm.QueryBillListTypeEnum;
 import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
+import com.zeyuli.pojo.vo.GetReportVo;
 import com.zeyuli.service.QueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class QueryController {
     public Map<String, Object> getBillList(@RequestParam(value = "searchType", required = false, defaultValue = "UNDEFINED") QueryBillListTypeEnum searchType,
                                            @RequestBody GetBillListOrderBySpecificMethodVo vo) {
         return queryService.getBillList(vo, searchType);
+    }
+
+    @PostMapping("getReport")
+    public Map<String,Object> getReport(@RequestBody GetReportVo vo){
+        return queryService.getReport(vo);
     }
 }
 
