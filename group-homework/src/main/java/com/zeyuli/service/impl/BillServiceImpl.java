@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -64,7 +66,7 @@ public class BillServiceImpl implements BillService {
      */
     @Override
     @CheckUserToken
-    @Transactional
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Map<String, Object> addBill(AddBillVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         String key = "user:" + userId.substring(0, 16) + "account:" + vo.getAccount();

@@ -4,26 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix: 修复空指针异常，并添加前端处理SHA256的工具方法">
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetReportVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/script/test_redis_connect_delay.py" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix: 新增日志">
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/UserAccountPo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/schedule/RecalculationBillSchedule.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/composables/useStatistics.js" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/composables/useStatistics.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/QueryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/QueryController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/BillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/BillMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/BillPo.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/BillPo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/QueryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/QueryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/QueryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/QueryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByDateStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByDateStrategyImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/BillMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/BillMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,7 +232,7 @@
     </attachedChunks>
   </component>
   <component name="StructureViewState">
-    <option name="selectedTab" value="逻辑" />
+    <option name="selectedTab" value="实体" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
@@ -302,6 +291,7 @@
       <workItem from="1765065292618" duration="52000" />
       <workItem from="1765245494751" duration="7229000" />
       <workItem from="1765278344120" duration="33000" />
+      <workItem from="1765413478765" duration="3461000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -519,7 +509,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765007933774</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="fix: 新增日志">
+      <option name="closed" value="true" />
+      <created>1765413683024</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1765413683024</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -553,7 +551,8 @@
     <MESSAGE value="feat；交由前端进行重定向" />
     <MESSAGE value="fix: 修复sql分页方言的错误" />
     <MESSAGE value="fix: 修复空指针异常，并添加前端处理SHA256的工具方法" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 修复空指针异常，并添加前端处理SHA256的工具方法" />
+    <MESSAGE value="fix: 新增日志" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 新增日志" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

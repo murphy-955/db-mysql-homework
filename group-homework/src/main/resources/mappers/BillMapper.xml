@@ -103,5 +103,33 @@
         AND deleted = FALSE
     </select>
 
+    <select id="countUserBill"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM bill_sys.user_bill
+        WHERE user_id = #{userId}
+        AND deleted = FALSE
+    </select>
+
+    <select id="batchGetBillList"
+            resultType="com.zeyuli.pojo.po.BillPo">
+        SELECT id, user_id, record_enum, amount, account
+        FROM bill_sys.user_bill
+        WHERE user_id = #{userId}
+        AND deleted = FALSE
+        ORDER BY date DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="selectTotalAmountByAccountAndType"
+            resultType="java.math.BigDecimal">
+            SELECT SUM(amount)
+        FROM bill_sys.user_bill
+        WHERE user_id = #{userId}
+        AND account = #{account}
+        AND record_enum = #{income}
+        AND deleted = FALSE
+    </select>
+
 </mapper>
 

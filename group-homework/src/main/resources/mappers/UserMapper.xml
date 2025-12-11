@@ -37,5 +37,18 @@
         SELECT user_id, username, password, whether_it_is_disabled_or_not
         FROM bill_sys.user
     </select>
+
+    <select id="selectAccountInfo"
+            resultType="com.zeyuli.pojo.po.UserAccountPo">
+        SELECT user_id, account, balance
+        FROM bill_sys."user_account"
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="modifyAccountBalance">
+        UPDATE bill_sys."user_account"
+        SET balance = #{balance}
+        WHERE user_id = #{userId}
+    </update>
 </mapper>
 

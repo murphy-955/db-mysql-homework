@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -57,4 +58,14 @@ public interface BillMapper {
     int modifyAccountBalance(String userId, @NotNull(message = "金额不能为空") Double amount);
 
     List<BillPo> getReport(LocalDate startDate, LocalDate endDate, String userId);
+
+    Integer countUserBill(String userId);
+
+
+    List<BillPo> batchGetBillList(@Param("limit") int limit,
+                                  @Param("offset") int offset,
+                                  @Param("userId") String userId
+    );
+
+    BigDecimal selectTotalAmountByAccountAndType(String userId, String account, String income);
 }

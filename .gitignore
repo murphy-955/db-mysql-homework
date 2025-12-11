@@ -3,3 +3,4 @@
 /group-homework/target/
 /group-homework/src/main/resources/application.yaml
 /group-homework/src/main/resources/application-dev.yaml
+/group-homework/src/main/resources/static

@@ -1,10 +1,12 @@
 package com.zeyuli.mappers;
 
 
+import com.zeyuli.pojo.po.UserAccountPo;
 import com.zeyuli.pojo.po.UserPo;
 import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,4 +32,8 @@ public interface UserMapper {
                         @NotNull(message = "账单记录类型不能为空") String description);
 
     List<UserPo> selectAllUsers();
+
+    List<UserAccountPo> selectAccountInfo(String userId);
+
+    void modifyAccountBalance(String userId, BigDecimal balance);
 }
