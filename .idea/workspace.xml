@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="docs: 新增数据库理论课作业">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/mysql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mysql.iml" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix；移除无用的日志输出">
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/QueryUserAccountInfoVo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/VirtualThreadMonitorConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/test/InsertDataTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/test/InsertDataTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAccountStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAccountStrategyImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +27,8 @@
         <option value="Enum" />
         <option value="Exception" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="UML Sequence" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -149,7 +152,7 @@
       <recent name="D:\fzu\MySql\homewok-3-SQL-statement\initial-mysql" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.InsertDataTest.testInsertBatchData">
+  <component name="RunManager" selected="Spring Boot.Main">
     <configuration name="script.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
       <script-file value="$PROJECT_DIR$/sql/script.sql" />
       <script-mode>FILE</script-mode>
@@ -159,7 +162,7 @@
     <configuration name="Request | #12" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#12" index="12" runType="运行单个请求">
       <method v="2" />
     </configuration>
-    <configuration name="Request | #3" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#3" index="3" runType="运行单个请求">
+    <configuration name="generated-requests | #9" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#9" index="9" runType="运行单个请求">
       <method v="2" />
     </configuration>
     <configuration name="InsertDataTest.testInsertBatchData" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
@@ -202,8 +205,8 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="HTTP 请求.generated-requests | #9" />
       <item itemvalue="HTTP 请求.Request | #12" />
-      <item itemvalue="HTTP 请求.Request | #3" />
       <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
       <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
       <item itemvalue="Spring Boot.Main" />
@@ -211,11 +214,11 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="HTTP 请求.generated-requests | #9" />
         <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
         <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
         <item itemvalue="数据库脚本.script.sql" />
         <item itemvalue="HTTP 请求.Request | #12" />
-        <item itemvalue="HTTP 请求.Request | #3" />
       </list>
     </recent_temporary>
   </component>
@@ -292,7 +295,7 @@
       <workItem from="1766067056818" duration="1093000" />
       <workItem from="1766068300153" duration="3314000" />
       <workItem from="1766098165466" duration="76000" />
-      <workItem from="1766124149109" duration="4722000" />
+      <workItem from="1766124149109" duration="6836000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -534,7 +537,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766124820122</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="fix；移除无用的日志输出">
+      <option name="closed" value="true" />
+      <created>1766129229872</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1766129229872</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -571,7 +582,8 @@
     <MESSAGE value="fix: 新增日志" />
     <MESSAGE value="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案" />
     <MESSAGE value="docs: 新增数据库理论课作业" />
-    <option name="LAST_COMMIT_MESSAGE" value="docs: 新增数据库理论课作业" />
+    <MESSAGE value="fix；移除无用的日志输出" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix；移除无用的日志输出" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

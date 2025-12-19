@@ -9,6 +9,7 @@ import com.zeyuli.pojo.vo.GetBillListOrderBySpecificMethodVo;
 import com.zeyuli.strategy.BillQueryStrategy;
 import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.util.List;
  * @since 2025-11-18 14:11
  */
 @Component
+@Slf4j
 public class QueryBillByAccountStrategyImpl implements BillQueryStrategy {
     @Autowired
     private CacheUtil cacheUtil;
@@ -63,6 +65,7 @@ public class QueryBillByAccountStrategyImpl implements BillQueryStrategy {
             return billList;
         }
         billList = queryBillMapper.queryBillListOrderByAccount(vo, userId);
+        log.info("查询账单列表，key：{}, 结果：{}", key, billList);
         if (!billList.isEmpty()) {
             cacheUtil.asyncCacheBillListOrderBySpecificMethod(key, billList);
             return billList;

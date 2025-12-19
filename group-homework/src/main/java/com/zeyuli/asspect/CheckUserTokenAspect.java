@@ -73,7 +73,7 @@ public class CheckUserTokenAspect {
         if (userInfo[1].equals(res.getUsername())
                 && userInfo[2].equals(hash)) {
             redisTemplate.opsForValue().set(key, token, tokenExpiration, TimeUnit.HOURS);
-            log.info("token校验，未命中缓存，耗时:{}", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
+//            log.info("token校验，未命中缓存，耗时:{}", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
             return;
         }
         throw new UserTokenException("用户token校验失败");
