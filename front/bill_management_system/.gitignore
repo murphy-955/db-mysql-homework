@@ -34,3 +34,7 @@ coverage
 
 # Vitest
 __screenshots__/
+
+# Mock data for testing
+public/mock/
+front/bill_management_system/src/util/mockInterceptor.js

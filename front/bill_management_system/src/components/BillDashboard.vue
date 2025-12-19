@@ -209,6 +209,9 @@ const bills = ref([]);
 const totalCount = ref(0);
 const loading = ref(false);
 
+// 游标式分页：记录上一页最后一条数据的日期，用于非日期查询的翻页
+const lastEndDate = ref('');
+
 const typeList = ref({});
 const recordTypeList = ref({});
 
@@ -409,65 +412,10 @@ const buildRequestBody = (token, page = 1, limit) => {
   }
 };
 
-// 获取所有账单数据（用于计算总数和第一页数据）
-const fetchAllBills = async (token) => {
-  let allBills = [];
-  let currentPage = 1;
-  let hasMore = true;
+// 获取第一页数据
+const fetchFirstPage = async (token) => {
   const limit = Number(queryParams.value.limit) || 10;
-
-  // 循环查询所有页或直到后端返回 total
-  while (hasMore) {
-    const requestBody = buildRequestBody(token, currentPage, limit);
-
-    const response = await axios.post(
-      `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
-      requestBody
-    );
-
-    if (response.data.statusCode === 200) {
-      const pageData = response.data.data || [];
-
-      // 优先使用后端返回的 total（若存在，则不需要拉取所有页）
-      if (typeof response.data.total === 'number') {
-        totalCount.value = response.data.total;
-        if (currentPage === 1) {
-          bills.value = pageData;
-        }
-        hasMore = false;
-      } else {
-        if (pageData.length > 0) {
-          allBills = allBills.concat(pageData);
-
-          if (pageData.length < limit) {
-            hasMore = false;
-          } else {
-            currentPage++;
-          }
-        } else {
-          hasMore = false;
-        }
-      }
-    } else {
-      alert('查询失败: ' + response.data.message);
-      hasMore = false;
-    }
-  }
-
-  // 兼容旧接口：如果后端没有返回 total，则使用本地合并结果
-  if (!totalCount.value) {
-    totalCount.value = allBills.length;
-    bills.value = allBills.slice(0, limit);
-  }
-
-  console.log(`查询完成：共 ${totalCount.value} 条记录`);
-};
-
-// 获取单页数据（用于翻页）
-const fetchSinglePage = async (token) => {
-  const limit = Number(queryParams.value.limit) || 10;
-  const page = Number(queryParams.value.page) || 1;
-  const requestBody = buildRequestBody(token, page, limit);
+  const requestBody = buildRequestBody(token, 1, limit);
 
   const response = await axios.post(
     `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
@@ -478,14 +426,78 @@ const fetchSinglePage = async (token) => {
     const pageData = response.data.data || [];
     bills.value = pageData;
 
+    // 记录最后一条数据的日期，用于下一页查询
+    if (pageData.length > 0) {
+      lastEndDate.value = pageData[pageData.length - 1].date || '';
+    }
+
+    // 使用后端返回的 total
     if (typeof response.data.total === 'number') {
       totalCount.value = response.data.total;
-    } else if (!totalCount.value && pageData.length > 0) {
-      totalCount.value = (page - 1) * limit + pageData.length;
+    } else {
+      // 如果后端没返回 total，估算一个较大值以允许翻页
+      totalCount.value = pageData.length < limit ? pageData.length : limit * 10;
     }
+    
+    console.log(`第一页查询完成：本页 ${pageData.length} 条，总计约 ${totalCount.value} 条`);
   } else {
     alert('查询失败: ' + response.data.message);
   }
+};
+
+// 获取下一页数据（游标式分页）
+const fetchNextPage = async (token) => {
+  const limit = Number(queryParams.value.limit) || 10;
+  
+  // 对于非日期查询，使用游标式分页：将 endDate 设为上一页最后一条的日期（向前翻页）
+  if (queryParams.value.searchType !== 'DATE_RANGE' && lastEndDate.value) {
+    queryParams.value.endDate = lastEndDate.value;
+  }
+  
+  const requestBody = buildRequestBody(token, queryParams.value.page, limit);
+
+  const response = await axios.post(
+    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
+    requestBody
+  );
+
+  if (response.data.statusCode === 200) {
+    const pageData = response.data.data || [];
+    bills.value = pageData;
+
+    // 更新游标
+    if (pageData.length > 0) {
+      lastEndDate.value = pageData[pageData.length - 1].date || '';
+    }
+
+    // 更新总数
+    if (typeof response.data.total === 'number') {
+      totalCount.value = response.data.total;
+    } else if (pageData.length > 0) {
+      // 如果还有数据，继续估算总数
+      const currentEstimate = queryParams.value.page * limit;
+      if (pageData.length >= limit) {
+        totalCount.value = Math.max(totalCount.value, currentEstimate + limit);
+      }
+    }
+    
+    console.log(`第 ${queryParams.value.page} 页查询完成：本页 ${pageData.length} 条`);
+  } else {
+    alert('查询失败: ' + response.data.message);
+  }
+};
+
+// 获取今天的日期字符串 (YYYY-MM-DD)
+const getTodayDateStr = () => {
+  const now = new Date();
+  return now.toISOString().split('T')[0];
+};
+
+// 获取一年前的日期字符串 (YYYY-MM-DD)
+const getOneYearAgoDateStr = () => {
+  const now = new Date();
+  now.setFullYear(now.getFullYear() - 1);
+  return now.toISOString().split('T')[0];
 };
 
 // 查询账单
@@ -495,26 +507,30 @@ const searchBills = async () => {
     return;
   }
 
-  // 验证账户查询需要选择账户
-  if (queryParams.value.searchType === 'ACCOUNT' && !queryParams.value.accountId) {
-    alert('请选择要查询的账户');
-    return;
+  // 验证账户查询需要选择账户（用 String 转换确保正确判断）
+  if (queryParams.value.searchType === 'ACCOUNT') {
+    const accId = String(queryParams.value.accountId || '').trim();
+    if (!accId) {
+      alert('请选择要查询的账户');
+      return;
+    }
   }
 
   // 重置到第一页
   queryParams.value.page = 1;
+  // 重置游标
+  lastEndDate.value = '';
+
+  // 非日期查询时，设置合理的日期范围：从一年前到今天
+  if (queryParams.value.searchType !== 'DATE_RANGE') {
+    queryParams.value.startDate = getOneYearAgoDateStr(); // 下界：一年前
+    queryParams.value.endDate = getTodayDateStr(); // 上界：今天
+  }
 
   loading.value = true;
   try {
     const token = localStorage.getItem('token');
-    
-    // 如果是第一页，需要获取所有数据来计算总数
-    if (queryParams.value.page === 1) {
-      await fetchAllBills(token);
-    } else {
-      // 非第一页，直接查询当前页
-      await fetchSinglePage(token);
-    }
+    await fetchFirstPage(token);
   } catch (error) {
     console.error('查询账单失败:', error);
     alert('查询失败，请稍后重试');
@@ -560,13 +576,19 @@ const deleteBill = (billId) => {
 const changePage = async (page) => {
   if (page < 1 || page > totalPages.value) return;
   
+  // 如果是回到第一页，重新执行查询
+  if (page === 1) {
+    await searchBills();
+    return;
+  }
+  
   queryParams.value.page = page;
   loading.value = true;
   
   try {
     const token = localStorage.getItem('token');
-    // 翻页时直接获取对应页的数据，不重新计算总数
-    await fetchSinglePage(token);
+    // 翻页时使用游标式分页
+    await fetchNextPage(token);
   } catch (error) {
     console.error('翻页失败:', error);
     alert('翻页失败，请稍后重试');
