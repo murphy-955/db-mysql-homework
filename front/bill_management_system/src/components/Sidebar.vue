@@ -44,23 +44,14 @@
 <script>
 export default {
   name: 'MenuSidebar',
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false
+  data() {
+    return {
+      isCollapsed: false
     }
   },
   computed: {
     currentPath() {
       return this.$route.path;
-    },
-    isCollapsed: {
-      get() {
-        return this.modelValue;
-      },
-      set(val) {
-        this.$emit('update:modelValue', val);
-      }
     }
   },
   methods: {

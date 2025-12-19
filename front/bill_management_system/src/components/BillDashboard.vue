@@ -86,6 +86,17 @@
               <input type="text" v-model="queryParams.keyword" placeholder="请输入关键字" />
             </div>
 
+            <!-- 账户查询 -->
+            <div v-if="queryParams.searchType === 'ACCOUNT'" class="condition-group">
+              <label>选择账户：</label>
+              <select v-model="queryParams.accountId">
+                <option value="">请选择账户</option>
+                <option v-for="account in accountList" :key="account.id" :value="account.id">
+                  {{ account.account }} (余额: {{ account.balance }})
+                </option>
+              </select>
+            </div>
+
             <!-- 金额范围查询 -->
             <div v-if="queryParams.searchType === 'AMOUNT_RANGE'" class="condition-group">
               <label>最小金额：</label>
@@ -109,9 +120,7 @@
           <div class="query-actions">
             <button class="btn btn-primary" @click="searchBills">查询</button>
             <button class="btn btn-outline" @click="resetQuery">重置</button>
-            <!-- 临时测试按钮
-            <button class="btn btn-secondary" @click="generateMockAccountData">生成 accountId 假数据</button>
-            -->
+            
           </div>
         </div>
 
@@ -203,6 +212,9 @@ const loading = ref(false);
 const typeList = ref({});
 const recordTypeList = ref({});
 
+// 用户账户列表
+const accountList = ref([]);
+
 const showAddModal = ref(false);
 
 // 计算属性
@@ -245,12 +257,12 @@ const fetchTypeLists = async () => {
   }
 };
 
-// 获取用户accountId
-const fetchUserAccountId = async () => {
+// 获取用户账户列表
+const fetchUserAccounts = async () => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
-      console.error('未找到token，无法获取accountId');
+      console.error('未找到token，无法获取账户列表');
       return;
     }
 
@@ -259,20 +271,33 @@ const fetchUserAccountId = async () => {
     });
 
     if (response.data.statusCode === 200) {
-      queryParams.value.accountId = response.data.data.accountId || '';
-      console.log('获取到accountId:', queryParams.value.accountId);
+      // 后端返回的是账户列表
+      accountList.value = response.data.data || [];
+      console.log('获取到账户列表:', accountList.value);
+      
+      // 如果有账户，默认选中第一个
+      if (accountList.value.length > 0) {
+        queryParams.value.accountId = accountList.value[0].id;
+      }
     } else {
-      console.error('获取accountId失败:', response.data.message);
+      console.error('获取账户列表失败:', response.data.message);
     }
   } catch (error) {
-    console.error('获取accountId异常:', error);
+    console.error('获取账户列表异常:', error);
   }
 };
+
+
 
 // 查询类型改变时的处理
 const onSearchTypeChange = () => {
   // 重置其他查询条件
   resetQueryConditions();
+  
+  // 如果切换到账户查询，默认选中第一个账户
+  if (queryParams.value.searchType === 'ACCOUNT' && accountList.value.length > 0) {
+    queryParams.value.accountId = accountList.value[0].id;
+  }
 };
 
 // 重置查询条件
@@ -283,8 +308,13 @@ const resetQueryConditions = () => {
   queryParams.value.keyword = '';
   queryParams.value.minAmount = null;
   queryParams.value.maxAmount = null;
-  queryParams.value.accountId = '';
   queryParams.value.page = 1;
+  // 如果有账户列表，保留第一个账户为默认值
+  if (accountList.value.length > 0) {
+    queryParams.value.accountId = accountList.value[0].id;
+  } else {
+    queryParams.value.accountId = '';
+  }
 };
 
 // 重置所有查询
@@ -327,7 +357,9 @@ const handleAddSuccess = () => {
 
 const buildRequestBody = (token, page = 1, limit) => {
   const base = {
-    token
+    token,
+    startDate: queryParams.value.startDate,
+    endDate: queryParams.value.endDate
   }
 
   switch (queryParams.value.searchType) {
@@ -335,9 +367,7 @@ const buildRequestBody = (token, page = 1, limit) => {
       return {
         ...base,
         page: page,
-        limit: limit,
-        startDate: queryParams.value.startDate,
-        endDate: queryParams.value.endDate
+        limit: limit
       }
     
     case 'ACCOUNT':
@@ -465,6 +495,15 @@ const searchBills = async () => {
     return;
   }
 
+  // 验证账户查询需要选择账户
+  if (queryParams.value.searchType === 'ACCOUNT' && !queryParams.value.accountId) {
+    alert('请选择要查询的账户');
+    return;
+  }
+
+  // 重置到第一页
+  queryParams.value.page = 1;
+
   loading.value = true;
   try {
     const token = localStorage.getItem('token');
@@ -518,9 +557,22 @@ const deleteBill = (billId) => {
 };
 
 // 切换页码
-const changePage = (page) => {
+const changePage = async (page) => {
+  if (page < 1 || page > totalPages.value) return;
+  
   queryParams.value.page = page;
-  searchBills();
+  loading.value = true;
+  
+  try {
+    const token = localStorage.getItem('token');
+    // 翻页时直接获取对应页的数据，不重新计算总数
+    await fetchSinglePage(token);
+  } catch (error) {
+    console.error('翻页失败:', error);
+    alert('翻页失败，请稍后重试');
+  } finally {
+    loading.value = false;
+  }
 };
 
 const getRecordTypeName = (recordEnum) => {
@@ -533,9 +585,8 @@ const getRecordTypeName = (recordEnum) => {
 };
 
 onMounted(async () => {
-
   await fetchTypeLists();
-  await fetchUserAccountId();
+  await fetchUserAccounts();
   // 检查路由参数，如果是从仪表盘跳转过来的添加操作，则自动打开弹窗
   if (route.query.action === 'add') {
     showAddModal.value = true;
