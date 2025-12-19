@@ -12,9 +12,14 @@
             <h2>账单仪表盘</h2>
             <span class="subtitle">管理您的每一笔收支</span>
           </div>
-          <button class="btn btn-primary btn-lg" @click="openAddModal">
-            <span class="icon">+</span> 记一笔
-          </button>
+          <div class="header-actions">
+            <button class="btn btn-primary btn-lg" @click="openAddModal">
+              <span class="icon">+</span> 记一笔
+            </button>
+            <button class="btn btn-outline btn-lg" @click="previewDetail" title="预览第一条账单详情">
+              预览详情
+            </button>
+          </div>
         </div>
 
         <!-- 统计卡片 -->
@@ -155,7 +160,7 @@
                 </td>
                 <td>{{ bill.date }}</td>
                 <td>
-                  <button class="btn btn-small" @click="viewDetail(bill.id)">详情</button>
+                  <button class="btn btn-small" @click="viewDetail(bill)">详情</button>
                   <button class="btn btn-small btn-danger" @click="deleteBill(bill.id)">删除</button>
                 </td>
               </tr>
@@ -348,6 +353,26 @@ const closeAddModal = () => {
   showAddModal.value = false;
 };
 
+// 预览详情：使用当前列表第一条账单或示例数据
+const previewDetail = () => {
+  let sample = null;
+  if (bills.value && bills.value.length > 0) {
+    sample = bills.value[0];
+  } else {
+    sample = {
+      id: 'preview-1',
+      amount: 123.45,
+      recordEnum: 'EXPENDITURE',
+      type: '餐饮',
+      date: new Date().toISOString(),
+      account: '现金',
+      remarks: '预览账单示例'
+    };
+  }
+
+  router.push({ name: 'BillDetail', params: { id: sample.id }, state: { bill: sample } });
+};
+
 // 添加成功回调 (统一处理单次和批量)
 const handleAddSuccess = () => {
   closeAddModal();
@@ -411,7 +436,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'AMOUNT_RANGE':
       return {
         ...base,
-        usageEnum: "AMOUNT_RANGE",
+        // usageEnum: "AMOUNT_RANGE",
         minAmount: queryParams.value.minAmount,
         maxAmount: queryParams.value.maxAmount,
         page: page,
@@ -585,9 +610,13 @@ const searchBills = async () => {
   }
 };
 
-const viewDetail = (id) => {
-  // TODO: 实现详细查看逻辑
-  alert(`查看账单ID: ${id} 的详情`);
+const viewDetail = (billData) => {
+  // 直接传递账单数据到详情页，无需再次请求
+  router.push({
+    name: 'BillDetail',
+    params: { id: billData.id },
+    state: { bill: billData }
+  });
 };
 
 const deleteBill = (billId) => {

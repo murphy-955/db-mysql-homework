@@ -113,6 +113,114 @@ import { useStatistics } from '@/composables/useStatistics';
 // ==================== 使用共享的统计逻辑 ====================
 const { loading, statistics, allBills, loadStatistics } = useStatistics();
 
+// ==================== 假数据对象 ====================
+const mockData = {
+  "data": [
+    { "id": "7584710", "recordEnum": "EXPENDITURE", "amount": 1774.58, "date": "2025-12-19" },
+    { "id": "7582984", "recordEnum": "EXPENDITURE", "amount": 2502.37, "date": "2025-12-19" },
+    { "id": "7580002", "recordEnum": "EXPENDITURE", "amount": 2046.76, "date": "2025-12-19" },
+    { "id": "7571061", "recordEnum": "EXPENDITURE", "amount": 2100.85, "date": "2025-12-19" },
+    { "id": "7545383", "recordEnum": "EXPENDITURE", "amount": 9532.53, "date": "2025-12-19" },
+    { "id": "7517033", "recordEnum": "INCOME", "amount": 30958.50, "date": "2025-12-19" },
+    { "id": "7417915", "recordEnum": "EXPENDITURE", "amount": 886.64, "date": "2025-12-19" },
+    { "id": "7340218", "recordEnum": "EXPENDITURE", "amount": 6339.41, "date": "2025-12-19" },
+    { "id": "7300732", "recordEnum": "EXPENDITURE", "amount": 3773.36, "date": "2025-12-19" },
+    { "id": "7291540", "recordEnum": "INCOME", "amount": 35033.08, "date": "2025-12-19" },
+    { "id": "7261398", "recordEnum": "INCOME", "amount": 16326.13, "date": "2025-12-19" },
+    { "id": "7248998", "recordEnum": "INCOME", "amount": 8007.79, "date": "2025-12-19" },
+    { "id": "7244685", "recordEnum": "INCOME", "amount": 49508.95, "date": "2025-12-19" },
+    { "id": "7244290", "recordEnum": "INCOME", "amount": 39875.87, "date": "2025-12-19" },
+    { "id": "7211091", "recordEnum": "INCOME", "amount": 49962.18, "date": "2025-12-19" },
+    { "id": "7200758", "recordEnum": "EXPENDITURE", "amount": 6846.57, "date": "2025-12-19" },
+    { "id": "7200255", "recordEnum": "EXPENDITURE", "amount": 1271.87, "date": "2025-12-19" },
+    { "id": "7197581", "recordEnum": "INCOME", "amount": 38640.31, "date": "2025-12-19" },
+    { "id": "7187978", "recordEnum": "INCOME", "amount": 34285.82, "date": "2025-12-19" },
+    { "id": "7140163", "recordEnum": "EXPENDITURE", "amount": 8301.00, "date": "2025-12-19" },
+    { "id": "7125911", "recordEnum": "EXPENDITURE", "amount": 2479.97, "date": "2025-12-19" },
+    { "id": "7093824", "recordEnum": "EXPENDITURE", "amount": 3719.62, "date": "2025-12-19" },
+    { "id": "7081707", "recordEnum": "INCOME", "amount": 14239.78, "date": "2025-12-19" },
+    { "id": "7070099", "recordEnum": "EXPENDITURE", "amount": 2334.78, "date": "2025-12-19" },
+    { "id": "7042857", "recordEnum": "EXPENDITURE", "amount": 8769.87, "date": "2025-12-19" },
+    { "id": "7021601", "recordEnum": "EXPENDITURE", "amount": 6009.26, "date": "2025-12-19" },
+    { "id": "7007766", "recordEnum": "INCOME", "amount": 4133.36, "date": "2025-12-19" },
+    { "id": "6907835", "recordEnum": "INCOME", "amount": 34234.16, "date": "2025-12-19" },
+    { "id": "6881568", "recordEnum": "INCOME", "amount": 17533.36, "date": "2025-12-19" },
+    { "id": "6859702", "recordEnum": "EXPENDITURE", "amount": 6539.62, "date": "2025-12-19" },
+    { "id": "6791222", "recordEnum": "EXPENDITURE", "amount": 2965.20, "date": "2025-12-19" },
+    { "id": "6749399", "recordEnum": "INCOME", "amount": 42277.22, "date": "2025-12-19" },
+    { "id": "6723661", "recordEnum": "EXPENDITURE", "amount": 2962.48, "date": "2025-12-19" },
+    { "id": "6704977", "recordEnum": "EXPENDITURE", "amount": 1179.23, "date": "2025-12-19" },
+    { "id": "6682923", "recordEnum": "INCOME", "amount": 2823.67, "date": "2025-12-19" },
+    { "id": "6680269", "recordEnum": "EXPENDITURE", "amount": 5703.21, "date": "2025-12-19" },
+    { "id": "6674477", "recordEnum": "EXPENDITURE", "amount": 8072.03, "date": "2025-12-19" },
+    { "id": "6636761", "recordEnum": "EXPENDITURE", "amount": 5495.47, "date": "2025-12-19" },
+    { "id": "6632424", "recordEnum": "INCOME", "amount": 22318.32, "date": "2025-12-19" },
+    { "id": "6598181", "recordEnum": "INCOME", "amount": 18834.15, "date": "2025-12-19" },
+    { "id": "6552751", "recordEnum": "INCOME", "amount": 44783.79, "date": "2025-12-19" },
+    { "id": "6550381", "recordEnum": "EXPENDITURE", "amount": 3452.22, "date": "2025-12-19" },
+    { "id": "6549569", "recordEnum": "EXPENDITURE", "amount": 9743.64, "date": "2025-12-19" },
+    { "id": "6538094", "recordEnum": "EXPENDITURE", "amount": 7299.47, "date": "2025-12-19" },
+    { "id": "6456327", "recordEnum": "EXPENDITURE", "amount": 2463.05, "date": "2025-12-19" },
+    { "id": "6448557", "recordEnum": "INCOME", "amount": 29446.83, "date": "2025-12-19" },
+    { "id": "6415629", "recordEnum": "INCOME", "amount": 6754.92, "date": "2025-12-19" },
+    { "id": "6332575", "recordEnum": "INCOME", "amount": 41148.52, "date": "2025-12-19" },
+    { "id": "6291842", "recordEnum": "INCOME", "amount": 49819.61, "date": "2025-12-19" },
+    { "id": "6238708", "recordEnum": "EXPENDITURE", "amount": 894.58, "date": "2025-12-19" },
+    { "id": "6152372", "recordEnum": "INCOME", "amount": 49487.00, "date": "2025-12-19" },
+    { "id": "6147573", "recordEnum": "INCOME", "amount": 46910.03, "date": "2025-12-19" },
+    { "id": "6146485", "recordEnum": "INCOME", "amount": 23026.88, "date": "2025-12-19" },
+    { "id": "6128775", "recordEnum": "EXPENDITURE", "amount": 9056.39, "date": "2025-12-19" },
+    { "id": "6095420", "recordEnum": "INCOME", "amount": 37158.77, "date": "2025-12-19" },
+    { "id": "6060918", "recordEnum": "EXPENDITURE", "amount": 4609.87, "date": "2025-12-19" },
+    { "id": "6015221", "recordEnum": "INCOME", "amount": 19949.32, "date": "2025-12-19" },
+    { "id": "6005016", "recordEnum": "INCOME", "amount": 26409.36, "date": "2025-12-19" },
+    { "id": "5932318", "recordEnum": "EXPENDITURE", "amount": 5410.21, "date": "2025-12-19" },
+    { "id": "5853149", "recordEnum": "INCOME", "amount": 10547.24, "date": "2025-12-19" },
+    { "id": "5780323", "recordEnum": "INCOME", "amount": 4343.49, "date": "2025-12-19" },
+    { "id": "5779334", "recordEnum": "INCOME", "amount": 39274.05, "date": "2025-12-19" },
+    { "id": "5728097", "recordEnum": "INCOME", "amount": 14072.09, "date": "2025-12-19" },
+    { "id": "5644455", "recordEnum": "EXPENDITURE", "amount": 9275.10, "date": "2025-12-19" },
+    { "id": "5630010", "recordEnum": "EXPENDITURE", "amount": 7087.36, "date": "2025-12-19" },
+    { "id": "5626541", "recordEnum": "INCOME", "amount": 48255.93, "date": "2025-12-19" },
+    { "id": "5609189", "recordEnum": "EXPENDITURE", "amount": 5993.53, "date": "2025-12-19" },
+    { "id": "5539128", "recordEnum": "INCOME", "amount": 563.40, "date": "2025-12-19" },
+    { "id": "5482211", "recordEnum": "INCOME", "amount": 44416.50, "date": "2025-12-19" },
+    { "id": "5473385", "recordEnum": "INCOME", "amount": 2191.92, "date": "2025-12-19" },
+    { "id": "5413529", "recordEnum": "INCOME", "amount": 15263.00, "date": "2025-12-19" },
+    { "id": "5394697", "recordEnum": "INCOME", "amount": 9222.47, "date": "2025-12-19" },
+    { "id": "5350454", "recordEnum": "EXPENDITURE", "amount": 9612.86, "date": "2025-12-19" },
+    { "id": "5300312", "recordEnum": "EXPENDITURE", "amount": 9422.38, "date": "2025-12-19" },
+    { "id": "5263506", "recordEnum": "INCOME", "amount": 33414.55, "date": "2025-12-19" },
+    { "id": "5257755", "recordEnum": "EXPENDITURE", "amount": 469.82, "date": "2025-12-19" },
+    { "id": "5221455", "recordEnum": "INCOME", "amount": 15889.95, "date": "2025-12-19" },
+    { "id": "5186565", "recordEnum": "EXPENDITURE", "amount": 486.58, "date": "2025-12-19" },
+    { "id": "5168785", "recordEnum": "INCOME", "amount": 17920.81, "date": "2025-12-19" },
+    { "id": "5166510", "recordEnum": "EXPENDITURE", "amount": 2948.18, "date": "2025-12-19" },
+    { "id": "5136781", "recordEnum": "INCOME", "amount": 36780.32, "date": "2025-12-19" },
+    { "id": "5074096", "recordEnum": "INCOME", "amount": 29106.76, "date": "2025-12-19" },
+    { "id": "5023658", "recordEnum": "INCOME", "amount": 37853.79, "date": "2025-12-19" },
+    { "id": "5007498", "recordEnum": "INCOME", "amount": 7339.78, "date": "2025-12-19" },
+    { "id": "4986522", "recordEnum": "INCOME", "amount": 30504.59, "date": "2025-12-19" },
+    { "id": "4891268", "recordEnum": "EXPENDITURE", "amount": 3156.91, "date": "2025-12-19" },
+    { "id": "4880861", "recordEnum": "INCOME", "amount": 29211.71, "date": "2025-12-19" },
+    { "id": "4765941", "recordEnum": "INCOME", "amount": 40736.65, "date": "2025-12-19" },
+    { "id": "4751562", "recordEnum": "EXPENDITURE", "amount": 5502.75, "date": "2025-12-19" },
+    { "id": "4680416", "recordEnum": "INCOME", "amount": 20495.21, "date": "2025-12-19" },
+    { "id": "4573311", "recordEnum": "INCOME", "amount": 31507.64, "date": "2025-12-19" },
+    { "id": "4560397", "recordEnum": "EXPENDITURE", "amount": 8055.77, "date": "2025-12-19" },
+    { "id": "4480141", "recordEnum": "INCOME", "amount": 3216.76, "date": "2025-12-19" },
+    { "id": "4421240", "recordEnum": "EXPENDITURE", "amount": 6868.68, "date": "2025-12-19" },
+    { "id": "4404335", "recordEnum": "EXPENDITURE", "amount": 5331.51, "date": "2025-12-19" },
+    { "id": "4384624", "recordEnum": "EXPENDITURE", "amount": 3586.43, "date": "2025-12-19" },
+    { "id": "4360963", "recordEnum": "INCOME", "amount": 33202.09, "date": "2025-12-19" },
+    { "id": "4302920", "recordEnum": "EXPENDITURE", "amount": 3773.20, "date": "2025-12-19" },
+    { "id": "4277955", "recordEnum": "INCOME", "amount": 38494.14, "date": "2025-12-19" },
+    { "id": "4256390", "recordEnum": "INCOME", "amount": 49164.92, "date": "2025-12-19" }
+  ],
+  "message": "成功",
+  "statusCode": 200
+};
+
 // ==================== Dashboard 特有的响应式数据 ====================
 const quotes = quotesData.quotes;
 const selectedQuote = ref({ text: "", source: "" });
@@ -208,12 +316,13 @@ const handleDateSelected = (date) => {
  */
 const loadOverviewData = () => {
   // 获取本月的日期范围
-  const now = new Date();
-  const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  const endDate = now.toISOString().split('T')[0];
+  // const now = new Date();
+  // const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  // const endDate = now.toISOString().split('T')[0];
 
   // 传入30天内的数据
-  loadStatistics('month', startDate, endDate);
+  // loadStatistics('month', startDate, endDate);
+  loadStatistics('mock', '2025-12-19', '2025-12-19');
 };
 
 // ==================== 生命周期 ====================
