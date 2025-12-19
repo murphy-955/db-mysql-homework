@@ -106,6 +106,25 @@ WHERE user_id = '20251219940efb608eb44bd7a7301b6ca36d5a67'
 ORDER BY date DESC, id DESC
 LIMIT 10 OFFSET 10 * (10 - 1);
 
+SELECT id, record_enum, amount, date
+FROM bill_sys.user_bill
+WHERE user_id = '20251219940efb608eb44bd7a7301b6ca36d5a67'
+  AND deleted = FALSE
+  AND type = 'FOOD'
+ORDER BY date DESC, id DESC
+LIMIT 10 OFFSET 10 * (10 - 1);
+
+EXPLAIN (ANALYZE, BUFFERS, VERBOSE, COSTS)
+SELECT id, record_enum, amount, date
+FROM bill_sys.user_bill
+WHERE user_id = '20251219940efb608eb44bd7a7301b6ca36d5a67'
+  AND deleted = FALSE
+  AND amount >= 100
+  AND amount <= 10000
+ORDER BY date DESC, id DESC
+LIMIT 10 OFFSET 10 * (2 - 1);
+
+
 -- 实验一
 
 -- 0. 可选：单独建库并切换
