@@ -19,13 +19,13 @@
           <!-- 账户选择区域 -->
           <div class="account-selector">
             <label class="selector-label">选择账户：</label>
-            <select v-model="selectedAccountId" class="account-select" @change="handleAccountChange">
-              <option value="">请选择账户</option>
+            <select v-model="currentAccountId" class="account-select" @change="handleAccountChange">
+              <option :value="null">请选择账户</option>
               <option v-for="account in accountList" :key="account.id" :value="account.id">
                 {{ account.account }} (余额: {{ formatBalance(account.balance) }})
               </option>
             </select>
-            <button class="btn btn-primary" @click="searchBills" :disabled="!selectedAccountId">
+            <button class="btn btn-primary" @click="searchBills" :disabled="!currentAccountId">
               查询流水
             </button>
           </div>
@@ -139,7 +139,7 @@ import BillDetailWindow from './BillDetailWindow.vue';
 
 // 账户相关
 const accountList = ref([]);
-const selectedAccountId = ref('');
+const currentAccountId = ref(null);  // 当前选中的accountId，直接用于请求
 const accountLoading = ref(false);
 
 // 流水相关
@@ -150,6 +150,15 @@ const page = ref(1);
 const limit = ref(10);
 const totalCount = ref(0);
 
+// 日期范围（参照 BillDashboard）
+const startDate = ref('');
+const endDate = ref('');
+const lastEndDate = ref('');
+
+// 分页封顶
+const MAX_PAGES = 50;
+const isPageCapped = ref(false);
+
 // 详情弹窗相关
 const showDetailModal = ref(false);
 const selectedBill = ref(null);
@@ -158,8 +167,8 @@ const detailError = ref('');
 
 // 计算属性
 const selectedAccount = computed(() => {
-  if (!selectedAccountId.value) return null;
-  return accountList.value.find(a => String(a.id) === String(selectedAccountId.value));
+  if (!currentAccountId.value) return null;
+  return accountList.value.find(a => a.id === currentAccountId.value) || null;
 });
 
 const balanceClass = computed(() => {
@@ -171,7 +180,8 @@ const balanceClass = computed(() => {
 });
 
 const totalPages = computed(() => {
-  return Math.ceil(totalCount.value / limit.value) || 1;
+  const pages = Math.ceil(totalCount.value / limit.value);
+  return Math.min(pages, MAX_PAGES) || 1;
 });
 
 // 格式化余额
@@ -198,6 +208,19 @@ const getRecordTypeClass = (recordEnum) => {
   return '';
 };
 
+// 获取今天的日期字符串 (YYYY-MM-DD)
+const getTodayDateStr = () => {
+  const now = new Date();
+  return now.toISOString().split('T')[0];
+};
+
+// 获取一年前的日期字符串 (YYYY-MM-DD)
+const getOneYearAgoDateStr = () => {
+  const now = new Date();
+  now.setFullYear(now.getFullYear() - 1);
+  return now.toISOString().split('T')[0];
+};
+
 // 获取用户账户列表
 const fetchUserAccounts = async () => {
   accountLoading.value = true;
@@ -217,9 +240,10 @@ const fetchUserAccounts = async () => {
       accountList.value = response.data.data || [];
       console.log('获取到账户列表:', accountList.value);
       
-      // 如果有账户，默认选中第一个
+      // 如果有账户，默认选中第一个的id
       if (accountList.value.length > 0) {
-        selectedAccountId.value = accountList.value[0].id;
+        currentAccountId.value = accountList.value[0].id;
+        console.log('默认选中账户ID:', currentAccountId.value);
       }
     } else {
       console.error('获取账户列表失败:', response.data.message);
@@ -235,50 +259,152 @@ const fetchUserAccounts = async () => {
 
 // 处理账户选择变化
 const handleAccountChange = () => {
+  console.log('切换账户，当前选中ID:', currentAccountId.value);
   // 切换账户时清空之前的查询结果
   bills.value = [];
   hasSearched.value = false;
   page.value = 1;
   totalCount.value = 0;
+  lastEndDate.value = '';
+};
+
+// 构建请求体
+const buildRequestBody = (token, pageNum, limitNum, accountId) => {
+  // 查找对应的账户名称
+  const accountObj = accountList.value.find(a => a.id === accountId);
+  const accountName = accountObj ? accountObj.account : '';
+  
+  console.log(`构建请求体: ID=${accountId} -> Name=${accountName}`);
+
+  return {
+    token,
+    startDate: startDate.value,
+    endDate: endDate.value,
+    accountId: accountName, // 后端虽然叫accountId，但实际需要传账户名称
+    page: pageNum,
+    limit: limitNum
+  };
+};
+
+// 获取第一页数据
+const fetchFirstPage = async (token, accountId) => {
+  const limitNum = Number(limit.value) || 10;
+  const requestBody = buildRequestBody(token, 1, limitNum, accountId);
+  
+  console.log('发送请求，requestBody:', requestBody);
+
+  const response = await axios.post(
+    'http://localhost:8080/api/query/getBillList?searchType=ACCOUNT',
+    requestBody
+  );
+
+  if (response.data.statusCode === 200) {
+    const pageData = response.data.data || [];
+    bills.value = pageData;
+
+    // 记录最后一条数据的日期，用于下一页查询
+    if (pageData.length > 0) {
+      lastEndDate.value = pageData[pageData.length - 1].date || '';
+    }
+
+    // 使用后端返回的 total
+    if (typeof response.data.total === 'number') {
+      totalCount.value = response.data.total;
+    } else {
+      totalCount.value = pageData.length < limitNum ? pageData.length : limitNum * 10;
+    }
+
+    // 应用页数封顶
+    const maxTotal = limitNum * MAX_PAGES;
+    if (totalCount.value > maxTotal) {
+      totalCount.value = maxTotal;
+      isPageCapped.value = true;
+    } else {
+      isPageCapped.value = false;
+    }
+
+    console.log(`第一页查询完成：本页 ${pageData.length} 条，总计约 ${totalCount.value} 条`);
+  } else {
+    alert('查询失败: ' + response.data.message);
+  }
+};
+
+// 获取下一页数据（游标式分页）
+const fetchNextPage = async (token, accountId) => {
+  const limitNum = Number(limit.value) || 10;
+  
+  // 使用游标式分页：将 endDate 设为上一页最后一条的日期
+  if (lastEndDate.value) {
+    endDate.value = lastEndDate.value;
+  }
+  
+  const requestBody = buildRequestBody(token, page.value, limitNum, accountId);
+  
+  console.log('翻页请求，requestBody:', requestBody);
+  
+  const response = await axios.post(
+    'http://localhost:8080/api/query/getBillList?searchType=ACCOUNT',
+    requestBody
+  );
+
+  if (response.data.statusCode === 200) {
+    const pageData = response.data.data || [];
+    bills.value = pageData;
+
+    // 更新游标
+    if (pageData.length > 0) {
+      lastEndDate.value = pageData[pageData.length - 1].date || '';
+    }
+
+    // 更新总数
+    if (typeof response.data.total === 'number') {
+      totalCount.value = response.data.total;
+    } else if (pageData.length > 0) {
+      const currentEstimate = page.value * limitNum;
+      if (pageData.length >= limitNum) {
+        totalCount.value = Math.max(totalCount.value, currentEstimate + limitNum);
+      }
+    }
+
+    // 应用页数封顶
+    const maxTotal = limitNum * MAX_PAGES;
+    if (totalCount.value > maxTotal) {
+      totalCount.value = maxTotal;
+      isPageCapped.value = true;
+    } else {
+      isPageCapped.value = false;
+    }
+
+    console.log(`第 ${page.value} 页查询完成：本页 ${pageData.length} 条`);
+  } else {
+    alert('查询失败: ' + response.data.message);
+  }
 };
 
 // 根据账户查询流水
 const searchBills = async () => {
-  if (!selectedAccountId.value) {
+  if (!currentAccountId.value) {
     alert('请先选择账户');
     return;
   }
+
+  console.log('开始查询，accountId:', currentAccountId.value);
+
+  // 重置到第一页
+  page.value = 1;
+  // 重置游标
+  lastEndDate.value = '';
+  
+  // 设置日期范围：从一年前到今天
+  startDate.value = getOneYearAgoDateStr();
+  endDate.value = getTodayDateStr();
 
   billLoading.value = true;
   hasSearched.value = true;
 
   try {
     const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=ACCOUNT', {
-      token,
-      searchType: 'ACCOUNT',
-      accountId: selectedAccountId.value,
-      page: page.value,
-      limit: limit.value
-    });
-
-    if (response.data.statusCode === 200) {
-      bills.value = response.data.data || [];
-      // 如果后端返回了 total 字段
-      if (typeof response.data.total === 'number') {
-        totalCount.value = response.data.total;
-      } else {
-        // 估算总数
-        totalCount.value = bills.value.length < limit.value ? 
-          (page.value - 1) * limit.value + bills.value.length : 
-          page.value * limit.value + 1;
-      }
-      console.log('查询到流水记录:', bills.value);
-    } else {
-      console.error('查询流水失败:', response.data.message);
-      alert('查询失败: ' + response.data.message);
-      bills.value = [];
-    }
+    await fetchFirstPage(token, currentAccountId.value);
   } catch (error) {
     console.error('查询流水异常:', error);
     alert('查询失败，请稍后重试');
@@ -290,9 +416,26 @@ const searchBills = async () => {
 
 // 切换页码
 const changePage = async (newPage) => {
-  if (newPage < 1 || newPage > totalPages.value) return;
+  if (newPage < 1 || newPage > totalPages.value || newPage > MAX_PAGES) return;
+  
+  // 如果是回到第一页，重新执行查询
+  if (newPage === 1) {
+    await searchBills();
+    return;
+  }
+  
   page.value = newPage;
-  await searchBills();
+  billLoading.value = true;
+  
+  try {
+    const token = localStorage.getItem('token');
+    await fetchNextPage(token, currentAccountId.value);
+  } catch (error) {
+    console.error('翻页失败:', error);
+    alert('翻页失败，请稍后重试');
+  } finally {
+    billLoading.value = false;
+  }
 };
 
 // 查看详情

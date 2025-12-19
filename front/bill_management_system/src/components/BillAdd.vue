@@ -133,19 +133,43 @@ export default {
         type: '支出',
         category: '',
         date: this.getTodayDate(),
+        accountId: '',
         account: '现金',
         remark: ''
       },
+      accountList: [],
       errors: {},
       loading: false
     };
   },
+    mounted() {
+      this.fetchUserAccounts();
+    },
   computed: {
     today() {
       return this.getTodayDate();
     }
   },
   methods: {
+      formatBalance(balance) {
+        if (balance === null || balance === undefined || isNaN(Number(balance))) return '0.00';
+        return Number(balance).toFixed(2);
+      },
+      async fetchUserAccounts() {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+          const resp = await axios.post('http://localhost:8080/api/user/getUserAccount', { token });
+          if (resp.data && resp.data.statusCode === 200) {
+            this.accountList = resp.data.data || [];
+            if (this.accountList.length > 0) {
+              this.billForm.accountId = this.accountList[0].id;
+            }
+          }
+        } catch (e) {
+          console.error('获取账户列表失败', e);
+        }
+      },
     getTodayDate() {
       const today = new Date();
       return today.toISOString().split('T')[0];
@@ -178,6 +202,15 @@ export default {
       this.loading = true;
 
       try {
+        // 确保发送的是账户名称而不是ID
+        let accountName = this.billForm.account;
+        if (this.billForm.accountId && this.accountList.length > 0) {
+             const acc = this.accountList.find(a => a.id === this.billForm.accountId);
+             if (acc) {
+                 accountName = acc.account;
+             }
+        }
+
         const token = localStorage.getItem('token') || 'mock_token';
         const requestData = {
           token,
@@ -185,7 +218,7 @@ export default {
           recordEnum: this.billForm.type === '收入' ? 'INCOME' : 'EXPENDITURE',
           type: this.billForm.category,
           date: this.billForm.date,
-          account: this.billForm.account,
+          account: accountName,
           remarks: this.billForm.remark
         };
 
@@ -212,6 +245,7 @@ export default {
         type: '支出',
         category: '',
         date: this.getTodayDate(),
+        accountId: '',
         account: '现金',
         remark: ''
       };
