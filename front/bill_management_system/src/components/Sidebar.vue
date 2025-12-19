@@ -28,6 +28,12 @@
           <span v-show="!isCollapsed" class="nav-label">账单管理</span>
         </transition>
       </div>
+      <div class="nav-item" :class="{ active: currentPath === '/account-search' }" @click="navigate('/account-search')">
+        <span class="nav-icon">💳</span>
+        <transition name="fade">
+          <span v-show="!isCollapsed" class="nav-label">账户查询</span>
+        </transition>
+      </div>
     </nav>
 
     <div class="sidebar-footer">

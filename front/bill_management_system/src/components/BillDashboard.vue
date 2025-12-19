@@ -54,7 +54,6 @@
             <select id="usageEnum" v-model="queryParams.usageEnum" @change="onSearchTypeChange">
               <option value="">请选择查询方式</option>
               <option value="DATE_RANGE">日期查询</option>
-              <option value="ACCOUNT">账户查询</option>
               <option value="USAGE_TYPE">类型查询</option>
               <option value="KEYWORD">关键字查询</option>
               <option value="AMOUNT_RANGE">金额范围查询</option>
@@ -84,17 +83,6 @@
             <div v-if="queryParams.usageEnum === 'KEYWORD'" class="condition-group">
               <label>关键字：</label>
               <input type="text" v-model="queryParams.keyword" placeholder="请输入关键字" />
-            </div>
-
-            <!-- 账户查询 -->
-            <div v-if="queryParams.usageEnum === 'ACCOUNT'" class="condition-group">
-              <label>选择账户：</label>
-              <select v-model="queryParams.accountId">
-                <option value="">请选择账户</option>
-                <option v-for="account in accountList" :key="account.id" :value="account.id">
-                  {{ account.account }} (余额: {{ account.balance }})
-                </option>
-              </select>
             </div>
 
             <!-- 金额范围查询 -->
@@ -245,8 +233,7 @@ const queryParams = ref({
   type: '',
   keyword: '',
   minAmount: null,
-  maxAmount: null,
-  accountId: ''
+  maxAmount: null
 });
 
 // 账单数据
@@ -259,9 +246,6 @@ const lastEndDate = ref('');
 
 const typeList = ref({});
 const recordTypeList = ref({});
-
-// 用户账户列表
-const accountList = ref([]);
 
 // 当前选中的账单详情（内联展示）
 const selectedBill = ref(null);
@@ -315,51 +299,10 @@ const fetchTypeLists = async () => {
   }
 };
 
-// 获取用户账户列表
-const fetchUserAccounts = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.warn('未找到token，无法获取账户列表');
-      accountList.value = [];
-      return;
-    }
-
-    const response = await axios.post('http://localhost:8080/api/user/getUserAccount', {
-      token
-    });
-
-    if (response.data.statusCode === 200) {
-      // 后端返回的是账户列表
-      accountList.value = response.data.data || [];
-      console.log('获取到账户列表:', accountList.value);
-      
-      // 如果有账户，默认选中第一个（仅在账户列表不为空时）
-      if (accountList.value.length > 0) {
-        queryParams.value.accountId = accountList.value[0].id;
-      } else {
-        console.warn('当前用户没有可用账户');
-        queryParams.value.accountId = '';
-      }
-    } else {
-      console.error('获取账户列表失败:', response.data.message);
-      accountList.value = [];
-    }
-  } catch (error) {
-    console.error('获取账户列表异常:', error);
-    accountList.value = [];
-  }
-};
-
 // 查询类型改变时的处理
 const onSearchTypeChange = () => {
   // 重置其他查询条件
   resetQueryConditions();
-  
-  // 如果切换到账户查询，默认选中第一个账户
-  if (queryParams.value.usageEnum === 'ACCOUNT' && accountList.value.length > 0) {
-    queryParams.value.accountId = accountList.value[0].id;
-  }
 };
 
 // 重置查询条件
@@ -371,12 +314,6 @@ const resetQueryConditions = () => {
   queryParams.value.minAmount = null;
   queryParams.value.maxAmount = null;
   queryParams.value.page = 1;
-  // 如果有账户列表，保留第一个账户为默认值
-  if (accountList.value.length > 0) {
-    queryParams.value.accountId = accountList.value[0].id;
-  } else {
-    queryParams.value.accountId = '';
-  }
 };
 
 // 重置所有查询
@@ -433,15 +370,6 @@ const buildRequestBody = (token, page = 1, limit) => {
         page: page,
         limit: limit
       }
-    
-    case 'ACCOUNT':
-      return {
-        ...base,
-        usageEnum: "ACCOUNT",
-        accountId: queryParams.value.accountId,
-        page: page,
-        limit: limit
-    }
 
     case 'USAGE_TYPE':
       return {
