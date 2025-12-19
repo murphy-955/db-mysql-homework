@@ -35,8 +35,6 @@ import java.util.Map;
  */
 @Service
 public class BillServiceImpl implements BillService {
-    private static final Logger logger = LoggerFactory.getLogger(BillServiceImpl.class);
-
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -66,7 +64,8 @@ public class BillServiceImpl implements BillService {
      */
     @Override
     @CheckUserToken
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    @Transactional(rollbackFor = Exception.class,
+            propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Map<String, Object> addBill(AddBillVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         String key = "user:" + userId.substring(0, 16) + "account:" + vo.getAccount();

@@ -45,7 +45,7 @@ public class InsertDataTest {
     private List<UserPo> userList;
 
     // 批处理大小，每批插入的记录数
-    private static final int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 2000;
     // 总插入记录数
     private static final int TOTAL_RECORDS = 5000000;
 

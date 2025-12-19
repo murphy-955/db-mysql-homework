@@ -4,18 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案">
-      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/db_homework.puml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/script.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/数据库对象创建语句.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/数据库设计.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="docs: 新增数据库理论课作业">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/mysql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mysql.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/config/VirtualThreadMonitorConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/test/InsertDataTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/test/InsertDataTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +42,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/murphy-955/db-mysql-homework.git&quot;,
-    &quot;accountId&quot;: &quot;809e36f4-4153-43d4-843f-17abe87d040d&quot;
+    &quot;accountId&quot;: &quot;b591f40a-1c48-4d42-9c78-3119b83eeb4b&quot;
   }
 }</component>
   <component name="HttpClientOnboardingState">{
@@ -104,6 +100,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.Main.executor": "Run",
     "extract.method.default.visibility": "private",
     "git-widget-placeholder": "master",
@@ -122,14 +119,18 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "C:\\Users\\13776\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+    "ts.external.directory.path": "D:\\softenvironment\\IntelliJ IDEA 2025.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true",
+    "数据库脚本.script.sql.executor": "Run"
   },
   "keyToStringList": {
     "DatabaseDriversLRU": [
       "mysql",
       "java.sql.Driver",
       "postgresql"
+    ],
+    "RunConfigurationTargetLRU": [
+      "c90cbe3f-407d-4585-87e6-d9306dabf209"
     ]
   }
 }]]></component>
@@ -148,29 +149,17 @@
       <recent name="D:\fzu\MySql\homewok-3-SQL-statement\initial-mysql" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="configurationStatuses">
-      <map>
-        <entry key="HttpClient.HttpRequestRunConfigurationType">
-          <value>
-            <map>
-              <entry key="Request | #12" value="STOPPED" />
-              <entry key="Request | #3" value="STOPPED" />
-              <entry key="Request | #4" value="STOPPED" />
-            </map>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="RunManager" selected="Spring Boot.Main">
+  <component name="RunManager" selected="JUnit.InsertDataTest.testInsertBatchData">
+    <configuration name="script.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$PROJECT_DIR$/sql/script.sql" />
+      <script-mode>FILE</script-mode>
+      <data-source id="c90cbe3f-407d-4585-87e6-d9306dabf209" />
+      <method v="2" />
+    </configuration>
     <configuration name="Request | #12" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#12" index="12" runType="运行单个请求">
       <method v="2" />
     </configuration>
     <configuration name="Request | #3" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#3" index="3" runType="运行单个请求">
-      <method v="2" />
-    </configuration>
-    <configuration name="Request | #4" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#4" index="4" runType="运行单个请求">
       <method v="2" />
     </configuration>
     <configuration name="InsertDataTest.testInsertBatchData" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
@@ -215,18 +204,18 @@
     <list>
       <item itemvalue="HTTP 请求.Request | #12" />
       <item itemvalue="HTTP 请求.Request | #3" />
-      <item itemvalue="HTTP 请求.Request | #4" />
       <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
       <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
       <item itemvalue="Spring Boot.Main" />
+      <item itemvalue="数据库脚本.script.sql" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="HTTP 请求.Request | #12" />
-        <item itemvalue="HTTP 请求.Request | #3" />
-        <item itemvalue="HTTP 请求.Request | #4" />
         <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
         <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
+        <item itemvalue="数据库脚本.script.sql" />
+        <item itemvalue="HTTP 请求.Request | #12" />
+        <item itemvalue="HTTP 请求.Request | #3" />
       </list>
     </recent_temporary>
   </component>
@@ -303,7 +292,7 @@
       <workItem from="1766067056818" duration="1093000" />
       <workItem from="1766068300153" duration="3314000" />
       <workItem from="1766098165466" duration="76000" />
-      <workItem from="1766124149109" duration="418000" />
+      <workItem from="1766124149109" duration="4722000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -537,7 +526,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765417385793</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="docs: 新增数据库理论课作业">
+      <option name="closed" value="true" />
+      <created>1766124820121</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1766124820122</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -573,7 +570,8 @@
     <MESSAGE value="fix: 修复空指针异常，并添加前端处理SHA256的工具方法" />
     <MESSAGE value="fix: 新增日志" />
     <MESSAGE value="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案" />
+    <MESSAGE value="docs: 新增数据库理论课作业" />
+    <option name="LAST_COMMIT_MESSAGE" value="docs: 新增数据库理论课作业" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
