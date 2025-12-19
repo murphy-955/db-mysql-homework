@@ -26,6 +26,7 @@
                 <input type="date" v-model="endDate" class="date-input" @change="loadStatistics">
               </template>
             </div>
+            <!-- <button class="btn btn-secondary" @click="generateMockExpenseCategories">生成测试数据</button> -->
             <button class="btn btn-primary" @click="exportReport">导出报表</button>
           </div>
         </div>
@@ -235,7 +236,8 @@ const pieChartData = computed(() => ({
 
 const pieChartOptions = {
   responsive: true,
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
+  aspectRatio: 1,
   plugins: {
     legend: { position: 'bottom' }
   }
@@ -356,6 +358,24 @@ const exportReport = async () => {
     alert('导出失败，请稍后重试');
   }
 };
+
+/**
+ * 生成假的支出分类数据用于测试饼图渲染
+ */
+/*
+// const generateMockExpenseCategories = () => {
+  // 临时覆盖 expenseCategories 数据
+  // expenseCategories.value = [
+  //   { name: '餐饮', amount: 2500, color: '#FF6384', percentage: 35 },
+  //   { name: '交通', amount: 1800, color: '#36A2EB', percentage: 25 },
+  //   { name: '购物', amount: 1200, color: '#FFCE56', percentage: 17 },
+  //   { name: '娱乐', amount: 800, color: '#4BC0C0', percentage: 11 },
+  //   { name: '其他', amount: 700, color: '#9966FF', percentage: 10 },
+  //   { name: '医疗', amount: 200, color: '#FF9F40', percentage: 2 }
+  // ];
+  // console.log('已生成假数据:', expenseCategories.value);
+};
+*/
 
 // ==================== 生命周期 ====================
 onMounted(() => {

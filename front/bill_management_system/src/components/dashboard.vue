@@ -38,7 +38,7 @@
 
             <div class="card chart-section">
               <div class="card-header">
-                <h4>近5日收支趋势</h4>
+                <h4>近一个月收支趋势</h4>
               </div>
               <div class="chart-container">
                 <div v-if="chartData.length === 0" class="no-data">暂无数据</div>
@@ -117,7 +117,7 @@ const currentDate = new Date().toLocaleDateString();
 const selectedDate = ref(new Date());
 
 // ==================== 计算属性 ====================
-// 近5日趋势数据（从 allBills 计算）
+
 const chartData = computed(() => {
   if (allBills.value.length === 0) return [];
 
@@ -135,17 +135,17 @@ const chartData = computed(() => {
     }
   });
 
-  // 取最近5天的数据
-  const dates = Object.keys(dailyData).sort().slice(-5);
+  // 取最近30天的数据
+  const dates = Object.keys(dailyData).sort().slice(-30);
   return dates.map(date => ({
     date: date,
     ...dailyData[date]
   }));
 });
 
-// 最近账单（最近5笔）
+// 最近账单（最近10笔）
 const recentBills = computed(() => {
-  return [...allBills.value].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  return [...allBills.value].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
 });
 
 // ==================== 业务逻辑方法 ====================
@@ -203,10 +203,10 @@ const handleDateSelected = (date) => {
 const loadOverviewData = () => {
   // 获取本月的日期范围
   const now = new Date();
-  const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   const endDate = now.toISOString().split('T')[0];
 
-  // 调用共享的 loadStatistics 方法，传入自定义日期
+  // 传入30天内的数据
   loadStatistics('month', startDate, endDate);
 };
 
