@@ -588,10 +588,13 @@ const searchBills = async () => {
 };
 
 const viewDetail = (billData) => {
-  // 直接传递账单数据到详情页，无需再次请求
+  if (!billData || !billData.id) {
+    alert('缺少账单ID，无法查看详情');
+    return;
+  }
+
   router.push({
-    name: 'BillDetail',
-    params: { id: billData.id },
+    path: `/bill-detail/${billData.id}`,
     state: { bill: billData }
   });
 };

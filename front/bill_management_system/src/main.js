@@ -2,7 +2,7 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import LoginPage from './components/Login.vue';
 import DashboardPage from './components/Dashboard.vue';
 import BillDashboardPage from './components/BillDashboard.vue';
@@ -28,7 +28,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  // 使用 Hash 模式，避免后端未配置 history 重写导致路径 404
+  history: createWebHashHistory(),
   routes,
 });
 
