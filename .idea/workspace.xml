@@ -4,15 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix: 新增日志">
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/po/UserAccountPo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/schedule/RecalculationBillSchedule.java" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案">
+      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/db_homework.puml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/script.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/数据库对象创建语句.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/homewok-3-SQL-statement/fianl/数据库设计.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/mysql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/mysql.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/BillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/BillMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/BillServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/BillMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/BillMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +29,7 @@
         <option value="Exception" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="UML Sequence" />
       </list>
     </option>
   </component>
@@ -67,71 +71,74 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;HTTP 请求.Request | #1.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #10.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #11.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #12.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #2.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #3.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #4.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #5.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #6.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #7.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #8.executor&quot;: &quot;Run&quot;,
-    &quot;HTTP 请求.Request | #9.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.InsertDataTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.InsertDataTest.testInsertBatchData.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TestDbConnect.testConnect.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TestDbConnect.testConnection.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TestDbConnect.testSimpleConnection.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TestDbConnect.testSqlSentence.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.group-homework [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.group-homework [compile].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;Spring Boot.Main.executor&quot;: &quot;Run&quot;,
-    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/fzu/mysql&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.install.executor&quot;: &quot;Run&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\13776\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultPlantUmlFileTemplate": "UML Sequence",
+    "HTTP 请求.Request | #1.executor": "Run",
+    "HTTP 请求.Request | #10.executor": "Run",
+    "HTTP 请求.Request | #11.executor": "Run",
+    "HTTP 请求.Request | #12.executor": "Run",
+    "HTTP 请求.Request | #2.executor": "Run",
+    "HTTP 请求.Request | #3.executor": "Run",
+    "HTTP 请求.Request | #4.executor": "Run",
+    "HTTP 请求.Request | #5.executor": "Run",
+    "HTTP 请求.Request | #6.executor": "Run",
+    "HTTP 请求.Request | #7.executor": "Run",
+    "HTTP 请求.Request | #8.executor": "Run",
+    "HTTP 请求.Request | #9.executor": "Run",
+    "JUnit.InsertDataTest.executor": "Run",
+    "JUnit.InsertDataTest.testInsertBatchData.executor": "Run",
+    "JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts.executor": "Run",
+    "JUnit.TestDbConnect.testConnect.executor": "Run",
+    "JUnit.TestDbConnect.testConnection.executor": "Run",
+    "JUnit.TestDbConnect.testSimpleConnection.executor": "Run",
+    "JUnit.TestDbConnect.testSqlSentence.executor": "Run",
+    "Maven.group-homework [clean].executor": "Run",
+    "Maven.group-homework [compile].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.Main.executor": "Run",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/fzu/mysql",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.dev.executor": "Run",
+    "npm.install.executor": "Run",
+    "onboarding.tips.debug.path": "D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java",
+    "project.structure.last.edited": "项目",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "ts.external.directory.path": "C:\\Users\\13776\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;java.sql.Driver&quot;,
-      &quot;postgresql&quot;,
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql",
+      "java.sql.Driver",
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\fzu\mysql\homewok-3-SQL-statement\fianl" />
       <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\handler" />
       <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\config" />
       <recent name="D:\fzu\mysql\group-homework\src\main\java\com\zeyuli\util" />
@@ -226,8 +233,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
+        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
+        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
       </set>
     </attachedChunks>
   </component>
@@ -291,7 +298,12 @@
       <workItem from="1765065292618" duration="52000" />
       <workItem from="1765245494751" duration="7229000" />
       <workItem from="1765278344120" duration="33000" />
-      <workItem from="1765413478765" duration="3461000" />
+      <workItem from="1765413478765" duration="3801000" />
+      <workItem from="1766062083301" duration="4677000" />
+      <workItem from="1766067056818" duration="1093000" />
+      <workItem from="1766068300153" duration="3314000" />
+      <workItem from="1766098165466" duration="76000" />
+      <workItem from="1766124149109" duration="418000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -517,7 +529,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765413683024</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案">
+      <option name="closed" value="true" />
+      <created>1765417385793</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1765417385793</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -552,7 +572,8 @@
     <MESSAGE value="fix: 修复sql分页方言的错误" />
     <MESSAGE value="fix: 修复空指针异常，并添加前端处理SHA256的工具方法" />
     <MESSAGE value="fix: 新增日志" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: 新增日志" />
+    <MESSAGE value="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
