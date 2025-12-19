@@ -64,7 +64,7 @@
           <!-- 动态查询条件 -->
           <div class="query-conditions">
             <!-- 日期查询 -->
-            <div v-if="queryParams.searchType === 'DATE'" class="condition-group">
+            <div v-if="queryParams.searchType === 'DATE_RANGE'" class="condition-group">
               <label>开始日期：</label>
               <input type="date" v-model="queryParams.startDate" />
               <label>结束日期：</label>
@@ -109,7 +109,7 @@
           <div class="query-actions">
             <button class="btn btn-primary" @click="searchBills">查询</button>
             <button class="btn btn-outline" @click="resetQuery">重置</button>
-            <!-- 临时测试按钮（已注释）
+            <!-- 临时测试按钮
             <button class="btn btn-secondary" @click="generateMockAccountData">生成 accountId 假数据</button>
             -->
           </div>
@@ -170,263 +170,378 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import BillAddWindow from './BillAddWindow.vue';
 import Sidebar from './Sidebar.vue';
 
-export default {
-  name: 'BillQueryPage',
-  components: {
-    BillAddWindow,
-    Sidebar
-  },
-  data() {
-    return {
-      // 查询参数
-      queryParams: {
-        searchType: '',
-        page: 1,
-        limit: 10,
-        startDate: '',
-        endDate: '',
-        type: '',
-        keyword: '',
-        minAmount: null,
-        maxAmount: null,
-        accountId: ''
-      },
-      // 账单数据
-      bills: [],
-      totalCount: 0,
-      loading: false,
-      // 类型枚举数据
-      typeList: {},
-      recordTypeList: {},
-      // 弹窗控制
-      showAddModal: false
-    };
-  },
-  computed: {
-    totalPages() {
-      return Math.ceil(this.totalCount / this.queryParams.limit);
-    },
-    // 新增统计计算属性
-    currentIncome() {
-      return this.bills
-        .filter(b => b.recordEnum === 'INCOME')
-        .reduce((sum, b) => sum + b.amount, 0);
-    },
-    currentExpenditure() {
-      return this.bills
-        .filter(b => b.recordEnum === 'EXPENDITURE')
-        .reduce((sum, b) => sum + b.amount, 0);
-    },
-    currentBalance() {
-      return this.currentIncome - this.currentExpenditure;
+// 路由相关
+const route = useRoute();
+const router = useRouter();
+
+// 查询参数
+const queryParams = ref({
+  searchType: '',
+  page: 1,
+  limit: 10,
+  startDate: '',
+  endDate: '',
+  type: '',
+  keyword: '',
+  minAmount: null,
+  maxAmount: null,
+  accountId: ''
+});
+
+// 账单数据
+const bills = ref([]);
+const totalCount = ref(0);
+const loading = ref(false);
+
+const typeList = ref({});
+const recordTypeList = ref({});
+
+const showAddModal = ref(false);
+
+// 计算属性
+const totalPages = computed(() => {
+  return Math.ceil(totalCount.value / queryParams.value.limit);
+});
+
+const currentIncome = computed(() => {
+  return bills.value
+    .filter(b => b.recordEnum === 'INCOME')
+    .reduce((sum, b) => sum + b.amount, 0);
+});
+
+const currentExpenditure = computed(() => {
+  return bills.value
+    .filter(b => b.recordEnum === 'EXPENDITURE')
+    .reduce((sum, b) => sum + b.amount, 0);
+});
+
+const currentBalance = computed(() => {
+  return currentIncome.value - currentExpenditure.value;
+});
+
+// 获取类型枚举列表
+const fetchTypeLists = async () => {
+  try {
+    // 获取账单类型枚举
+    const typeResponse = await axios.get('http://localhost:8080/api/bill/getTypeList');
+    if (typeResponse.data.statusCode === 200) {
+      typeList.value = typeResponse.data.data;
     }
-  },
-  async mounted() {
-    // 获取类型枚举数据
-    await this.fetchTypeLists();
-    
-    // 获取用户accountId
-    await this.fetchUserAccountId();
 
-    // 检查路由参数，如果是从仪表盘跳转过来的添加操作，则自动打开弹窗
-    if (this.$route.query.action === 'add') {
-      this.showAddModal = true;
-      this.$router.replace({ query: {} });
+    // 获取记录类型枚举
+    const recordTypeResponse = await axios.get('http://localhost:8080/api/bill/getRecordType');
+    if (recordTypeResponse.data.statusCode === 200) {
+      recordTypeList.value = recordTypeResponse.data.data;
     }
-  },
-  methods: {
-    // 获取类型枚举列表
-    async fetchTypeLists() {
-      try {
-        // 获取账单类型枚举
-        const typeResponse = await axios.get('http://localhost:8080/api/bill/getTypeList');
-        if (typeResponse.data.statusCode === 200) {
-          this.typeList = typeResponse.data.data;
-        }
-
-        // 获取记录类型枚举
-        const recordTypeResponse = await axios.get('http://localhost:8080/api/bill/getRecordType');
-        if (recordTypeResponse.data.statusCode === 200) {
-          this.recordTypeList = recordTypeResponse.data.data;
-        }
-      } catch (error) {
-        console.error('获取类型枚举失败:', error);
-      }
-    },
-
-    // 获取用户accountId
-    async fetchUserAccountId() {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.error('未找到token，无法获取accountId');
-          return;
-        }
-
-        const response = await axios.post('http://localhost:8080/api/user/getUserAccount', {
-          token
-        });
-
-        if (response.data.statusCode === 200) {
-          this.queryParams.accountId = response.data.data.accountId || '';
-          console.log('获取到accountId:', this.queryParams.accountId);
-        } else {
-          console.error('获取accountId失败:', response.data.message);
-        }
-      } catch (error) {
-        console.error('获取accountId异常:', error);
-      }
-    },
-
-    // 查询类型改变时的处理
-    onSearchTypeChange() {
-      // 重置其他查询条件
-      this.resetQueryConditions();
-    },
-
-    // 重置查询条件
-    resetQueryConditions() {
-      this.queryParams.startDate = '';
-      this.queryParams.endDate = '';
-      this.queryParams.type = '';
-      this.queryParams.keyword = '';
-      this.queryParams.minAmount = null;
-      this.queryParams.maxAmount = null;
-      this.queryParams.accountId = '';
-      this.queryParams.page = 1;
-    },
-
-    // 重置所有查询
-    resetQuery() {
-      this.queryParams.searchType = '';
-      this.resetQueryConditions();
-      this.bills = [];
-      this.totalCount = 0;
-    },
-
-    // 打开添加账单弹窗
-    openAddModal() {
-      this.showAddModal = true;
-    },
-
-    // 关闭添加账单弹窗
-    closeAddModal() {
-      this.showAddModal = false;
-    },
-
-    // 添加成功回调 (统一处理单次和批量)
-    handleAddSuccess() {
-      this.closeAddModal();
-      // 如果当前有查询条件，刷新当前查询；否则重置查询显示最新数据
-      if (this.queryParams.searchType) {
-        this.searchBills();
-      } else {
-        // 默认查询最近的账单
-        this.queryParams.searchType = 'DATE_RANGE';
-        // 设置默认日期范围为当月
-        const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-        this.queryParams.startDate = firstDay.toISOString().split('T')[0];
-        this.queryParams.endDate = lastDay.toISOString().split('T')[0];
-        this.searchBills();
-      }
-    },
-
-    // 查询账单
-    async searchBills() {
-      if (!this.queryParams.searchType) {
-        alert('请选择查询方式');
-        return;
-      }
-
-      this.loading = true;
-      try {
-        const token = localStorage.getItem('token') || 'mock_token';
-        const requestBody = {
-          token,
-          ...this.queryParams
-        };
-
-        const response = await axios.post(
-          `http://localhost:8080/api/query/getBillList?searchType=${this.queryParams.searchType}`,
-          requestBody
-        );
-
-        if (response.data.statusCode === 200) {
-          this.bills = response.data.data || [];
-          // 模拟总条数（实际应该从接口返回）
-          this.totalCount = response.data.data ? response.data.data.length : 0;
-        } else {
-          alert('查询失败: ' + response.data.message);
-        }
-      } catch (error) {
-        console.error('查询账单失败:', error);
-        // 提供模拟数据用于展示
-        this.provideMockData();
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    // 查看详情
-    viewDetail(id) {
-      // 这里可以实现查看详情的逻辑，暂时用alert提示
-      alert(`查看账单ID: ${id} 的详情`);
-    },
-
-    // 删除账单
-    deleteBill(billId) {
-      if (confirm('确定要删除这条账单吗？')) {
-        fetch('http://localhost:8080/api/bill', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            token: localStorage.getItem('token'),
-            id: billId
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.statusCode === 200) {
-            alert('删除成功');
-            this.searchBills(); // 刷新列表
-          } else {
-            alert('删除失败: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('删除失败');
-        });
-      }
-    },
-
-    // 切换页码
-    changePage(page) {
-      this.queryParams.page = page;
-      this.searchBills();
-    },
-
-    // 获取记录类型名称
-    getRecordTypeName(recordEnum) {
-      const enumMap = {
-        'INCOME': '收入',
-        'EXPENDITURE': '支出',
-        'TRANSFER': '转账'
-      };
-      return enumMap[recordEnum] || recordEnum;
-    }
+  } catch (error) {
+    console.error('获取类型枚举失败:', error);
   }
 };
+
+// 获取用户accountId
+const fetchUserAccountId = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('未找到token，无法获取accountId');
+      return;
+    }
+
+    const response = await axios.post('http://localhost:8080/api/user/getUserAccount', {
+      token
+    });
+
+    if (response.data.statusCode === 200) {
+      queryParams.value.accountId = response.data.data.accountId || '';
+      console.log('获取到accountId:', queryParams.value.accountId);
+    } else {
+      console.error('获取accountId失败:', response.data.message);
+    }
+  } catch (error) {
+    console.error('获取accountId异常:', error);
+  }
+};
+
+// 查询类型改变时的处理
+const onSearchTypeChange = () => {
+  // 重置其他查询条件
+  resetQueryConditions();
+};
+
+// 重置查询条件
+const resetQueryConditions = () => {
+  queryParams.value.startDate = '';
+  queryParams.value.endDate = '';
+  queryParams.value.type = '';
+  queryParams.value.keyword = '';
+  queryParams.value.minAmount = null;
+  queryParams.value.maxAmount = null;
+  queryParams.value.accountId = '';
+  queryParams.value.page = 1;
+};
+
+// 重置所有查询
+const resetQuery = () => {
+  queryParams.value.searchType = '';
+  resetQueryConditions();
+  bills.value = [];
+  totalCount.value = 0;
+};
+
+// 打开添加账单弹窗
+const openAddModal = () => {
+  showAddModal.value = true;
+};
+
+// 关闭添加账单弹窗
+const closeAddModal = () => {
+  showAddModal.value = false;
+};
+
+// 添加成功回调 (统一处理单次和批量)
+const handleAddSuccess = () => {
+  closeAddModal();
+  // 如果当前有查询条件，刷新当前查询；否则重置查询显示最新数据
+  if (queryParams.value.searchType) {
+    searchBills();
+  } else {
+    // 默认查询最近的账单
+    queryParams.value.searchType = 'DATE_RANGE';
+    // 设置默认日期范围为当月
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    queryParams.value.startDate = firstDay.toISOString().split('T')[0];
+    queryParams.value.endDate = lastDay.toISOString().split('T')[0];
+    searchBills();
+  }
+};
+
+const buildRequestBody = (token, page = 1, limit) => {
+  const base = {
+    token
+  }
+
+  switch (queryParams.value.searchType) {
+    case 'DATE_RANGE':
+      return {
+        ...base,
+        page: page,
+        limit: limit,
+        startDate: queryParams.value.startDate,
+        endDate: queryParams.value.endDate
+      }
+    
+    case 'ACCOUNT':
+      return {
+        ...base,
+        searchType: "ACCOUNT",
+        accountId: queryParams.value.accountId,
+        page: page,
+        limit: limit
+    }
+
+    case 'USAGE_TYPE':
+      return {
+        ...base,
+        searchType: "TYPE",
+        type: queryParams.value.type.toUpperCase(),
+        page: page,
+        limit: limit
+      }
+    
+    case 'KEYWORD':
+      return {
+        ...base,
+        keyword: queryParams.value.keyword,
+        page: page,
+        limit: limit
+      };
+    case 'AMOUNT_RANGE':
+      return {
+        ...base,
+        searchType: "AMOUNT_RANGE",
+        minAmount: queryParams.value.minAmount,
+        maxAmount: queryParams.value.maxAmount,
+        page: page,
+        limit: limit
+      };
+    default:
+      return base;
+  }
+};
+
+// 获取所有账单数据（用于计算总数和第一页数据）
+const fetchAllBills = async (token) => {
+  let allBills = [];
+  let currentPage = 1;
+  let hasMore = true;
+  const limit = Number(queryParams.value.limit) || 10;
+
+  // 循环查询所有页或直到后端返回 total
+  while (hasMore) {
+    const requestBody = buildRequestBody(token, currentPage, limit);
+
+    const response = await axios.post(
+      `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
+      requestBody
+    );
+
+    if (response.data.statusCode === 200) {
+      const pageData = response.data.data || [];
+
+      // 优先使用后端返回的 total（若存在，则不需要拉取所有页）
+      if (typeof response.data.total === 'number') {
+        totalCount.value = response.data.total;
+        if (currentPage === 1) {
+          bills.value = pageData;
+        }
+        hasMore = false;
+      } else {
+        if (pageData.length > 0) {
+          allBills = allBills.concat(pageData);
+
+          if (pageData.length < limit) {
+            hasMore = false;
+          } else {
+            currentPage++;
+          }
+        } else {
+          hasMore = false;
+        }
+      }
+    } else {
+      alert('查询失败: ' + response.data.message);
+      hasMore = false;
+    }
+  }
+
+  // 兼容旧接口：如果后端没有返回 total，则使用本地合并结果
+  if (!totalCount.value) {
+    totalCount.value = allBills.length;
+    bills.value = allBills.slice(0, limit);
+  }
+
+  console.log(`查询完成：共 ${totalCount.value} 条记录`);
+};
+
+// 获取单页数据（用于翻页）
+const fetchSinglePage = async (token) => {
+  const limit = Number(queryParams.value.limit) || 10;
+  const page = Number(queryParams.value.page) || 1;
+  const requestBody = buildRequestBody(token, page, limit);
+
+  const response = await axios.post(
+    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
+    requestBody
+  );
+
+  if (response.data.statusCode === 200) {
+    const pageData = response.data.data || [];
+    bills.value = pageData;
+
+    if (typeof response.data.total === 'number') {
+      totalCount.value = response.data.total;
+    } else if (!totalCount.value && pageData.length > 0) {
+      totalCount.value = (page - 1) * limit + pageData.length;
+    }
+  } else {
+    alert('查询失败: ' + response.data.message);
+  }
+};
+
+// 查询账单
+const searchBills = async () => {
+  if (!queryParams.value.searchType) {
+    alert('请选择查询方式');
+    return;
+  }
+
+  loading.value = true;
+  try {
+    const token = localStorage.getItem('token');
+    
+    // 如果是第一页，需要获取所有数据来计算总数
+    if (queryParams.value.page === 1) {
+      await fetchAllBills(token);
+    } else {
+      // 非第一页，直接查询当前页
+      await fetchSinglePage(token);
+    }
+  } catch (error) {
+    console.error('查询账单失败:', error);
+    alert('查询失败，请稍后重试');
+  } finally {
+    loading.value = false;
+  }
+};
+
+const viewDetail = (id) => {
+  // TODO: 实现详细查看逻辑
+  alert(`查看账单ID: ${id} 的详情`);
+};
+
+const deleteBill = (billId) => {
+  if (confirm('确定要删除这条账单吗？')) {
+    fetch('http://localhost:8080/api/bill', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('token'),
+        id: billId
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.statusCode === 200) {
+        alert('删除成功');
+        searchBills(); // 刷新列表
+      } else {
+        alert('删除失败: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('删除失败');
+    });
+  }
+};
+
+// 切换页码
+const changePage = (page) => {
+  queryParams.value.page = page;
+  searchBills();
+};
+
+const getRecordTypeName = (recordEnum) => {
+  const enumMap = {
+    'INCOME': '收入',
+    'EXPENDITURE': '支出',
+    'TRANSFER': '转账'
+  };
+  return enumMap[recordEnum] || recordEnum;
+};
+
+onMounted(async () => {
+
+  await fetchTypeLists();
+  await fetchUserAccountId();
+  // 检查路由参数，如果是从仪表盘跳转过来的添加操作，则自动打开弹窗
+  if (route.query.action === 'add') {
+    showAddModal.value = true;
+    router.replace({ query: {} });
+  }
+});
 </script>
 
 <style scoped>
