@@ -129,6 +129,7 @@
           <div class="section-header">
             <h3>查询结果</h3>
             <span class="result-count">共 {{ totalCount }} 条记录</span>
+            <span v-if="isPageCapped" class="cap-note">（已封顶 {{ MAX_PAGES }} 页）</span>
           </div>
 
           <div v-if="loading" class="loading">加载中...</div>
@@ -221,8 +222,13 @@ const accountList = ref([]);
 const showAddModal = ref(false);
 
 // 计算属性
+// 最大页数封顶
+const MAX_PAGES = 50;
+const isPageCapped = ref(false);
+
 const totalPages = computed(() => {
-  return Math.ceil(totalCount.value / queryParams.value.limit);
+  const pages = Math.ceil(totalCount.value / queryParams.value.limit);
+  return Math.min(pages, MAX_PAGES);
 });
 
 const currentIncome = computed(() => {
@@ -438,7 +444,15 @@ const fetchFirstPage = async (token) => {
       // 如果后端没返回 total，估算一个较大值以允许翻页
       totalCount.value = pageData.length < limit ? pageData.length : limit * 10;
     }
-    
+    // 应用页数封顶（按每页条数 * MAX_PAGES）
+    const maxTotal = Number(queryParams.value.limit) * MAX_PAGES;
+    if (totalCount.value > maxTotal) {
+      totalCount.value = maxTotal;
+      isPageCapped.value = true;
+    } else {
+      isPageCapped.value = false;
+    }
+
     console.log(`第一页查询完成：本页 ${pageData.length} 条，总计约 ${totalCount.value} 条`);
   } else {
     alert('查询失败: ' + response.data.message);
@@ -480,7 +494,15 @@ const fetchNextPage = async (token) => {
         totalCount.value = Math.max(totalCount.value, currentEstimate + limit);
       }
     }
-    
+    // 应用页数封顶
+    const maxTotal = Number(queryParams.value.limit) * MAX_PAGES;
+    if (totalCount.value > maxTotal) {
+      totalCount.value = maxTotal;
+      isPageCapped.value = true;
+    } else {
+      isPageCapped.value = false;
+    }
+
     console.log(`第 ${queryParams.value.page} 页查询完成：本页 ${pageData.length} 条`);
   } else {
     alert('查询失败: ' + response.data.message);
@@ -928,6 +950,12 @@ onMounted(async () => {
 .pagination-controls .btn-small.active {
   background-color: #1890ff;
   color: white;
+}
+
+.cap-note {
+  color: #fa8c16;
+  font-size: 12px;
+  margin-left: 8px;
 }
 
 /* 弹窗样式 */
