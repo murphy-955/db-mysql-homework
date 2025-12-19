@@ -25,10 +25,16 @@ public class GetBillListOrderBySpecificMethodVo {
     private String startDate;
     private String endDate;
 
+    // 最小金额
     private BigDecimal minAmount;
+    // 最大金额
     private BigDecimal maxAmount;
 
+    // 用途
     private UsageEnum usageEnum;
 
+    // 账户id
     private String accountId;
+    // 关键字
+    private String keyword;
 }

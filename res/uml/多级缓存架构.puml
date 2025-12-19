@@ -1,0 +1,43 @@
+@startuml
+left to right direction
+
+actor 客户端
+
+package "应用层" {
+  [BillController]
+  [QueryController]
+}
+
+package "服务层" {
+  [BillServiceImpl]
+  [QueryServiceImpl]
+}
+
+package "缓存层" {
+  [LocalCache]
+  [RedisCache]
+  [CacheUtil]
+}
+
+package "数据层" {
+  [BillMapper]
+  database "OpenGauss" as DB
+}
+
+客户端 --> [BillController] : 使用
+客户端 --> [QueryController] : 使用
+[BillController] --> [BillServiceImpl] : 调用
+[QueryController] --> [QueryServiceImpl] : 调用
+[BillServiceImpl] --> [CacheUtil] : 调用
+[QueryServiceImpl] --> [CacheUtil] : 调用
+[CacheUtil] --> [LocalCache] : 读写
+[CacheUtil] --> [RedisCache] : 读写
+[BillServiceImpl] --> [BillMapper] : 调用
+[QueryServiceImpl] --> [BillMapper] : 调用
+[BillMapper] --> DB : 查询
+
+note bottom of [CacheUtil]
+  缓存工具类，提供
+  本地缓存和Redis操作
+end note
+@enduml

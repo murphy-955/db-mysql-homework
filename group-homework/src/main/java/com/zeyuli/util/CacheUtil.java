@@ -13,6 +13,7 @@ import com.zeyuli.pojo.po.BillPo;
 import com.zeyuli.pojo.vo.AddBillVo;
 import com.zeyuli.pojo.vo.InitAccountInfoVo;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2025-11-15 15:27
  */
 @Component
+@Slf4j
 public class CacheUtil {
     @Value("${cache.redis.expireTime}")
     private long basicExpireTime;
