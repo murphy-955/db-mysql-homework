@@ -10,6 +10,7 @@ import com.zeyuli.strategy.BillQueryStrategy;
 import com.zeyuli.util.CacheUtil;
 import com.zeyuli.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class QueryBillOrderByKeywordStrategyImpl implements BillQueryStrategy {
     private final JwtUtil jwtUtil;
 
@@ -48,25 +50,29 @@ public class QueryBillOrderByKeywordStrategyImpl implements BillQueryStrategy {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         // 缓存key
         // 格式：bill:list:id（前16位）:DATE_RANGE:startDate:endDate
-        String key = String.format(baseCacheBillListKey,
+        String key = String.format("%s:%s:%s:%s:%s:%s:%d:%d",
+                baseCacheBillListKey,
                 userId.substring(0, 16),
                 type,
                 vo.getEndDate().replace("-", ""),
                 vo.getStartDate().replace("-", ""),
+                vo.getKeyword().hashCode(),
                 vo.getPage(),
-                vo.getLimit()
-        );
-        // 1,2. 命中一级,二级缓存
+                vo.getLimit());
+
         List<GetBillListBo> billList;
         billList = cacheUtil.getBillListOrderBySpecialMethod(key);
-        if (billList != null) {
+        if (!billList.isEmpty()) {// 1,2. 命中一级,二级缓存
+            log.info("命中缓存:{}", key);
+            log.info(billList.toString());
             return billList;
         }
 
         // 3. 查数据库
-        billList = queryBillMapper.queryBillListOrderByKeyword(vo,userId);
+        billList = queryBillMapper.queryBillListOrderByKeyword(vo, userId);
         if (!billList.isEmpty()) {
             cacheUtil.asyncCacheBillListOrderBySpecificMethod(key, billList);
+            log.info("未命中缓存:{}", key);
             return billList;
         }
         // 4. 缓存空值

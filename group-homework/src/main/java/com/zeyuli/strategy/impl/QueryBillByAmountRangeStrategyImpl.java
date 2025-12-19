@@ -46,7 +46,7 @@ public class QueryBillByAmountRangeStrategyImpl implements BillQueryStrategy {
     public List<GetBillListBo> queryBillList(GetBillListOrderBySpecificMethodVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         String type = getSearchType();
-        String key = String.format(billListCacheKey,
+        String key = String.format("%s:%s:%s:%s-%s:%s-%s",billListCacheKey,
                 userId.substring(0,16),
                 type,
                 vo.getMinAmount().toString(),
@@ -56,7 +56,7 @@ public class QueryBillByAmountRangeStrategyImpl implements BillQueryStrategy {
         );
         // 从缓存中获取账单列表
         List<GetBillListBo> billList = cacheUtil.getBillListOrderBySpecialMethod(key);
-        if (billList != null) {
+        if (!billList.isEmpty()) {
             return billList;
         }
 
