@@ -12,7 +12,7 @@ import AdminLoginPage from './components/AdminLogin.vue';
 import AdminDashboardPage from './components/AdminDashboard.vue';
 import RegisterPage from './components/RegisterPage.vue';
 import BillAddWindow from './components/BillAddWindow.vue';
-import { setupMockInterceptor } from './util/mockInterceptor.js';
+// import { setupMockInterceptor } from './util/mockInterceptor.js';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -37,7 +37,7 @@ router.afterEach((to) => {
 });
 
 // 启用Mock拦截器（用于本地测试）
-setupMockInterceptor();
+// setupMockInterceptor();
 
 const app = createApp(App);
 app.use(router);
