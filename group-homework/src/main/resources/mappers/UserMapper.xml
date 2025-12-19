@@ -40,7 +40,7 @@
 
     <select id="selectAccountInfo"
             resultType="com.zeyuli.pojo.po.UserAccountPo">
-        SELECT user_id, account, balance
+        SELECT user_id, account, balance, description
         FROM bill_sys."user_account"
         WHERE user_id = #{userId}
     </select>

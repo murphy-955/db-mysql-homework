@@ -29,4 +29,6 @@ public class GetBillListOrderBySpecificMethodVo {
     private BigDecimal maxAmount;
 
     private UsageEnum usageEnum;
+
+    private String accountId;
 }

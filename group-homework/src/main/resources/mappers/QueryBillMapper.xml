@@ -24,7 +24,7 @@
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
         AND deleted = FALSE
-        AND account = #{vo.account}
+        AND account = #{vo.accountId}
         ORDER BY date DESC, id DESC
         LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>

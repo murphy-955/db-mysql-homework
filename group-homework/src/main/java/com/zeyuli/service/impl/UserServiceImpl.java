@@ -4,8 +4,10 @@ package com.zeyuli.service.impl;
 import com.zeyuli.annotations.CheckUserToken;
 import com.zeyuli.enm.StatusCodeEnum;
 import com.zeyuli.mappers.UserMapper;
+import com.zeyuli.pojo.po.UserAccountPo;
 import com.zeyuli.pojo.po.UserPo;
 import com.zeyuli.pojo.vo.InitAccountInfoVo;
+import com.zeyuli.pojo.vo.QueryUserAccountInfoVo;
 import com.zeyuli.pojo.vo.UserLoginVo;
 import com.zeyuli.pojo.vo.UserRegisterVo;
 import com.zeyuli.service.UserService;
@@ -17,10 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -125,5 +124,24 @@ public class UserServiceImpl implements UserService {
             return Response.success(null);
         }
         return Response.error(StatusCodeEnum.INIT_ACCOUNT_INFO_FAILED);
+    }
+
+    /**
+     * 获取用户所有的账户信息<br>
+     *
+     * @author : 李泽聿
+     * @since : 2025-12-19 15:55
+     * @param vo {@link QueryUserAccountInfoVo}
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     */
+    @Override
+    @CheckUserToken
+    public Map<String, Object> getUserAccountInfo(QueryUserAccountInfoVo vo) {
+        String id = jwtUtil.getUserInfo(vo.getToken())[0];
+        List<UserAccountPo> res = userMapper.selectAccountInfo(id);
+        if (res != null){
+            return Response.success(StatusCodeEnum.SUCCESS,res);
+        }
+        return Response.error(StatusCodeEnum.GET_USER_FAILED,"找不到相关账户信息");
     }
 }
