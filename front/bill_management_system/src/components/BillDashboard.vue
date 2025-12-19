@@ -64,7 +64,7 @@
           <!-- 动态查询条件 -->
           <div class="query-conditions">
             <!-- 日期查询 -->
-            <div v-if="queryParams.searchType === 'DATE_RANGE'" class="condition-group">
+            <div v-if="queryParams.usageEnum === 'DATE_RANGE'" class="condition-group">
               <label>开始日期：</label>
               <input type="date" v-model="queryParams.startDate" />
               <label>结束日期：</label>
@@ -72,7 +72,7 @@
             </div>
 
             <!-- 类型查询 -->
-            <div v-if="queryParams.searchType === 'USAGE_TYPE'" class="condition-group">
+            <div v-if="queryParams.usageEnum === 'USAGE_TYPE'" class="condition-group">
               <label>账单类型：</label>
               <select v-model="queryParams.type">
                 <option value="">请选择类型</option>
@@ -81,13 +81,13 @@
             </div>
 
             <!-- 关键字查询 -->
-            <div v-if="queryParams.searchType === 'KEYWORD'" class="condition-group">
+            <div v-if="queryParams.usageEnum === 'KEYWORD'" class="condition-group">
               <label>关键字：</label>
               <input type="text" v-model="queryParams.keyword" placeholder="请输入关键字" />
             </div>
 
             <!-- 账户查询 -->
-            <div v-if="queryParams.searchType === 'ACCOUNT'" class="condition-group">
+            <div v-if="queryParams.usageEnum === 'ACCOUNT'" class="condition-group">
               <label>选择账户：</label>
               <select v-model="queryParams.accountId">
                 <option value="">请选择账户</option>
@@ -98,7 +98,7 @@
             </div>
 
             <!-- 金额范围查询 -->
-            <div v-if="queryParams.searchType === 'AMOUNT_RANGE'" class="condition-group">
+            <div v-if="queryParams.usageEnum === 'AMOUNT_RANGE'" class="condition-group">
               <label>最小金额：</label>
               <input type="number" v-model.number="queryParams.minAmount" placeholder="请输入最小金额" />
               <label>最大金额：</label>
@@ -166,7 +166,7 @@
           <div class="pagination" v-if="bills.length > 0">
             <button class="btn btn-small" :disabled="queryParams.page <= 1" @click="changePage(queryParams.page - 1)">上一页</button>
             <span>第 {{ queryParams.page }} 页 / 共 {{ totalPages }} 页</span>
-            <button class="btn btn-small" :disabled="queryParams.page >= totalPages" @click="changePage(queryParams.page + 1)">下一页</button>
+            <button class="btn btn-small" :disabled="queryParams.page >= totalPages || queryParams.page >= MAX_PAGES" @click="changePage(queryParams.page + 1)">下一页</button>
           </div>
         </div>
       </div>
@@ -193,7 +193,7 @@ const router = useRouter();
 
 // 查询参数
 const queryParams = ref({
-  searchType: '',
+  usageEnum: '',
   page: 1,
   limit: 10,
   startDate: '',
@@ -304,7 +304,7 @@ const onSearchTypeChange = () => {
   resetQueryConditions();
   
   // 如果切换到账户查询，默认选中第一个账户
-  if (queryParams.value.searchType === 'ACCOUNT' && accountList.value.length > 0) {
+  if (queryParams.value.usageEnum === 'ACCOUNT' && accountList.value.length > 0) {
     queryParams.value.accountId = accountList.value[0].id;
   }
 };
@@ -328,7 +328,7 @@ const resetQueryConditions = () => {
 
 // 重置所有查询
 const resetQuery = () => {
-  queryParams.value.searchType = '';
+  queryParams.value.usageEnum = '';
   resetQueryConditions();
   bills.value = [];
   totalCount.value = 0;
@@ -348,11 +348,11 @@ const closeAddModal = () => {
 const handleAddSuccess = () => {
   closeAddModal();
   // 如果当前有查询条件，刷新当前查询；否则重置查询显示最新数据
-  if (queryParams.value.searchType) {
+  if (queryParams.value.usageEnum) {
     searchBills();
   } else {
     // 默认查询最近的账单
-    queryParams.value.searchType = 'DATE_RANGE';
+    queryParams.value.usageEnum = 'DATE_RANGE';
     // 设置默认日期范围为当月
     const now = new Date();
     const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -371,7 +371,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     endDate: queryParams.value.endDate
   }
 
-  switch (queryParams.value.searchType) {
+  switch (queryParams.value.usageEnum) {
     case 'DATE_RANGE':
       return {
         ...base,
@@ -382,7 +382,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'ACCOUNT':
       return {
         ...base,
-        searchType: "ACCOUNT",
+        usageEnum: "ACCOUNT",
         accountId: queryParams.value.accountId,
         page: page,
         limit: limit
@@ -391,7 +391,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'USAGE_TYPE':
       return {
         ...base,
-        searchType: "TYPE",
+        usageEnum: "TYPE",
         type: queryParams.value.type.toUpperCase(),
         page: page,
         limit: limit
@@ -407,7 +407,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'AMOUNT_RANGE':
       return {
         ...base,
-        searchType: "AMOUNT_RANGE",
+        usageEnum: "AMOUNT_RANGE",
         minAmount: queryParams.value.minAmount,
         maxAmount: queryParams.value.maxAmount,
         page: page,
@@ -424,7 +424,7 @@ const fetchFirstPage = async (token) => {
   const requestBody = buildRequestBody(token, 1, limit);
 
   const response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
+    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
     requestBody
   );
 
@@ -464,14 +464,14 @@ const fetchNextPage = async (token) => {
   const limit = Number(queryParams.value.limit) || 10;
   
   // 对于非日期查询，使用游标式分页：将 endDate 设为上一页最后一条的日期（向前翻页）
-  if (queryParams.value.searchType !== 'DATE_RANGE' && lastEndDate.value) {
+  if (queryParams.value.usageEnum !== 'DATE_RANGE' && lastEndDate.value) {
     queryParams.value.endDate = lastEndDate.value;
   }
   
   const requestBody = buildRequestBody(token, queryParams.value.page, limit);
 
   const response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.searchType}`,
+    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
     requestBody
   );
 
@@ -524,15 +524,16 @@ const getOneYearAgoDateStr = () => {
 
 // 查询账单
 const searchBills = async () => {
-  if (!queryParams.value.searchType) {
+  if (!queryParams.value.usageEnum) {
     alert('请选择查询方式');
     return;
   }
 
-  // 验证账户查询需要选择账户（用 String 转换确保正确判断）
-  if (queryParams.value.searchType === 'ACCOUNT') {
+  // 验证账户查询需要选择账户：确保非占位且在 accountList 中存在
+  if (queryParams.value.usageEnum === 'ACCOUNT') {
     const accId = String(queryParams.value.accountId || '').trim();
-    if (!accId) {
+    const exists = accountList.value.some(a => String(a.id) === accId);
+    if (!accId || !exists) {
       alert('请选择要查询的账户');
       return;
     }
@@ -544,7 +545,7 @@ const searchBills = async () => {
   lastEndDate.value = '';
 
   // 非日期查询时，设置合理的日期范围：从一年前到今天
-  if (queryParams.value.searchType !== 'DATE_RANGE') {
+  if (queryParams.value.usageEnum !== 'DATE_RANGE') {
     queryParams.value.startDate = getOneYearAgoDateStr(); // 下界：一年前
     queryParams.value.endDate = getTodayDateStr(); // 上界：今天
   }
@@ -596,7 +597,8 @@ const deleteBill = (billId) => {
 
 // 切换页码
 const changePage = async (page) => {
-  if (page < 1 || page > totalPages.value) return;
+  // 阻止超出允许页码（包含 MAX_PAGES）
+  if (page < 1 || page > totalPages.value || page > MAX_PAGES) return;
   
   // 如果是回到第一页，重新执行查询
   if (page === 1) {
