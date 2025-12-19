@@ -193,7 +193,12 @@ export function useStatistics() {
         return { expenseCount: 0, incomeCount: 0, totalCount: 0, accountsData: [], bills: [], countTruncated: false };
       }
 
-      const bills = billsResponse.data.data;
+      let bills = billsResponse.data.data;
+      // 规范 recordEnum 为大写，避免不同组件对大小写判断不一致
+      bills = bills.map(b => ({
+        ...b,
+        recordEnum: (b.recordEnum || '').toString().toUpperCase()
+      }));
       const expenseCount = bills.filter(bill => bill.recordEnum === 'EXPENDITURE').length;
       const incomeCount = bills.filter(bill => bill.recordEnum === 'INCOME').length;
       const totalCount = bills.length;

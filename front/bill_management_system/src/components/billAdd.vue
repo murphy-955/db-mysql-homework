@@ -182,7 +182,7 @@ export default {
         const requestData = {
           token,
           amount: this.billForm.amount,
-          recordEnum: this.billForm.type === '收入' ? 'income' : 'expenditure',
+          recordEnum: this.billForm.type === '收入' ? 'INCOME' : 'EXPENDITURE',
           type: this.billForm.category,
           date: this.billForm.date,
           account: this.billForm.account,

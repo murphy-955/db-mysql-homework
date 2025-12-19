@@ -6,6 +6,12 @@
     <!-- 右侧主内容区 -->
     <main class="main-content">
       <div class="content-wrapper">
+        <!--
+        测试用：生成假数据按钮（临时）
+        <div class="test-controls">
+          <button class="btn-generate" @click="generateMockDashboardData">生成假数据（仅测试）</button>
+        </div>
+        -->
         <!-- 顶部名言金句区域 -->
         <div class="quotes-banner" :style="{ backgroundImage: `url(${bannerUrl})` }">
           <div class="quote-content">
@@ -44,10 +50,10 @@
                 <div v-if="chartData.length === 0" class="no-data">暂无数据</div>
                 <div v-else class="bars-wrapper">
                   <div v-for="(item, index) in chartData" :key="index" class="bar-group">
-                    <div class="bar-column">
-                      <div class="bar income-bar" :style="{ height: getBarHeight(item.income) }" :title="'收入: ' + item.income"></div>
-                      <div class="bar expense-bar" :style="{ height: getBarHeight(item.expense) }" :title="'支出: ' + item.expense"></div>
-                    </div>
+                      <div class="bar-column">
+                        <div class="bar income-bar" :style="{ height: getBarHeight(item.income) }" :title="'收入: ' + item.income"></div>
+                        <div class="bar expense-bar" :style="{ height: getBarHeight(item.expense) }" :title="'支出: ' + item.expense"></div>
+                      </div>
                     <div class="bar-date">{{ item.date.slice(5) }}</div>
                   </div>
                 </div>
@@ -65,8 +71,8 @@
                     <span class="bill-category">{{ bill.type }}</span>
                     <span class="bill-desc">{{ bill.remarks }}</span>
                   </div>
-                  <div class="bill-amount" :class="bill.recordEnum === 'expenditure' ? 'text-expense' : 'text-income'">
-                    {{ bill.recordEnum === 'expenditure' ? '-' : '+' }}{{ bill.amount }}
+                  <div class="bill-amount" :class="bill.recordEnum === 'EXPENDITURE' ? 'text-expense' : 'text-income'">
+                    {{ bill.recordEnum === 'EXPENDITURE' ? '-' : '+' }}{{ bill.amount }}
                   </div>
                 </li>
               </ul>
@@ -159,6 +165,64 @@ const getBarHeight = (value) => {
   if (maxValue === 0) return '0%';
   return `${(value / maxValue) * 100}%`;
 };
+
+/*
+
+const generateMockDashboardData = () => {
+  const bills = [];
+  const now = new Date();
+  // 生成过去 15 天的数据，每天 1-2 条记录
+  for (let i = 14; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0] + ' 12:00:00';
+    // 随机收入或支出
+    const incomeVal = Math.random() > 0.6 ? Math.round(Math.random() * 2000 + 100) : 0;
+    const expenseVal = Math.random() > 0.4 ? Math.round(Math.random() * 800 + 20) : 0;
+
+    if (incomeVal > 0) {
+      bills.push({
+        id: `m-${dateStr}-in`,
+        recordEnum: 'INCOME',
+        amount: incomeVal,
+        date: dateStr,
+        account: '测试账户',
+        type: 'SALARY',
+        remarks: '模拟收入'
+      });
+    }
+    if (expenseVal > 0) {
+      bills.push({
+        id: `m-${dateStr}-ex`,
+        recordEnum: 'EXPENDITURE',
+        amount: expenseVal,
+        date: dateStr,
+        account: '测试账户',
+        type: ['FOOD','TRANSPORTATION','SHOPPING'][Math.floor(Math.random()*3)],
+        remarks: '模拟支出'
+      });
+    }
+  }
+
+  // 写入共享状态
+  allBills.value = bills.sort((a,b)=> new Date(a.date) - new Date(b.date));
+
+  // 计算统计数值用于展示
+  const totalIncome = bills.filter(b=>b.recordEnum==='INCOME').reduce((s,b)=>s+b.amount,0);
+  const totalExpense = bills.filter(b=>b.recordEnum==='EXPENDITURE').reduce((s,b)=>s+b.amount,0);
+  const incomeCount = bills.filter(b=>b.recordEnum==='INCOME').length;
+  const expenseCount = bills.filter(b=>b.recordEnum==='EXPENDITURE').length;
+
+  statistics.value.totalIncome = totalIncome;
+  statistics.value.totalExpense = totalExpense;
+  statistics.value.incomeCount = incomeCount;
+  statistics.value.expenseCount = expenseCount;
+  statistics.value.totalCount = bills.length;
+  statistics.value.balance = totalIncome - totalExpense;
+
+  console.log('已生成 dashboard 假数据', { bills, statistics: statistics.value });
+};
+*/
 
 /**
  * 跳转到统计页面
@@ -385,17 +449,28 @@ onMounted(() => {
   margin-top: 40px;
 }
 
+.bars-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  height: 180px;
+  gap: 4px;
+}
+
 .bar-group {
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1;
+  height: 100%;
 }
 
 .bar-column {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 100%;
+  height: 180px;
   width: 20px;
 }
 
@@ -422,6 +497,42 @@ onMounted(() => {
   text-align: center;
   color: #888;
 }
+
+.test-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.btn-generate {
+  background: #ffb74d;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.btn-generate:hover { opacity: 0.95 }
+
+/*
+.test-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.btn-generate {
+  background: #ffb74d;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.btn-generate:hover { opacity: 0.95 }
+*/
 
 .bill-list {
   list-style: none;

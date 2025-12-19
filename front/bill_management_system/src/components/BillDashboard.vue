@@ -53,7 +53,7 @@
             <label for="searchType">查询方式：</label>
             <select id="searchType" v-model="queryParams.searchType" @change="onSearchTypeChange">
               <option value="">请选择查询方式</option>
-              <option value="DATE">日期查询</option>
+              <option value="DATE_RANGE">日期查询</option>
               <option value="ACCOUNT">账户查询</option>
               <option value="USAGE_TYPE">类型查询</option>
               <option value="KEYWORD">关键字查询</option>
@@ -109,6 +109,9 @@
           <div class="query-actions">
             <button class="btn btn-primary" @click="searchBills">查询</button>
             <button class="btn btn-outline" @click="resetQuery">重置</button>
+            <!-- 临时测试按钮（已注释）
+            <button class="btn btn-secondary" @click="generateMockAccountData">生成 accountId 假数据</button>
+            -->
           </div>
         </div>
 
@@ -137,8 +140,8 @@
               <tr v-for="bill in bills" :key="bill.id">
                 <td>{{ bill.id }}</td>
                 <td>{{ getRecordTypeName(bill.recordEnum) }}</td>
-                <td :class="bill.recordEnum === 'income' ? 'income-amount' : 'expenditure-amount'">
-                  {{ bill.recordEnum === 'income' ? '+' : '-' }}{{ bill.amount.toFixed(2) }}
+                <td :class="bill.recordEnum === 'INCOME' ? 'income-amount' : 'expenditure-amount'">
+                  {{ bill.recordEnum === 'INCOME' ? '+' : '-' }}{{ bill.amount.toFixed(2) }}
                 </td>
                 <td>{{ bill.date }}</td>
                 <td>
@@ -211,12 +214,12 @@ export default {
     // 新增统计计算属性
     currentIncome() {
       return this.bills
-        .filter(b => b.recordEnum === 'income')
+        .filter(b => b.recordEnum === 'INCOME')
         .reduce((sum, b) => sum + b.amount, 0);
     },
     currentExpenditure() {
       return this.bills
-        .filter(b => b.recordEnum === 'expenditure')
+        .filter(b => b.recordEnum === 'EXPENDITURE')
         .reduce((sum, b) => sum + b.amount, 0);
     },
     currentBalance() {
@@ -226,6 +229,9 @@ export default {
   async mounted() {
     // 获取类型枚举数据
     await this.fetchTypeLists();
+    
+    // 获取用户accountId
+    await this.fetchUserAccountId();
 
     // 检查路由参数，如果是从仪表盘跳转过来的添加操作，则自动打开弹窗
     if (this.$route.query.action === 'add') {
@@ -250,6 +256,30 @@ export default {
         }
       } catch (error) {
         console.error('获取类型枚举失败:', error);
+      }
+    },
+
+    // 获取用户accountId
+    async fetchUserAccountId() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('未找到token，无法获取accountId');
+          return;
+        }
+
+        const response = await axios.post('http://localhost:8080/api/user/getUserAccount', {
+          token
+        });
+
+        if (response.data.statusCode === 200) {
+          this.queryParams.accountId = response.data.data.accountId || '';
+          console.log('获取到accountId:', this.queryParams.accountId);
+        } else {
+          console.error('获取accountId失败:', response.data.message);
+        }
+      } catch (error) {
+        console.error('获取accountId异常:', error);
       }
     },
 
@@ -297,7 +327,7 @@ export default {
         this.searchBills();
       } else {
         // 默认查询最近的账单
-        this.queryParams.searchType = 'DATE';
+        this.queryParams.searchType = 'DATE_RANGE';
         // 设置默认日期范围为当月
         const now = new Date();
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -389,63 +419,11 @@ export default {
     // 获取记录类型名称
     getRecordTypeName(recordEnum) {
       const enumMap = {
-        'income': '收入',
-        'expenditure': '支出',
-        'transfer': '转账'
+        'INCOME': '收入',
+        'EXPENDITURE': '支出',
+        'TRANSFER': '转账'
       };
       return enumMap[recordEnum] || recordEnum;
-    },
-
-    // 提供模拟数据用于展示
-    provideMockData() {
-      this.bills = [
-        {
-          id: 1,
-          recordEnum: 'income',
-          amount: 1500,
-          date: '2024-01-15',
-          account: '支付宝',
-          type: 'SALARY',
-          remarks: '工资收入'
-        },
-        {
-          id: 2,
-          recordEnum: 'expenditure',
-          amount: 200,
-          date: '2024-01-16',
-          account: '微信',
-          type: 'FOOD',
-          remarks: '午餐'
-        },
-        {
-          id: 3,
-          recordEnum: 'expenditure',
-          amount: 150,
-          date: '2024-01-16',
-          account: '支付宝',
-          type: 'TRANSPORTATION',
-          remarks: '打车费'
-        },
-        {
-          id: 4,
-          recordEnum: 'income',
-          amount: 500,
-          date: '2024-01-17',
-          account: '银行卡',
-          type: 'BONUS',
-          remarks: '项目奖金'
-        },
-        {
-          id: 5,
-          recordEnum: 'expenditure',
-          amount: 300,
-          date: '2024-01-18',
-          account: '微信',
-          type: 'SHOPPING',
-          remarks: '日用品'
-        }
-      ];
-      this.totalCount = 5;
     }
   }
 };

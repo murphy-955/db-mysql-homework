@@ -130,7 +130,7 @@ export default {
 
         // 跳过表头，从第二行开始
         const bills = rows.slice(1).map(row => ({
-          recordEnum: row[0] === '收入' ? 'income' : 'expenditure', // 映射记录类型
+          recordEnum: row[0] === '收入' ? 'INCOME' : 'EXPENDITURE', // 映射记录类型
           amount: parseFloat(row[1]), // 金额
           account: row[2], // 账户
           type: row[3], // 类型
