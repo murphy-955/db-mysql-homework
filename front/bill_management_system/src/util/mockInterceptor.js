@@ -5,6 +5,8 @@ import axios from 'axios';
 let mockBills = [];
 let mockAccounts = [];
 let mockEnums = {};
+// token -> accountId[] 映射，用于模拟不同用户有不同账户
+const tokenAccountMap = {};
 
 // 初始化加载mock数据
 const initMockData = async () => {
@@ -20,6 +22,16 @@ const initMockData = async () => {
     console.log('Mock数据加载成功:', { bills: mockBills.length, accounts: mockAccounts.length });
   } catch (error) {
     console.error('加载mock数据失败:', error);
+  }
+  // 初始化一个默认的映射示例（基于 accounts id）
+  try {
+    const ids = (mockAccounts || []).map(a => a.id);
+    // 简单示例：第一个账号分配给 user1，第二个给 user2，admin 拥有全部
+    if (ids.length > 0) tokenAccountMap['token-user1'] = [ids[0]];
+    if (ids.length > 1) tokenAccountMap['token-user2'] = [ids[1]];
+    if (ids.length > 0) tokenAccountMap['token-admin'] = ids.slice();
+  } catch (e) {
+    // ignore
   }
 };
 
@@ -126,11 +138,51 @@ export const setupMockInterceptor = async () => {
         
         // 获取用户账户列表
         if (url.includes('/api/user/getUserAccount')) {
+          // 如果传入 token，则返回与该 token 关联的账户（若存在映射）
+          const token = data.token;
+          if (token && tokenAccountMap[token]) {
+            const accIds = tokenAccountMap[token] || [];
+            const accounts = mockAccounts.filter(a => accIds.includes(a.id));
+            return {
+              data: {
+                statusCode: 200,
+                message: '获取成功',
+                data: accounts
+              }
+            };
+          }
+          // 否则返回全部账户（或空数组）
           return {
             data: {
               statusCode: 200,
               message: '获取成功',
               data: mockAccounts
+            }
+          };
+        }
+
+        // 模拟登录：返回 token，并为该 token 建立账户映射
+        if (url.includes('/api/user/login')) {
+          const username = String(data.username || '').trim();
+          // 生成简单 token
+          const token = `token-${username || 'guest'}`;
+          // 根据用户名分配账户（简单规则，可扩展）
+          if (username === 'user1') {
+            tokenAccountMap[token] = mockAccounts.length > 0 ? [mockAccounts[0].id] : [];
+          } else if (username === 'user2') {
+            tokenAccountMap[token] = mockAccounts.length > 1 ? [mockAccounts[1].id] : [];
+          } else if (username === 'admin') {
+            tokenAccountMap[token] = mockAccounts.map(a => a.id);
+          } else {
+            // 默认：把所有账户都给这个 token，用于测试
+            tokenAccountMap[token] = mockAccounts.map(a => a.id);
+          }
+
+          return {
+            data: {
+              statusCode: 200,
+              message: '登录成功',
+              data: { token }
             }
           };
         }

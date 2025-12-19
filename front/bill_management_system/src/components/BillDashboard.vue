@@ -50,8 +50,8 @@
 
           <!-- 查询方式选择 -->
           <div class="query-type-selector">
-            <label for="searchType">查询方式：</label>
-            <select id="searchType" v-model="queryParams.searchType" @change="onSearchTypeChange">
+            <label for="usageEnum">查询方式：</label>
+            <select id="usageEnum" v-model="queryParams.usageEnum" @change="onSearchTypeChange">
               <option value="">请选择查询方式</option>
               <option value="DATE_RANGE">日期查询</option>
               <option value="ACCOUNT">账户查询</option>
@@ -271,7 +271,8 @@ const fetchUserAccounts = async () => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
-      console.error('未找到token，无法获取账户列表');
+      console.warn('未找到token，无法获取账户列表');
+      accountList.value = [];
       return;
     }
 
@@ -284,15 +285,20 @@ const fetchUserAccounts = async () => {
       accountList.value = response.data.data || [];
       console.log('获取到账户列表:', accountList.value);
       
-      // 如果有账户，默认选中第一个
+      // 如果有账户，默认选中第一个（仅在账户列表不为空时）
       if (accountList.value.length > 0) {
         queryParams.value.accountId = accountList.value[0].id;
+      } else {
+        console.warn('当前用户没有可用账户');
+        queryParams.value.accountId = '';
       }
     } else {
       console.error('获取账户列表失败:', response.data.message);
+      accountList.value = [];
     }
   } catch (error) {
     console.error('获取账户列表异常:', error);
+    accountList.value = [];
   }
 };
 
@@ -382,7 +388,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'ACCOUNT':
       return {
         ...base,
-        usageEnum: "ACCOUNT",
+        searchType: "ACCOUNT",
         accountId: queryParams.value.accountId,
         page: page,
         limit: limit
@@ -391,7 +397,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'USAGE_TYPE':
       return {
         ...base,
-        usageEnum: "TYPE",
+        searchType: "TYPE",
         type: queryParams.value.type.toUpperCase(),
         page: page,
         limit: limit
@@ -407,7 +413,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'AMOUNT_RANGE':
       return {
         ...base,
-        usageEnum: "AMOUNT_RANGE",
+        searchType: "AMOUNT_RANGE",
         minAmount: queryParams.value.minAmount,
         maxAmount: queryParams.value.maxAmount,
         page: page,
@@ -531,10 +537,14 @@ const searchBills = async () => {
 
   // 验证账户查询需要选择账户：确保非占位且在 accountList 中存在
   if (queryParams.value.usageEnum === 'ACCOUNT') {
+    if (accountList.value.length === 0) {
+      alert('当前没有可用账户，请先添加账户');
+      return;
+    }
     const accId = String(queryParams.value.accountId || '').trim();
     const exists = accountList.value.some(a => String(a.id) === accId);
     if (!accId || !exists) {
-      alert('请选择要查询的账户');
+      alert('请选择有效的账户');
       return;
     }
   }

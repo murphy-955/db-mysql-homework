@@ -166,64 +166,6 @@ const getBarHeight = (value) => {
   return `${(value / maxValue) * 100}%`;
 };
 
-/*
-
-const generateMockDashboardData = () => {
-  const bills = [];
-  const now = new Date();
-  // 生成过去 15 天的数据，每天 1-2 条记录
-  for (let i = 14; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(now.getDate() - i);
-    const dateStr = d.toISOString().split('T')[0] + ' 12:00:00';
-    // 随机收入或支出
-    const incomeVal = Math.random() > 0.6 ? Math.round(Math.random() * 2000 + 100) : 0;
-    const expenseVal = Math.random() > 0.4 ? Math.round(Math.random() * 800 + 20) : 0;
-
-    if (incomeVal > 0) {
-      bills.push({
-        id: `m-${dateStr}-in`,
-        recordEnum: 'INCOME',
-        amount: incomeVal,
-        date: dateStr,
-        account: '测试账户',
-        type: 'SALARY',
-        remarks: '模拟收入'
-      });
-    }
-    if (expenseVal > 0) {
-      bills.push({
-        id: `m-${dateStr}-ex`,
-        recordEnum: 'EXPENDITURE',
-        amount: expenseVal,
-        date: dateStr,
-        account: '测试账户',
-        type: ['FOOD','TRANSPORTATION','SHOPPING'][Math.floor(Math.random()*3)],
-        remarks: '模拟支出'
-      });
-    }
-  }
-
-  // 写入共享状态
-  allBills.value = bills.sort((a,b)=> new Date(a.date) - new Date(b.date));
-
-  // 计算统计数值用于展示
-  const totalIncome = bills.filter(b=>b.recordEnum==='INCOME').reduce((s,b)=>s+b.amount,0);
-  const totalExpense = bills.filter(b=>b.recordEnum==='EXPENDITURE').reduce((s,b)=>s+b.amount,0);
-  const incomeCount = bills.filter(b=>b.recordEnum==='INCOME').length;
-  const expenseCount = bills.filter(b=>b.recordEnum==='EXPENDITURE').length;
-
-  statistics.value.totalIncome = totalIncome;
-  statistics.value.totalExpense = totalExpense;
-  statistics.value.incomeCount = incomeCount;
-  statistics.value.expenseCount = expenseCount;
-  statistics.value.totalCount = bills.length;
-  statistics.value.balance = totalIncome - totalExpense;
-
-  console.log('已生成 dashboard 假数据', { bills, statistics: statistics.value });
-};
-*/
-
 /**
  * 跳转到统计页面
  */
