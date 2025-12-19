@@ -302,8 +302,6 @@ const fetchUserAccounts = async () => {
   }
 };
 
-
-
 // 查询类型改变时的处理
 const onSearchTypeChange = () => {
   // 重置其他查询条件
@@ -395,16 +393,10 @@ const buildRequestBody = (token, page = 1, limit) => {
     }
 
     case 'USAGE_TYPE':
-
-      const selectedType = (queryParams.value.type || '').toUpperCase();
       return {
         ...base,
-<<<<<<< HEAD
         usageEnum: queryParams.value.type.toUpperCase(),
         type: queryParams.value.type.toUpperCase(),
-=======
-        usageEnum: selectedType || queryParams.value.usageEnum,
->>>>>>> 6a8f04cb671c452d4a7600b943d0338586cb66c6
         page: page,
         limit: limit
       }
@@ -435,15 +427,18 @@ const fetchFirstPage = async (token) => {
   const limit = Number(queryParams.value.limit) || 10;
   const requestBody = buildRequestBody(token, 1, limit);
 
-  // If the user selected a specific type for USAGE_TYPE, use that as searchType
-  const searchTypeParam = queryParams.value.usageEnum === 'USAGE_TYPE'
-    ? (queryParams.value.type ? queryParams.value.type.toUpperCase() : queryParams.value.usageEnum)
-    : queryParams.value.usageEnum;
-
-  const response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${searchTypeParam.value.usageEnu.value.usageEnumm}`,
-    requestBody
-  );
+  let response = null;
+  if (queryParams.value.type !== '') {
+    response = await axios.post(
+      `http://localhost:8080/api/query/getBillList?searchType=USAGE_TYPE`,
+      requestBody
+    );
+  } else {
+    response = await axios.post(
+      `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
+      requestBody
+    );
+  }
 
   if (response.data.statusCode === 200) {
     const pageData = response.data.data || [];
@@ -486,26 +481,16 @@ const fetchNextPage = async (token) => {
   }
   
   const requestBody = buildRequestBody(token, queryParams.value.page, limit);
-<<<<<<< HEAD
-  response = '';
-  if (queryParams.value.usageEnum === "USAGE_TYPE") {
+  let response = null;
+  if (queryParams.value.type !== '') {
     response = await axios.post(
       `http://localhost:8080/api/query/getBillList?searchType=USAGE_TYPE`,
       requestBody
     );
   } else {
     response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
-=======
-
-  const searchTypeParam = queryParams.value.usageEnum === 'USAGE_TYPE'
-    ? (queryParams.value.type ? queryParams.value.type.toUpperCase() : queryParams.value.usageEnum)
-    : queryParams.value.usageEnum;
-
-  const response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${searchTypeParam}`,
->>>>>>> 6a8f04cb671c452d4a7600b943d0338586cb66c6
-    requestBody
+      `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
+      requestBody
     );
   }
 
@@ -569,15 +554,12 @@ const searchBills = async () => {
       alert('当前没有可用账户，请先添加账户');
       return;
     }
-<<<<<<< HEAD
     // const accId = String(queryParams.value.accountId || '').trim();
     // const exists = accountList.value.some(a => String(a.id) === accId);
     // if (!accId || !exists) {
     //  alert('请选择有效的账户');
     //  return;
     // }
-=======
->>>>>>> 6a8f04cb671c452d4a7600b943d0338586cb66c6
   }
 
   // 重置到第一页
