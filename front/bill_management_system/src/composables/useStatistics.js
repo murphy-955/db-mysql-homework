@@ -189,13 +189,20 @@ export function useStatistics() {
         }
       );
 
-      if (billsResponse.data.statusCode !== 200 || !Array.isArray(billsResponse.data.data)) {
+      // 检查响应格式：需要访问 response.data.data 获取账单数组
+      if (billsResponse.data.statusCode !== 200) {
+        console.error('获取账单列表失败:', billsResponse.data.message);
         return { expenseCount: 0, incomeCount: 0, totalCount: 0, accountsData: [], bills: [], countTruncated: false };
       }
 
-      let bills = billsResponse.data.data;
+      // 从 response.data.data 中提取账单数组
+      const billsData = billsResponse.data.data;
+      if (!Array.isArray(billsData) || billsData.length === 0) {
+        return { expenseCount: 0, incomeCount: 0, totalCount: 0, accountsData: [], bills: [], countTruncated: false };
+      }
+
       // 规范 recordEnum 为大写，避免不同组件对大小写判断不一致
-      bills = bills.map(b => ({
+      let bills = billsData.map(b => ({
         ...b,
         recordEnum: (b.recordEnum || '').toString().toUpperCase()
       }));

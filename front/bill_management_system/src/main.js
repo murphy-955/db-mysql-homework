@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginPage from './components/Login.vue';
 import DashboardPage from './components/Dashboard.vue';
 import BillDashboardPage from './components/BillDashboard.vue';
+import BillDetailPage from './components/BillDetail.vue';
 import StatisticsPage from './components/ShowStatistics.vue';
 import AdminLoginPage from './components/AdminLogin.vue';
 import AdminDashboardPage from './components/AdminDashboard.vue';
@@ -18,6 +19,7 @@ const routes = [
   { path: '/login', component: LoginPage, meta: { title: '登录' } },
   { path: '/dashboard', component: DashboardPage, meta: { title: '仪表板' } },
   { path: '/bill-query', component: BillDashboardPage, meta: { title: '账单查询' } },
+  { path: '/bill-detail/:id?', name: 'BillDetail', component: BillDetailPage, meta: { title: '账单详情' } },
   { path: '/bill-add', component: BillAddWindow, meta: { title: '添加账单' } },
   { path: '/statistics', component: StatisticsPage, meta: { title: '统计' } },
   { path: '/admin-login', component: AdminLoginPage, meta: { title: '管理员登录' } },

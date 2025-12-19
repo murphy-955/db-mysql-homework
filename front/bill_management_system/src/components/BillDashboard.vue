@@ -155,7 +155,7 @@
                 </td>
                 <td>{{ bill.date }}</td>
                 <td>
-                  <button class="btn btn-small" @click="viewDetail(bill.id)">详情</button>
+                  <button class="btn btn-small" @click="viewDetail(bill)">详情</button>
                   <button class="btn btn-small btn-danger" @click="deleteBill(bill.id)">删除</button>
                 </td>
               </tr>
@@ -348,6 +348,8 @@ const closeAddModal = () => {
   showAddModal.value = false;
 };
 
+
+
 // 添加成功回调 (统一处理单次和批量)
 const handleAddSuccess = () => {
   closeAddModal();
@@ -411,7 +413,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'AMOUNT_RANGE':
       return {
         ...base,
-        usageEnum: "AMOUNT_RANGE",
+        // usageEnum: "AMOUNT_RANGE",
         minAmount: queryParams.value.minAmount,
         maxAmount: queryParams.value.maxAmount,
         page: page,
@@ -585,9 +587,13 @@ const searchBills = async () => {
   }
 };
 
-const viewDetail = (id) => {
-  // TODO: 实现详细查看逻辑
-  alert(`查看账单ID: ${id} 的详情`);
+const viewDetail = (billData) => {
+  // 直接传递账单数据到详情页，无需再次请求
+  router.push({
+    name: 'BillDetail',
+    params: { id: billData.id },
+    state: { bill: billData }
+  });
 };
 
 const deleteBill = (billId) => {
