@@ -32,8 +32,6 @@ CREATE TABLE IF NOT EXISTS bill_sys."user_account"
 CREATE INDEX idx_user_account_user_id ON bill_sys."user_account" (user_id);
 CREATE INDEX idx_user_account_user_id_account ON bill_sys."user_account" (user_id, account);
 
-SELECT *
-FROM bill_sys."user_account";
 -- 清空user_account表
 TRUNCATE TABLE bill_sys."user_account";
 DROP TABLE IF EXISTS bill_sys."user_account";

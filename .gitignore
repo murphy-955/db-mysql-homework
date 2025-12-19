@@ -1,6 +1,8 @@
-/.idea/
-/node_modules/
-/group-homework/target/
-/group-homework/src/main/resources/application.yaml
-/group-homework/src/main/resources/application-dev.yaml
-/group-homework/src/main/resources/static
+!/.idea/
+!/node_modules/
+!/group-homework/target/
+!/group-homework/src/main/resources/application.yaml
+!/group-homework/src/main/resources/application-dev.yaml
+!/group-homework/src/main/resources/static
+!/front/bill_management_system/node_modules/
+!/front/bill_management_system/dist/

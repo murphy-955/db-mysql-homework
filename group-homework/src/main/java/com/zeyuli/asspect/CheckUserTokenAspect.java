@@ -65,7 +65,7 @@ public class CheckUserTokenAspect {
                 .concat(userBaseKey);
         String redisToken = (String) redisTemplate.opsForValue().get(key);
         if (redisToken != null && redisToken.equals(token)) {
-            log.info("token校验命中缓存，耗时:{}", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
+//            log.info("token校验命中缓存，耗时:{}", TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start));
             return;
         }
         UserPo res = userMapper.selectUser(userInfo[0]);
