@@ -156,58 +156,23 @@
             <span>第 {{ queryParams.page }} 页 / 共 {{ totalPages }} 页</span>
             <button class="btn btn-small" :disabled="queryParams.page >= totalPages || queryParams.page >= MAX_PAGES" @click="changePage(queryParams.page + 1)">下一页</button>
           </div>
-
-          <!-- 内联详情展示 -->
-          <div v-if="detailLoading || selectedBill || detailError" class="inline-detail">
-            <div class="section-header">
-              <h3>账单详情</h3>
-            </div>
-
-            <div v-if="detailLoading" class="loading">加载详情...</div>
-            <div v-else-if="detailError" class="error-text">{{ detailError }}</div>
-            <div v-else-if="selectedBill" class="detail-card-inline">
-              <div class="detail-amount" :class="(selectedBill.recordEnum || '').toUpperCase() === 'INCOME' ? 'income' : 'expense'">
-                <div class="amount-main">
-                  {{ (selectedBill.recordEnum || '').toUpperCase() === 'INCOME' ? '+' : '-' }}{{ Number(selectedBill.amount || 0).toFixed(2) }}
-                </div>
-                <div class="amount-meta">
-                  {{ (selectedBill.recordEnum || '').toUpperCase() === 'INCOME' ? '收入' : '支出' }} · {{ formatDetailDate(selectedBill.date) }}
-                </div>
-              </div>
-
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <span class="label">账单ID</span>
-                  <span class="value">{{ selectedBill.id }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="label">分类</span>
-                  <span class="value">{{ selectedBill.type || '未分类' }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="label">账户</span>
-                  <span class="value">{{ selectedBill.account || '未指定' }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="label">记录类型</span>
-                  <span class="value">{{ getRecordTypeName(selectedBill.recordEnum) }}</span>
-                </div>
-              </div>
-
-              <div class="detail-remark">
-                <span class="label">备注</span>
-                <p class="value">{{ selectedBill.remarks || '暂无备注' }}</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </main>
 
+    <!-- 添加账单弹窗 -->
     <BillAddWindow
       v-if="showAddModal"
       @success="handleAddSuccess"
       @cancel="closeAddModal"
+    />
+
+    <!-- 账单详情弹窗 -->
+    <BillDetailWindow
+      v-if="showDetailModal"
+      :billId="selectedBillId"
+      :typeList="typeList"
+      @close="closeDetailModal"
     />
   </div>
 </template>
@@ -217,6 +182,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import BillAddWindow from './BillAddWindow.vue';
+import BillDetailWindow from './BillDetailWindow.vue';
 import Sidebar from './Sidebar.vue';
 
 // 路由相关
@@ -247,10 +213,9 @@ const lastEndDate = ref('');
 const typeList = ref({});
 const recordTypeList = ref({});
 
-// 当前选中的账单详情（内联展示）
-const selectedBill = ref(null);
-const detailLoading = ref(false);
-const detailError = ref('');
+// 账单详情弹窗
+const showDetailModal = ref(false);
+const selectedBillId = ref(null);
 
 const showAddModal = ref(false);
 
@@ -576,34 +541,19 @@ const searchBills = async () => {
   }
 };
 
-const viewDetail = async (billData) => {
+const viewDetail = (billData) => {
   if (!billData || !billData.id) {
     alert('缺少账单ID，无法查看详情');
     return;
   }
+  selectedBillId.value = billData.id;
+  showDetailModal.value = true;
+};
 
-  detailError.value = '';
-  detailLoading.value = true;
-  selectedBill.value = null;
-
-  try {
-    const token = localStorage.getItem('token');
-    const response = await axios.post('/api/bill/getBillDetail', {
-      token,
-      id: billData.id
-    });
-
-    if (response.data.statusCode === 200 && response.data.data) {
-      selectedBill.value = response.data.data;
-    } else {
-      detailError.value = response.data.message || '未找到该账单';
-    }
-  } catch (error) {
-    console.error('获取账单详情失败:', error);
-    detailError.value = '获取账单详情失败，请稍后重试';
-  } finally {
-    detailLoading.value = false;
-  }
+// 关闭详情弹窗
+const closeDetailModal = () => {
+  showDetailModal.value = false;
+  selectedBillId.value = null;
 };
 
 const deleteBill = (billId) => {
