@@ -17,17 +17,31 @@
           </button>
         </div>
 
+        <!-- 加载中 -->
+        <div v-if="loading" class="loading-card">
+          <div class="loading-spinner"></div>
+          <span>加载中...</span>
+        </div>
+
+        <!-- 错误或未找到 -->
+        <div v-else-if="errorMsg" class="empty-card">
+          <div class="empty-icon">⚠️</div>
+          <h3>无法获取账单</h3>
+          <p>{{ errorMsg }}</p>
+          <button class="btn btn-primary" @click="goBack">返回列表</button>
+        </div>
+
         <!-- 账单详情卡片 -->
-        <div v-if="bill" class="detail-card">
+        <div v-else-if="bill" class="detail-card">
           <!-- 金额展示区 -->
-          <div class="amount-section" :class="bill.recordEnum === 'INCOME' ? 'income' : 'expense'">
+          <div class="amount-section" :class="isIncome ? 'income' : 'expense'">
             <div class="amount-icon">
-              {{ bill.recordEnum === 'INCOME' ? '💰' : '💸' }}
+              {{ isIncome ? '💰' : '💸' }}
             </div>
             <div class="amount-info">
-              <span class="amount-label">{{ bill.recordEnum === 'INCOME' ? '收入' : '支出' }}</span>
+              <span class="amount-label">{{ recordLabel }}</span>
               <span class="amount-value">
-                {{ bill.recordEnum === 'INCOME' ? '+' : '-' }}¥{{ formatAmount(bill.amount) }}
+                {{ amountPrefix }}¥{{ formatAmount(bill.amount) }}
               </span>
             </div>
           </div>
@@ -88,12 +102,6 @@
             </div>
           </div>
 
-          <!-- 操作区 -->
-          <div class="action-section">
-            <button class="btn btn-outline btn-danger" @click="handleDelete">
-              <span class="icon">🗑️</span> 删除账单
-            </button>
-          </div>
         </div>
 
         <!-- 未找到账单 -->
@@ -109,19 +117,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import Sidebar from './Sidebar.vue';
 
+const route = useRoute();
 const router = useRouter();
 
-// 直接从路由 state 获取账单数据（由 BillDashboard 传入）
-const bill = ref(history.state?.bill || null);
+const loading = ref(true);
+const errorMsg = ref('');
+const bill = ref(null);
+
+const isIncome = computed(() => {
+  const val = (bill.value?.recordEnum || '').toString().toUpperCase();
+  return val === 'INCOME';
+});
+
+const recordLabel = computed(() => (isIncome.value ? '收入' : '支出'));
+const amountPrefix = computed(() => (isIncome.value ? '+' : '-'));
 
 // 格式化金额
 const formatAmount = (amount) => {
-  if (amount === null || amount === undefined) return '0.00';
+  if (amount === null || amount === undefined || isNaN(Number(amount))) return '0.00';
   return Number(amount).toFixed(2);
 };
 
@@ -129,12 +147,49 @@ const formatAmount = (amount) => {
 const formatDate = (dateStr) => {
   if (!dateStr) return '未知日期';
   const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return dateStr;
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
     weekday: 'long'
   });
+};
+
+// 获取账单详情
+const fetchBillDetail = async () => {
+  const routeStateBill = history.state?.bill || null;
+  const id = route.params.id || route.query.id || routeStateBill?.id;
+
+  if (!id) {
+    errorMsg.value = '缺少账单ID，无法查询详情';
+    loading.value = false;
+    return;
+  }
+
+  // 若路由 state 已有数据，先展示，再请求最新数据
+  if (routeStateBill) {
+    bill.value = routeStateBill;
+  }
+
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post('/api/bill/getBillDetail', {
+      token,
+      id
+    });
+
+    if (response.data.statusCode === 200 && response.data.data) {
+      bill.value = response.data.data;
+    } else {
+      errorMsg.value = response.data.message || '未找到该账单';
+    }
+  } catch (error) {
+    console.error('获取账单详情失败:', error);
+    errorMsg.value = '获取账单详情失败，请稍后重试';
+  } finally {
+    loading.value = false;
+  }
 };
 
 // 返回账单查询列表（优先回退历史记录，否则导航到 /bill-query）
@@ -146,30 +201,7 @@ const goBack = () => {
   }
 };
 
-// 删除账单
-const handleDelete = async () => {
-  if (!confirm('确定要删除这条账单吗？此操作不可恢复。')) {
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:8080/api/bill', {
-      token,
-      id: bill.value.id
-    });
-
-    if (response.data.statusCode === 200) {
-      alert('删除成功');
-      goBack();
-    } else {
-      alert('删除失败: ' + response.data.message);
-    }
-  } catch (error) {
-    console.error('删除账单失败:', error);
-    alert('删除失败，请稍后重试');
-  }
-};
+onMounted(fetchBillDetail);
 </script>
 
 <style scoped>
@@ -429,13 +461,7 @@ const handleDelete = async () => {
 }
 
 /* 操作区域 */
-.action-section {
-  padding: 24px 32px;
-  border-top: 1px solid #f0f0f0;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
+
 
 /* 空状态 */
 .empty-card {
@@ -462,6 +488,34 @@ const handleDelete = async () => {
   margin: 0 0 24px 0;
   color: #8c8c8c;
   font-size: 14px;
+}
+
+/* 加载状态 */
+.loading-card {
+  background: white;
+  border-radius: 16px;
+  padding: 60px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #8c8c8c;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #1890ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* 响应式适配 */

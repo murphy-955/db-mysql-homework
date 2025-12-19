@@ -156,7 +156,7 @@
                 <td>{{ bill.date }}</td>
                 <td>
                   <button class="btn btn-small" @click="viewDetail(bill)">详情</button>
-                  <button class="btn btn-small btn-danger" @click="deleteBill(bill.id)">删除</button>
+                  <!--<button class="btn btn-small btn-danger" @click="deleteBill(bill.id)">删除</button>-->
                 </td>
               </tr>
             </tbody>
