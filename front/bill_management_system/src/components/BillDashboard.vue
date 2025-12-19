@@ -388,17 +388,18 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'ACCOUNT':
       return {
         ...base,
-        searchType: "ACCOUNT",
+        usageEnum: "ACCOUNT",
         accountId: queryParams.value.accountId,
         page: page,
         limit: limit
     }
 
     case 'USAGE_TYPE':
+
+      const selectedType = (queryParams.value.type || '').toUpperCase();
       return {
         ...base,
-        searchType: "TYPE",
-        type: queryParams.value.type.toUpperCase(),
+        usageEnum: selectedType || queryParams.value.usageEnum,
         page: page,
         limit: limit
       }
@@ -413,7 +414,7 @@ const buildRequestBody = (token, page = 1, limit) => {
     case 'AMOUNT_RANGE':
       return {
         ...base,
-        searchType: "AMOUNT_RANGE",
+        usageEnum: "AMOUNT_RANGE",
         minAmount: queryParams.value.minAmount,
         maxAmount: queryParams.value.maxAmount,
         page: page,
@@ -429,8 +430,13 @@ const fetchFirstPage = async (token) => {
   const limit = Number(queryParams.value.limit) || 10;
   const requestBody = buildRequestBody(token, 1, limit);
 
+  // If the user selected a specific type for USAGE_TYPE, use that as searchType
+  const searchTypeParam = queryParams.value.usageEnum === 'USAGE_TYPE'
+    ? (queryParams.value.type ? queryParams.value.type.toUpperCase() : queryParams.value.usageEnum)
+    : queryParams.value.usageEnum;
+
   const response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
+    `http://localhost:8080/api/query/getBillList?searchType=${searchTypeParam.value.usageEnu.value.usageEnumm}`,
     requestBody
   );
 
@@ -476,8 +482,12 @@ const fetchNextPage = async (token) => {
   
   const requestBody = buildRequestBody(token, queryParams.value.page, limit);
 
+  const searchTypeParam = queryParams.value.usageEnum === 'USAGE_TYPE'
+    ? (queryParams.value.type ? queryParams.value.type.toUpperCase() : queryParams.value.usageEnum)
+    : queryParams.value.usageEnum;
+
   const response = await axios.post(
-    `http://localhost:8080/api/query/getBillList?searchType=${queryParams.value.usageEnum}`,
+    `http://localhost:8080/api/query/getBillList?searchType=${searchTypeParam}`,
     requestBody
   );
 
@@ -539,12 +549,6 @@ const searchBills = async () => {
   if (queryParams.value.usageEnum === 'ACCOUNT') {
     if (accountList.value.length === 0) {
       alert('当前没有可用账户，请先添加账户');
-      return;
-    }
-    const accId = String(queryParams.value.accountId || '').trim();
-    const exists = accountList.value.some(a => String(a.id) === accId);
-    if (!accId || !exists) {
-      alert('请选择有效的账户');
       return;
     }
   }
