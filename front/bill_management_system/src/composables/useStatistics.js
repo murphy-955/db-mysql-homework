@@ -8,6 +8,8 @@ import axios from 'axios';
 export function useStatistics() {
   // ==================== 响应式数据 ====================
   const loading = ref(false);
+  const BILL_LIMIT = 100;
+
   const statistics = ref({
     totalExpense: 0,
     totalIncome: 0,
@@ -16,7 +18,8 @@ export function useStatistics() {
     incomeTrend: 0,
     expenseCount: 0,
     incomeCount: 0,
-    totalCount: 0
+    totalCount: 0,
+    countTruncated: false
   });
   const expenseCategories = ref([]);
   const accountsData = ref([]);
@@ -173,41 +176,29 @@ export function useStatistics() {
    */
   const getBillNum = async (token, queryStartDate, queryEndDate) => {
     try {
-      let allBillsList = [];
-      let page = 1;
-      const limit = 100;
-      let hasMore = true;
-
-      while (hasMore) {
-        const billsResponse = await axios.post(
-          `/api/query/getBillList?searchType=DATE_RANGE&page=${page}&limit=${limit}`,
-          {
-            token,
-            page,
-            limit,
-            startDate: queryStartDate,
-            endDate: queryEndDate
-          }
-        );
-
-        if (billsResponse.data.statusCode === 200 && billsResponse.data.data) {
-          const currentBills = billsResponse.data.data;
-          allBillsList = allBillsList.concat(currentBills);
-
-          if (currentBills.length < limit) {
-            hasMore = false;
-          } else {
-            page++;
-          }
-        } else {
-          hasMore = false;
+      const limit = BILL_LIMIT;
+      const page = 1;
+      const billsResponse = await axios.post(
+        `/api/query/getBillList?searchType=DATE_RANGE&page=${page}&limit=${limit}`,
+        {
+          token,
+          page,
+          limit,
+          startDate: queryStartDate,
+          endDate: queryEndDate
         }
+      );
+
+      if (billsResponse.data.statusCode !== 200 || !Array.isArray(billsResponse.data.data)) {
+        return { expenseCount: 0, incomeCount: 0, totalCount: 0, accountsData: [], bills: [], countTruncated: false };
       }
 
-      const bills = allBillsList;
+      const bills = billsResponse.data.data;
       const expenseCount = bills.filter(bill => bill.recordEnum === 'EXPENDITURE').length;
       const incomeCount = bills.filter(bill => bill.recordEnum === 'INCOME').length;
       const totalCount = bills.length;
+
+      const countTruncated = bills.length >= limit;
 
       const accountMap = new Map();
       bills.forEach(bill => {
@@ -235,10 +226,10 @@ export function useStatistics() {
 
       const accountsDataResult = Array.from(accountMap.values()).sort((a, b) => b.totalCount - a.totalCount);
 
-      return { expenseCount, incomeCount, totalCount, accountsData: accountsDataResult, bills };
+      return { expenseCount, incomeCount, totalCount, accountsData: accountsDataResult, bills, countTruncated };
     } catch (error) {
       console.error('获取账单列表失败:', error);
-      return { expenseCount: 0, incomeCount: 0, totalCount: 0, accountsData: [], bills: [] };
+      return { expenseCount: 0, incomeCount: 0, totalCount: 0, accountsData: [], bills: [], countTruncated: false };
     }
   };
 
@@ -309,6 +300,7 @@ export function useStatistics() {
       statistics.value.expenseCount = billStats.expenseCount;
       statistics.value.incomeCount = billStats.incomeCount;
       statistics.value.totalCount = billStats.totalCount;
+      statistics.value.countTruncated = billStats.countTruncated;
       accountsData.value = billStats.accountsData;
       allBills.value = billStats.bills;
 
@@ -331,6 +323,7 @@ export function useStatistics() {
     // 常量
     CATEGORY_COLORS,
     TYPE_ENUM,
+    BILL_LIMIT,
 
     // 方法
     getDateRange,

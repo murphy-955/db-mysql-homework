@@ -79,7 +79,7 @@
               <span class="income-count">{{ statistics.incomeCount }}</span> 笔收入
             </div>
             <div class="card-desc">
-              共 {{ statistics.totalCount }} 笔账单
+              共 {{ totalCountDisplay }} 笔账单
             </div>
           </div>
         </div>
@@ -177,7 +177,8 @@ const {
   expenseCategories,
   accountsData,
   allBills,
-  loadStatistics: loadStatisticsCore
+  loadStatistics: loadStatisticsCore,
+  BILL_LIMIT
 } = useStatistics();
 
 // ==================== ShowStatistics 特有的响应式数据 ====================
@@ -239,6 +240,10 @@ const pieChartOptions = {
     legend: { position: 'bottom' }
   }
 };
+
+const totalCountDisplay = computed(() => (
+  statistics.value.countTruncated ? `${BILL_LIMIT}+` : statistics.value.totalCount
+));
 
 // ==================== 方法 ====================
 
