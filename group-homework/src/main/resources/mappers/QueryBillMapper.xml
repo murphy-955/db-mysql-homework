@@ -11,7 +11,7 @@
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
         AND deleted = FALSE
-        <if test="vo.startDate != null and vo.endDate != null">
+        <if test="vo.startDate == null and vo.endDate == null">
             AND date BETWEEN #{vo.startDate} AND #{vo.endDate}
         </if>
         ORDER BY date DESC, id DESC
@@ -35,11 +35,14 @@
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
         AND deleted = FALSE
-        <if test="vo.startAmount != null and vo.endAmount != null">
-            AND amount BETWEEN #{vo.startAmount} AND #{vo.endAmount}
+        <if test="vo.minAmount != null">
+            AND amount >= #{vo.minAmount}
+        </if>
+        <if test="vo.maxAmount != null">
+            AND amount &lt;= #{vo.maxAmount}
         </if>
         ORDER BY date DESC, id DESC
-        LIMIT #{vo.limit} OFFSET #{vo.page}
+        LIMIT #{vo.limit} OFFSET #{vo.limit} * (#{vo.page} - 1)
     </select>
 
     <!-- 按收支类型 -->
@@ -48,7 +51,7 @@
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
         AND deleted = FALSE
-        AND record_enum = #{vo.usageEnum}
+        AND type = #{vo.usageEnum}
         ORDER BY date DESC, id DESC
         LIMIT #{vo.limit} OFFSET #{vo.page}
     </select>

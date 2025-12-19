@@ -4,17 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix；移除无用的日志输出">
-      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/QueryUserAccountInfoVo.java" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 新增获取用户账户信息接口">
+      <change afterPath="$PROJECT_DIR$/res/uml/多级缓存架构.puml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/res/uml/账单查询流程.puml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/asspect/CheckUserTokenAspect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/QueryBillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/QueryBillMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAccountStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAccountStrategyImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAmountRangeStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAmountRangeStrategyImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillOrderByKeywordStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillOrderByKeywordStrategyImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/UserMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +29,8 @@
         <option value="Enum" />
         <option value="Exception" />
         <option value="Interface" />
-        <option value="UML Sequence" />
         <option value="Class" />
+        <option value="UML Sequence" />
       </list>
     </option>
   </component>
@@ -70,73 +72,74 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultPlantUmlFileTemplate": "UML Sequence",
-    "HTTP 请求.Request | #1.executor": "Run",
-    "HTTP 请求.Request | #10.executor": "Run",
-    "HTTP 请求.Request | #11.executor": "Run",
-    "HTTP 请求.Request | #12.executor": "Run",
-    "HTTP 请求.Request | #2.executor": "Run",
-    "HTTP 请求.Request | #3.executor": "Run",
-    "HTTP 请求.Request | #4.executor": "Run",
-    "HTTP 请求.Request | #5.executor": "Run",
-    "HTTP 请求.Request | #6.executor": "Run",
-    "HTTP 请求.Request | #7.executor": "Run",
-    "HTTP 请求.Request | #8.executor": "Run",
-    "HTTP 请求.Request | #9.executor": "Run",
-    "JUnit.InsertDataTest.executor": "Run",
-    "JUnit.InsertDataTest.testInsertBatchData.executor": "Run",
-    "JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts.executor": "Run",
-    "JUnit.TestDbConnect.testConnect.executor": "Run",
-    "JUnit.TestDbConnect.testConnection.executor": "Run",
-    "JUnit.TestDbConnect.testSimpleConnection.executor": "Run",
-    "JUnit.TestDbConnect.testSqlSentence.executor": "Run",
-    "Maven.group-homework [clean].executor": "Run",
-    "Maven.group-homework [compile].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.Main.executor": "Run",
-    "extract.method.default.visibility": "private",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/fzu/mysql",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Run",
-    "npm.install.executor": "Run",
-    "onboarding.tips.debug.path": "D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java",
-    "project.structure.last.edited": "项目",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "D:\\softenvironment\\IntelliJ IDEA 2025.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true",
-    "数据库脚本.script.sql.executor": "Run"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultPlantUmlFileTemplate&quot;: &quot;UML Sequence&quot;,
+    &quot;HTTP 请求.Request | #1.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #10.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #11.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #12.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #2.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #3.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #4.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #5.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #6.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #7.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #8.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #9.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.generated-requests | #9.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InsertDataTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InsertDataTest.testInsertBatchData.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testConnect.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testConnection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testSimpleConnection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TestDbConnect.testSqlSentence.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.group-homework [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.group-homework [compile].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.Main.executor&quot;: &quot;Run&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/fzu/mysql&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.install.executor&quot;: &quot;Run&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\softenvironment\\IntelliJ IDEA 2025.2.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;数据库脚本.script.sql.executor&quot;: &quot;Run&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql",
-      "java.sql.Driver",
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;,
+      &quot;java.sql.Driver&quot;,
+      &quot;postgresql&quot;
     ],
-    "RunConfigurationTargetLRU": [
-      "c90cbe3f-407d-4585-87e6-d9306dabf209"
+    &quot;RunConfigurationTargetLRU&quot;: [
+      &quot;c90cbe3f-407d-4585-87e6-d9306dabf209&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -214,8 +217,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="HTTP 请求.generated-requests | #9" />
         <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
+        <item itemvalue="HTTP 请求.generated-requests | #9" />
         <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
         <item itemvalue="数据库脚本.script.sql" />
         <item itemvalue="HTTP 请求.Request | #12" />
@@ -295,7 +298,8 @@
       <workItem from="1766067056818" duration="1093000" />
       <workItem from="1766068300153" duration="3314000" />
       <workItem from="1766098165466" duration="76000" />
-      <workItem from="1766124149109" duration="6836000" />
+      <workItem from="1766124149109" duration="14599000" />
+      <workItem from="1766145133807" duration="12406000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -545,7 +549,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766129229872</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="feat: 新增获取用户账户信息接口">
+      <option name="closed" value="true" />
+      <created>1766131461569</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1766131461569</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -583,7 +595,8 @@
     <MESSAGE value="feat: 更新插入账单时的事务管理，以及凌晨2点对账的兜底方案" />
     <MESSAGE value="docs: 新增数据库理论课作业" />
     <MESSAGE value="fix；移除无用的日志输出" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix；移除无用的日志输出" />
+    <MESSAGE value="feat: 新增获取用户账户信息接口" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 新增获取用户账户信息接口" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -45,7 +45,7 @@ public class QueryBillByUsageTypeStrategyImpl implements BillQueryStrategy {
     public List<GetBillListBo> queryBillList(GetBillListOrderBySpecificMethodVo vo) {
         String userId = jwtUtil.getUserInfo(vo.getToken())[0];
         String type = getSearchType();
-        String key = String.format(billListCacheKey,
+        String key = String.format("%s:%s:%s:%s:%s-%s",billListCacheKey,
                 userId.substring(0,16),
                 type,
                 vo.getUsageEnum().name(),
@@ -53,11 +53,11 @@ public class QueryBillByUsageTypeStrategyImpl implements BillQueryStrategy {
                 vo.getLimit()
         );
         List<GetBillListBo> billList = cacheUtil.getBillListOrderBySpecialMethod(key);
-        if(billList != null){
+        if(!billList.isEmpty()){
             return billList;
         }
         billList = queryBillMapper.queryBillListOrderByUsageType(vo, userId);
-        if (billList != null){
+        if (!billList.isEmpty()){
             cacheUtil.asyncCacheBillListOrderBySpecificMethod(key,billList);
         }
         cacheUtil.asyncCacheNullKey(key);

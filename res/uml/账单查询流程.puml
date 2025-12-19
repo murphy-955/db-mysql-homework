@@ -1,0 +1,32 @@
+@startuml
+title 账单列表多级缓存流程
+
+start
+:客户端请求获取账单列表;
+:调用 BillController.getBillList 方法;
+:验证用户 Token(AOP);
+
+:尝试从一级缓存(Caffeine)获取数据;
+if (命中一级缓存?) then
+  :返回缓存数据;
+  stop
+else
+  :尝试从二级缓存(Redis)获取数据;
+  if (命中二级缓存?) then
+    :返回缓存数据;
+    stop
+  else
+    :从数据库查询数据;
+    if (查询结果为空?) then
+      :缓存空值到 Redis;
+      :返回错误信息;
+      stop
+    else
+      :异步写入一级缓存(Caffeine);
+      :异步写入二级缓存(Redis);
+      :返回查询结果;
+      stop
+    endif
+  endif
+endif
+@enduml
