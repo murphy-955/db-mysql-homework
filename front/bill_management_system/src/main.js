@@ -7,12 +7,12 @@ import LoginPage from './components/Login.vue';
 import DashboardPage from './components/Dashboard.vue';
 import BillDashboardPage from './components/BillDashboard.vue';
 import BillDetailPage from './components/BillDetail.vue';
-import BillAccountSearchPage from './components/BillAccountSearch.vue';
 import StatisticsPage from './components/ShowStatistics.vue';
 import AdminLoginPage from './components/AdminLogin.vue';
 import AdminDashboardPage from './components/AdminDashboard.vue';
 import RegisterPage from './components/RegisterPage.vue';
 import BillAddWindow from './components/BillAddWindow.vue';
+import BillAccountSearchPage from './components/BillAccountSearch.vue';
 // import { setupMockInterceptor } from './util/mockInterceptor.js';
 
 const routes = [
@@ -21,8 +21,8 @@ const routes = [
   { path: '/dashboard', component: DashboardPage, meta: { title: '仪表板' } },
   { path: '/bill-query', component: BillDashboardPage, meta: { title: '账单查询' } },
   { path: '/bill-detail/:id?', name: 'BillDetail', component: BillDetailPage, meta: { title: '账单详情' } },
-  { path: '/account-search', component: BillAccountSearchPage, meta: { title: '账户查询' } },
   { path: '/bill-add', component: BillAddWindow, meta: { title: '添加账单' } },
+  { path: '/account-search', component: BillAccountSearchPage, meta: { title: '账户流水' } },
   { path: '/statistics', component: StatisticsPage, meta: { title: '统计' } },
   { path: '/admin-login', component: AdminLoginPage, meta: { title: '管理员登录' } },
   { path: '/admin-dashboard', component: AdminDashboardPage, meta: { title: '管理员控制台' } },

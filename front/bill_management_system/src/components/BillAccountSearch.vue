@@ -1,101 +1,91 @@
 <template>
-  <div class="dashboard-layout">
+  <div class="page-layout">
     <!-- 左侧侧边栏 -->
     <Sidebar />
 
     <!-- 右侧主内容区 -->
     <main class="main-content">
       <div class="content-wrapper">
-        <!-- 顶部标题 -->
-        <div class="dashboard-header">
+        <!-- 顶部头部 -->
+        <div class="page-header">
           <div class="header-title">
-            <h2>账户查询</h2>
-            <span class="subtitle">按账户查看流水记录</span>
+            <h2>账户流水查询</h2>
+            <span class="subtitle">按账户查看收支明细</span>
           </div>
         </div>
 
-        <!-- 账户选择区域 -->
+        <!-- 查询区域 -->
         <div class="query-section">
-          <div class="section-header">
-            <h3>选择账户</h3>
-          </div>
-
-          <div v-if="accountLoading" class="loading">加载账户列表...</div>
-
-          <div v-else-if="accountList.length === 0" class="no-data">
-            暂无可用账户，请先添加账户
-          </div>
-
-          <div v-else class="account-cards">
-            <div
-              v-for="account in accountList"
-              :key="account.id"
-              class="account-card"
-              :class="{ active: selectedAccountId === account.id }"
-              @click="selectAccount(account)"
-            >
-              <div class="account-icon">💳</div>
-              <div class="account-info">
-                <span class="account-name">{{ account.account }}</span>
-                <span class="account-balance">余额: ¥{{ formatAmount(account.balance) }}</span>
-                <span v-if="account.description" class="account-desc">{{ account.description }}</span>
-              </div>
-              <div v-if="selectedAccountId === account.id" class="check-icon">✓</div>
-            </div>
-          </div>
-
-          <!-- 分页设置 -->
-          <div v-if="selectedAccountId" class="pagination-settings">
-            <label>每页条数：</label>
-            <select v-model.number="queryParams.limit" @change="searchBills">
-              <option :value="10">10条</option>
-              <option :value="20">20条</option>
-              <option :value="50">50条</option>
+          <!-- 账户选择区域 -->
+          <div class="account-selector">
+            <label class="selector-label">选择账户：</label>
+            <select v-model="selectedAccountId" class="account-select" @change="handleAccountChange">
+              <option value="">请选择账户</option>
+              <option v-for="account in accountList" :key="account.id" :value="account.id">
+                {{ account.account }} (余额: {{ formatBalance(account.balance) }})
+              </option>
             </select>
+            <button class="btn btn-primary" @click="searchBills" :disabled="!selectedAccountId">
+              查询流水
+            </button>
+          </div>
+
+          <!-- 账户信息卡片 -->
+          <div v-if="selectedAccount" class="account-info-card">
+            <div class="account-header">
+              <div class="account-icon">💳</div>
+              <div class="account-details">
+                <h4 class="account-name">{{ selectedAccount.account }}</h4>
+                <span class="account-id">账户ID: {{ selectedAccount.id }}</span>
+              </div>
+            </div>
+            <div class="account-balance">
+              <span class="balance-label">当前余额</span>
+              <span class="balance-value" :class="balanceClass">
+                ¥{{ formatBalance(selectedAccount.balance) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- 无账户提示 -->
+          <div v-if="accountList.length === 0 && !accountLoading" class="no-account-tip">
+            <div class="tip-icon">📭</div>
+            <p>暂无可用账户</p>
+            <span class="tip-text">请先添加账户后再进行账户查询</span>
+          </div>
+
+          <!-- 加载账户状态 -->
+          <div v-if="accountLoading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <span>加载账户列表...</span>
           </div>
         </div>
 
-        <!-- 统计卡片 -->
-        <div v-if="bills.length > 0" class="stats-cards">
-          <div class="stat-card income">
-            <div class="stat-icon">💰</div>
-            <div class="stat-info">
-              <span class="label">本页收入</span>
-              <span class="value">+{{ currentIncome.toFixed(2) }}</span>
-            </div>
-          </div>
-          <div class="stat-card expense">
-            <div class="stat-icon">💸</div>
-            <div class="stat-info">
-              <span class="label">本页支出</span>
-              <span class="value">-{{ currentExpenditure.toFixed(2) }}</span>
-            </div>
-          </div>
-          <div class="stat-card balance">
-            <div class="stat-icon">⚖️</div>
-            <div class="stat-info">
-              <span class="label">本页结余</span>
-              <span class="value">{{ currentBalance >= 0 ? '+' : '' }}{{ currentBalance.toFixed(2) }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 结果展示区域 -->
-        <div v-if="selectedAccountId" class="results-section">
+        <!-- 流水结果区域 -->
+        <div class="results-section" v-if="hasSearched">
           <div class="section-header">
-            <h3>账单列表</h3>
+            <h3>流水记录</h3>
             <span class="result-count">共 {{ totalCount }} 条记录</span>
           </div>
 
-          <div v-if="loading" class="loading">加载中...</div>
+          <!-- 加载流水状态 -->
+          <div v-if="billLoading" class="loading-state">
+            <div class="loading-spinner"></div>
+            <span>加载流水记录...</span>
+          </div>
 
-          <div v-else-if="bills.length === 0" class="no-data">该账户暂无账单记录</div>
+          <!-- 无数据 -->
+          <div v-else-if="bills.length === 0" class="no-data">
+            <div class="empty-icon">📭</div>
+            <p>该账户暂无流水记录</p>
+          </div>
 
+          <!-- 流水列表 -->
           <table v-else class="bills-table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>记录类型</th>
+                <th>类型</th>
                 <th>金额</th>
                 <th>日期</th>
                 <th>操作</th>
@@ -104,9 +94,13 @@
             <tbody>
               <tr v-for="bill in bills" :key="bill.id">
                 <td>{{ bill.id }}</td>
-                <td>{{ getRecordTypeName(bill.recordEnum) }}</td>
-                <td :class="bill.recordEnum === 'INCOME' ? 'income-amount' : 'expenditure-amount'">
-                  {{ bill.recordEnum === 'INCOME' ? '+' : '-' }}{{ bill.amount.toFixed(2) }}
+                <td>
+                  <span class="type-tag" :class="getRecordTypeClass(bill.recordEnum)">
+                    {{ getRecordTypeName(bill.recordEnum) }}
+                  </span>
+                </td>
+                <td :class="bill.recordEnum?.toUpperCase() === 'INCOME' ? 'income-amount' : 'expenditure-amount'">
+                  {{ bill.recordEnum?.toUpperCase() === 'INCOME' ? '+' : '-' }}{{ formatBalance(bill.amount) }}
                 </td>
                 <td>{{ bill.date }}</td>
                 <td>
@@ -116,21 +110,22 @@
             </tbody>
           </table>
 
-          <!-- 分页组件 -->
+          <!-- 分页 -->
           <div class="pagination" v-if="bills.length > 0">
-            <button class="btn btn-small" :disabled="queryParams.page <= 1" @click="changePage(queryParams.page - 1)">上一页</button>
-            <span>第 {{ queryParams.page }} 页 / 共 {{ totalPages }} 页</span>
-            <button class="btn btn-small" :disabled="queryParams.page >= totalPages" @click="changePage(queryParams.page + 1)">下一页</button>
+            <button class="btn btn-small" :disabled="page <= 1" @click="changePage(page - 1)">上一页</button>
+            <span>第 {{ page }} 页 / 共 {{ totalPages }} 页</span>
+            <button class="btn btn-small" :disabled="page >= totalPages" @click="changePage(page + 1)">下一页</button>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- 账单详情弹窗 -->
+    <!-- 详情弹窗 -->
     <BillDetailWindow
       v-if="showDetailModal"
-      :billId="selectedBillId"
-      :typeList="typeList"
+      :bill="selectedBill"
+      :loading="detailLoading"
+      :error-msg="detailError"
       @close="closeDetailModal"
     />
   </div>
@@ -144,57 +139,45 @@ import BillDetailWindow from './BillDetailWindow.vue';
 
 // 账户相关
 const accountList = ref([]);
-const accountLoading = ref(true);
 const selectedAccountId = ref('');
+const accountLoading = ref(false);
 
-// 查询参数
-const queryParams = ref({
-  page: 1,
-  limit: 10,
-  startDate: '',
-  endDate: ''
-});
-
-// 账单数据
+// 流水相关
 const bills = ref([]);
+const billLoading = ref(false);
+const hasSearched = ref(false);
+const page = ref(1);
+const limit = ref(10);
 const totalCount = ref(0);
-const loading = ref(false);
 
-// 游标式分页
-const lastEndDate = ref('');
-
-// 详情弹窗
+// 详情弹窗相关
 const showDetailModal = ref(false);
-const selectedBillId = ref(null);
-
-// 类型列表（供弹窗使用）
-const typeList = ref({});
+const selectedBill = ref(null);
+const detailLoading = ref(false);
+const detailError = ref('');
 
 // 计算属性
+const selectedAccount = computed(() => {
+  if (!selectedAccountId.value) return null;
+  return accountList.value.find(a => String(a.id) === String(selectedAccountId.value));
+});
+
+const balanceClass = computed(() => {
+  if (!selectedAccount.value) return '';
+  const balance = Number(selectedAccount.value.balance);
+  if (balance > 0) return 'positive';
+  if (balance < 0) return 'negative';
+  return '';
+});
+
 const totalPages = computed(() => {
-  return Math.ceil(totalCount.value / queryParams.value.limit) || 1;
+  return Math.ceil(totalCount.value / limit.value) || 1;
 });
 
-const currentIncome = computed(() => {
-  return bills.value
-    .filter(b => b.recordEnum === 'INCOME')
-    .reduce((sum, b) => sum + b.amount, 0);
-});
-
-const currentExpenditure = computed(() => {
-  return bills.value
-    .filter(b => b.recordEnum === 'EXPENDITURE')
-    .reduce((sum, b) => sum + b.amount, 0);
-});
-
-const currentBalance = computed(() => {
-  return currentIncome.value - currentExpenditure.value;
-});
-
-// 格式化金额
-const formatAmount = (amount) => {
-  if (amount === null || amount === undefined) return '0.00';
-  return Number(amount).toFixed(2);
+// 格式化余额
+const formatBalance = (balance) => {
+  if (balance === null || balance === undefined || isNaN(Number(balance))) return '0.00';
+  return Number(balance).toFixed(2);
 };
 
 // 获取记录类型名称
@@ -204,19 +187,15 @@ const getRecordTypeName = (recordEnum) => {
     'EXPENDITURE': '支出',
     'TRANSFER': '转账'
   };
-  return enumMap[recordEnum] || recordEnum;
+  return enumMap[recordEnum?.toUpperCase()] || recordEnum;
 };
 
-// 获取日期范围（一年前到今天）
-const getTodayDateStr = () => {
-  const now = new Date();
-  return now.toISOString().split('T')[0];
-};
-
-const getOneYearAgoDateStr = () => {
-  const now = new Date();
-  now.setFullYear(now.getFullYear() - 1);
-  return now.toISOString().split('T')[0];
+// 获取记录类型样式类
+const getRecordTypeClass = (recordEnum) => {
+  const type = recordEnum?.toUpperCase();
+  if (type === 'INCOME') return 'income';
+  if (type === 'EXPENDITURE') return 'expense';
+  return '';
 };
 
 // 获取用户账户列表
@@ -237,6 +216,11 @@ const fetchUserAccounts = async () => {
     if (response.data.statusCode === 200) {
       accountList.value = response.data.data || [];
       console.log('获取到账户列表:', accountList.value);
+      
+      // 如果有账户，默认选中第一个
+      if (accountList.value.length > 0) {
+        selectedAccountId.value = accountList.value[0].id;
+      }
     } else {
       console.error('获取账户列表失败:', response.data.message);
       accountList.value = [];
@@ -249,169 +233,117 @@ const fetchUserAccounts = async () => {
   }
 };
 
-// 选择账户
-const selectAccount = (account) => {
-  selectedAccountId.value = account.id;
-  // 重置查询状态
-  queryParams.value.page = 1;
+// 处理账户选择变化
+const handleAccountChange = () => {
+  // 切换账户时清空之前的查询结果
   bills.value = [];
+  hasSearched.value = false;
+  page.value = 1;
   totalCount.value = 0;
-  selectedBill.value = null;
-  detailError.value = '';
-  // 自动查询
-  searchBills();
 };
 
-// 构建请求体
-const buildRequestBody = (token, page, limit) => {
-  return {
-    token,
-    startDate: queryParams.value.startDate,
-    endDate: queryParams.value.endDate,
-    usageEnum: 'ACCOUNT',
-    accountId: selectedAccountId.value,
-    page,
-    limit
-  };
-};
-
-// 查询账单
+// 根据账户查询流水
 const searchBills = async () => {
-  if (!selectedAccountId.value) return;
+  if (!selectedAccountId.value) {
+    alert('请先选择账户');
+    return;
+  }
 
-  // 清空详情
-  selectedBill.value = null;
-  detailError.value = '';
-  detailLoading.value = false;
+  billLoading.value = true;
+  hasSearched.value = true;
 
-  // 设置日期范围
-  queryParams.value.startDate = getOneYearAgoDateStr();
-  queryParams.value.endDate = getTodayDateStr();
-  queryParams.value.page = 1;
-  lastEndDate.value = '';
-
-  loading.value = true;
   try {
     const token = localStorage.getItem('token');
-    await fetchFirstPage(token);
-  } catch (error) {
-    console.error('查询账单失败:', error);
-    alert('查询失败，请稍后重试');
-  } finally {
-    loading.value = false;
-  }
-};
+    const response = await axios.post('http://localhost:8080/api/query/getBillList?searchType=ACCOUNT', {
+      token,
+      searchType: 'ACCOUNT',
+      accountId: selectedAccountId.value,
+      page: page.value,
+      limit: limit.value
+    });
 
-// 获取第一页数据
-const fetchFirstPage = async (token) => {
-  const limit = Number(queryParams.value.limit) || 10;
-  const requestBody = buildRequestBody(token, 1, limit);
-
-  const response = await axios.post(
-    'http://localhost:8080/api/query/getBillList?searchType=ACCOUNT',
-    requestBody
-  );
-
-  if (response.data.statusCode === 200) {
-    const pageData = response.data.data || [];
-    bills.value = pageData;
-
-    if (pageData.length > 0) {
-      lastEndDate.value = pageData[pageData.length - 1].date || '';
-    }
-
-    if (typeof response.data.total === 'number') {
-      totalCount.value = response.data.total;
+    if (response.data.statusCode === 200) {
+      bills.value = response.data.data || [];
+      // 如果后端返回了 total 字段
+      if (typeof response.data.total === 'number') {
+        totalCount.value = response.data.total;
+      } else {
+        // 估算总数
+        totalCount.value = bills.value.length < limit.value ? 
+          (page.value - 1) * limit.value + bills.value.length : 
+          page.value * limit.value + 1;
+      }
+      console.log('查询到流水记录:', bills.value);
     } else {
-      totalCount.value = pageData.length < limit ? pageData.length : limit * 10;
+      console.error('查询流水失败:', response.data.message);
+      alert('查询失败: ' + response.data.message);
+      bills.value = [];
     }
-
-    console.log(`第一页查询完成：本页 ${pageData.length} 条，总计约 ${totalCount.value} 条`);
-  } else {
-    alert('查询失败: ' + response.data.message);
-  }
-};
-
-// 获取下一页数据
-const fetchNextPage = async (token) => {
-  const limit = Number(queryParams.value.limit) || 10;
-
-  if (lastEndDate.value) {
-    queryParams.value.endDate = lastEndDate.value;
-  }
-
-  const requestBody = buildRequestBody(token, queryParams.value.page, limit);
-
-  const response = await axios.post(
-    'http://localhost:8080/api/query/getBillList?searchType=ACCOUNT',
-    requestBody
-  );
-
-  if (response.data.statusCode === 200) {
-    const pageData = response.data.data || [];
-    bills.value = pageData;
-
-    if (pageData.length > 0) {
-      lastEndDate.value = pageData[pageData.length - 1].date || '';
-    }
-
-    if (typeof response.data.total === 'number') {
-      totalCount.value = response.data.total;
-    }
-
-    console.log(`第 ${queryParams.value.page} 页查询完成：本页 ${pageData.length} 条`);
-  } else {
-    alert('查询失败: ' + response.data.message);
+  } catch (error) {
+    console.error('查询流水异常:', error);
+    alert('查询失败，请稍后重试');
+    bills.value = [];
+  } finally {
+    billLoading.value = false;
   }
 };
 
 // 切换页码
-const changePage = async (page) => {
-  if (page < 1 || page > totalPages.value) return;
-
-  if (page === 1) {
-    await searchBills();
-    return;
-  }
-
-  queryParams.value.page = page;
-  loading.value = true;
-
-  try {
-    const token = localStorage.getItem('token');
-    await fetchNextPage(token);
-  } catch (error) {
-    console.error('翻页失败:', error);
-    alert('翻页失败，请稍后重试');
-  } finally {
-    loading.value = false;
-  }
+const changePage = async (newPage) => {
+  if (newPage < 1 || newPage > totalPages.value) return;
+  page.value = newPage;
+  await searchBills();
 };
 
 // 查看详情
-const viewDetail = (billData) => {
+const viewDetail = async (billData) => {
   if (!billData || !billData.id) {
     alert('缺少账单ID，无法查看详情');
     return;
   }
-  selectedBillId.value = billData.id;
+
   showDetailModal.value = true;
+  detailError.value = '';
+  detailLoading.value = true;
+  selectedBill.value = null;
+
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post('http://localhost:8080/api/bill/getBillDetail', {
+      token,
+      id: billData.id
+    });
+
+    if (response.data.statusCode === 200 && response.data.data) {
+      selectedBill.value = response.data.data;
+    } else {
+      detailError.value = response.data.message || '未找到该账单';
+    }
+  } catch (error) {
+    console.error('获取账单详情失败:', error);
+    detailError.value = '获取账单详情失败，请稍后重试';
+  } finally {
+    detailLoading.value = false;
+  }
 };
 
 // 关闭详情弹窗
 const closeDetailModal = () => {
   showDetailModal.value = false;
-  selectedBillId.value = null;
+  selectedBill.value = null;
+  detailError.value = '';
+  detailLoading.value = false;
 };
 
+// 组件挂载时加载账户列表
 onMounted(() => {
   fetchUserAccounts();
 });
 </script>
 
 <style scoped>
-/* 基础布局样式 */
-.dashboard-layout {
+/* 页面布局 */
+.page-layout {
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -429,18 +361,15 @@ onMounted(() => {
 }
 
 .content-wrapper {
-  max-width: 1600px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* 顶部头部样式 */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* 页面头部 */
+.page-header {
   margin-bottom: 8px;
 }
 
@@ -457,152 +386,7 @@ onMounted(() => {
   display: block;
 }
 
-/* 账户卡片 */
-.account-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.account-card {
-  background: #fafafa;
-  border: 2px solid #f0f0f0;
-  border-radius: 12px;
-  padding: 20px;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  position: relative;
-}
-
-.account-card:hover {
-  border-color: #1890ff;
-  background: #e6f7ff;
-}
-
-.account-card.active {
-  border-color: #1890ff;
-  background: #e6f7ff;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
-}
-
-.account-icon {
-  font-size: 32px;
-  width: 56px;
-  height: 56px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-}
-
-.account-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.account-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: #262626;
-}
-
-.account-balance {
-  font-size: 14px;
-  color: #52c41a;
-  font-weight: 500;
-}
-
-.account-desc {
-  font-size: 12px;
-  color: #8c8c8c;
-}
-
-.check-icon {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 24px;
-  height: 24px;
-  background: #1890ff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* 统计卡片样式 */
-.stats-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: transform 0.3s, box-shadow 0.3s;
-  border: 1px solid #f0f0f0;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-
-.stat-icon {
-  font-size: 32px;
-  margin-right: 20px;
-  background: #f5f5f5;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-info .label {
-  color: #8c8c8c;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.stat-info .value {
-  font-size: 24px;
-  font-weight: 600;
-  color: #262626;
-}
-
-.stat-card.income .stat-icon { background: #f6ffed; }
-.stat-card.income .value { color: #52c41a; }
-
-.stat-card.expense .stat-icon { background: #fff1f0; }
-.stat-card.expense .value { color: #ff4d4f; }
-
-.stat-card.balance .stat-icon { background: #e6f7ff; }
-.stat-card.balance .value { color: #1890ff; }
-
-/* 查询和结果区域样式 */
+/* 查询区域 */
 .query-section,
 .results-section {
   background: white;
@@ -632,31 +416,197 @@ onMounted(() => {
   font-size: 14px;
 }
 
-.pagination-settings {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+/* 账户选择器 */
+.account-selector {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.pagination-settings label {
-  margin-right: 10px;
+.selector-label {
+  font-size: 14px;
   color: #666;
+  white-space: nowrap;
+  font-weight: 500;
 }
 
-.pagination-settings select {
-  padding: 6px 10px;
+.account-select {
+  flex: 1;
+  max-width: 300px;
+  padding: 10px 14px;
   border: 1px solid #d9d9d9;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.account-select:hover {
+  border-color: #40a9ff;
+}
+
+.account-select:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* 账户信息卡片 */
+.account-info-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  max-width: 350px;
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.account-icon {
+  font-size: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.account-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.account-id {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.account-balance {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.balance-label {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.balance-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.balance-value.positive {
+  color: #b7eb8f;
+}
+
+.balance-value.negative {
+  color: #ffccc7;
+}
+
+/* 无账户提示 */
+.no-account-tip {
+  text-align: center;
+  padding: 30px 20px;
+  background: #fafafa;
+  border-radius: 12px;
+  border: 1px dashed #d9d9d9;
+}
+
+.tip-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.no-account-tip p {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.tip-text {
+  font-size: 14px;
+  color: #999;
+}
+
+/* 无数据 */
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  color: #999;
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #1890ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 按钮样式 */
 .btn {
   padding: 8px 20px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
   border: none;
   font-size: 14px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-primary {
@@ -664,7 +614,7 @@ onMounted(() => {
   color: white;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background-color: #40a9ff;
 }
 
@@ -673,19 +623,7 @@ onMounted(() => {
   font-size: 12px;
 }
 
-.btn-small:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* 表格样式 */
-.loading,
-.no-data {
-  text-align: center;
-  padding: 40px;
-  color: #999;
-}
-
 .bills-table {
   width: 100%;
   border-collapse: collapse;
@@ -709,6 +647,23 @@ onMounted(() => {
   background-color: #fafafa;
 }
 
+.type-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.type-tag.income {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.type-tag.expense {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+}
+
 .income-amount {
   color: #52c41a;
   font-weight: 500;
@@ -722,125 +677,16 @@ onMounted(() => {
 /* 分页 */
 .pagination {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 16px;
   padding: 16px 0;
   margin-top: 16px;
   border-top: 1px solid #f0f0f0;
 }
 
-/* 内联详情 */
-.inline-detail {
-  margin-top: 24px;
-}
-
-.detail-card-inline {
-  background: #fff;
-  border: 1px solid #f0f0f0;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.detail-amount {
-  padding: 16px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.detail-amount.income {
-  background: #f6ffed;
-  color: #52c41a;
-}
-
-.detail-amount.expense {
-  background: #fff1f0;
-  color: #ff4d4f;
-}
-
-.detail-amount .amount-main {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.detail-amount .amount-meta {
-  font-size: 13px;
-  color: #8c8c8c;
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.detail-item {
-  background: #fafafa;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.detail-item .label {
-  font-size: 12px;
-  color: #8c8c8c;
-}
-
-.detail-item .value {
+.pagination span {
+  color: #666;
   font-size: 14px;
-  color: #262626;
-  font-weight: 500;
-}
-
-.detail-remark {
-  background: #fafafa;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.detail-remark .label {
-  font-size: 12px;
-  color: #8c8c8c;
-}
-
-.detail-remark .value {
-  font-size: 14px;
-  color: #595959;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.error-text {
-  color: #ff4d4f;
-  padding: 12px 0;
-}
-
-/* 响应式 */
-@media (max-width: 768px) {
-  .main-content {
-    padding: 20px;
-  }
-
-  .stats-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .account-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .detail-grid {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

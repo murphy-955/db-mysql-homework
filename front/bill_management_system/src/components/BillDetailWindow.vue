@@ -8,67 +8,84 @@
 
       <!-- 内容区域 -->
       <div class="window-content">
-        <!-- 加载状态 -->
-        <div v-if="loading" class="loading-state">
-          <div class="spinner"></div>
-          <p>加载中...</p>
+        <!-- 加载中 -->
+        <div v-if="loading" class="loading-container">
+          <div class="loading-spinner"></div>
+          <span>加载中...</span>
         </div>
 
-        <!-- 错误状态 -->
-        <div v-else-if="error" class="error-state">
-          <span class="error-icon">⚠️</span>
-          <p>{{ error }}</p>
-          <button class="retry-btn" @click="fetchDetail">重试</button>
+        <!-- 错误提示 -->
+        <div v-else-if="errorMsg" class="error-container">
+          <div class="error-icon">⚠️</div>
+          <p class="error-text">{{ errorMsg }}</p>
         </div>
 
         <!-- 详情内容 -->
         <div v-else-if="bill" class="detail-content">
-          <!-- 金额区域 -->
-          <div class="amount-section" :class="bill.recordEnum === 'INCOME' ? 'income' : 'expense'">
-            <span class="amount-label">{{ bill.recordEnum === 'INCOME' ? '收入' : '支出' }}</span>
-            <span class="amount-value">
-              {{ bill.recordEnum === 'INCOME' ? '+' : '-' }}¥{{ bill.amount?.toFixed(2) }}
-            </span>
+          <!-- 金额展示区 -->
+          <div class="amount-section" :class="isIncome ? 'income' : 'expense'">
+            <div class="amount-icon">
+              {{ isIncome ? '💰' : '💸' }}
+            </div>
+            <div class="amount-info">
+              <span class="amount-label">{{ recordLabel }}</span>
+              <span class="amount-value">
+                {{ amountPrefix }}¥{{ formatAmount(bill.amount) }}
+              </span>
+            </div>
           </div>
 
-          <!-- 详情列表 -->
-          <div class="detail-list">
-            <div class="detail-item">
-              <span class="item-label">📋 账单类型</span>
-              <span class="item-value">{{ getTypeLabel(bill.typeEnum) }}</span>
+          <!-- 详细信息网格 -->
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-icon">🔢</div>
+              <div class="info-content">
+                <span class="info-label">账单ID</span>
+                <span class="info-value">{{ bill.id }}</span>
+              </div>
             </div>
-            
-            <div class="detail-item">
-              <span class="item-label">📝 描述</span>
-              <span class="item-value">{{ bill.description || '无描述' }}</span>
+
+            <div class="info-item">
+              <div class="info-icon">📁</div>
+              <div class="info-content">
+                <span class="info-label">分类</span>
+                <span class="info-value">{{ bill.type || '未分类' }}</span>
+              </div>
             </div>
-            
-            <div class="detail-item">
-              <span class="item-label">📅 日期</span>
-              <span class="item-value">{{ formatDate(bill.date) }}</span>
+
+            <div class="info-item">
+              <div class="info-icon">📅</div>
+              <div class="info-content">
+                <span class="info-label">日期</span>
+                <span class="info-value">{{ formatDate(bill.date) }}</span>
+              </div>
             </div>
-            
-            <div class="detail-item">
-              <span class="item-label">💳 账户</span>
-              <span class="item-value">{{ bill.account || '未知账户' }}</span>
+
+            <div class="info-item">
+              <div class="info-icon">💳</div>
+              <div class="info-content">
+                <span class="info-label">账户</span>
+                <span class="info-value">{{ bill.account || '未指定' }}</span>
+              </div>
             </div>
-            
-            <div class="detail-item" v-if="bill.remark">
-              <span class="item-label">💬 备注</span>
-              <span class="item-value">{{ bill.remark }}</span>
+          </div>
+
+          <!-- 备注区域 -->
+          <div class="remark-section">
+            <div class="remark-header">
+              <span class="remark-icon">📝</span>
+              <span class="remark-label">备注</span>
             </div>
-            
-            <div class="detail-item">
-              <span class="item-label">🔖 账单ID</span>
-              <span class="item-value id-value">{{ bill.id }}</span>
+            <div class="remark-content">
+              {{ bill.remarks || '暂无备注' }}
             </div>
           </div>
         </div>
 
-        <!-- 无数据状态 -->
-        <div v-else class="empty-state">
-          <span class="empty-icon">📭</span>
-          <p>暂无账单数据</p>
+        <!-- 未找到数据 -->
+        <div v-else class="empty-container">
+          <div class="empty-icon">📭</div>
+          <p>未找到账单数据</p>
         </div>
       </div>
     </div>
@@ -76,96 +93,55 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
-import axios from 'axios';
+import { computed } from 'vue';
 
 const props = defineProps({
-  billId: {
-    type: [String, Number],
-    required: true
-  },
-  typeList: {
+  bill: {
     type: Object,
-    default: () => ({})
+    default: null
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  errorMsg: {
+    type: String,
+    default: ''
   }
 });
 
 const emit = defineEmits(['close']);
 
-const bill = ref(null);
-const loading = ref(false);
-const error = ref('');
+const isIncome = computed(() => {
+  const val = (props.bill?.recordEnum || '').toString().toUpperCase();
+  return val === 'INCOME';
+});
 
-// 获取类型标签
-const getTypeLabel = (typeEnum) => {
-  if (!typeEnum) return '未知类型';
-  return props.typeList[typeEnum] || typeEnum;
+const recordLabel = computed(() => (isIncome.value ? '收入' : '支出'));
+const amountPrefix = computed(() => (isIncome.value ? '+' : '-'));
+
+// 格式化金额
+const formatAmount = (amount) => {
+  if (amount === null || amount === undefined || isNaN(Number(amount))) return '0.00';
+  return Number(amount).toFixed(2);
 };
 
 // 格式化日期
 const formatDate = (dateStr) => {
   if (!dateStr) return '未知日期';
   const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return dateStr;
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    weekday: 'short'
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long'
   });
 };
 
-// 获取账单详情
-const fetchDetail = async () => {
-  if (!props.billId) {
-    error.value = '账单ID无效';
-    return;
-  }
-
-  loading.value = true;
-  error.value = '';
-  bill.value = null;
-
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      error.value = '未登录，请先登录';
-      return;
-    }
-
-    const response = await axios.post('http://localhost:8080/api/bill/getBillDetail', {
-      token,
-      id: props.billId
-    });
-
-    if (response.data.statusCode === 200) {
-      bill.value = response.data.data;
-    } else {
-      error.value = response.data.message || '获取详情失败';
-    }
-  } catch (err) {
-    console.error('获取账单详情失败:', err);
-    error.value = '网络错误，请稍后重试';
-  } finally {
-    loading.value = false;
-  }
-};
-
-// 关闭弹窗
 const handleClose = () => {
   emit('close');
 };
-
-// 监听 billId 变化
-watch(() => props.billId, (newId) => {
-  if (newId) {
-    fetchDetail();
-  }
-}, { immediate: true });
-
-// 组件挂载时获取详情
-onMounted(() => {
-  fetchDetail();
-});
 </script>
 
 <style scoped>
@@ -190,7 +166,7 @@ onMounted(() => {
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   width: 90%;
-  max-width: 480px;
+  max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   display: flex;
@@ -245,151 +221,195 @@ onMounted(() => {
   padding: 0 30px 30px;
 }
 
-/* 加载状态 */
-.loading-state {
+/* 加载中 */
+.loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 40px 0;
   color: #999;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
+.loading-spinner {
+  width: 32px;
+  height: 32px;
   border: 3px solid #f0f0f0;
   border-top-color: #1890ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* 错误状态 */
-.error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 0;
-  color: #ff4d4f;
+/* 错误提示 */
+.error-container {
+  text-align: center;
+  padding: 30px 0;
 }
 
 .error-icon {
   font-size: 48px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
-.error-state p {
-  margin: 0 0 16px;
-}
-
-.retry-btn {
-  padding: 8px 24px;
-  background: #1890ff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.retry-btn:hover {
-  background: #40a9ff;
+.error-text {
+  color: #ff4d4f;
+  font-size: 14px;
+  margin: 0;
 }
 
 /* 空状态 */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 0;
+.empty-container {
+  text-align: center;
+  padding: 30px 0;
   color: #999;
 }
 
 .empty-icon {
   font-size: 48px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 /* 详情内容 */
 .detail-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
-/* 金额区域 */
+/* 金额展示区 */
 .amount-section {
-  text-align: center;
-  padding: 24px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+  gap: 16px;
 }
 
 .amount-section.income {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
 }
 
 .amount-section.expense {
-  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  background: linear-gradient(135deg, #fff1f0 0%, #ffccc7 100%);
+}
+
+.amount-icon {
+  font-size: 40px;
+  background: white;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.amount-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .amount-label {
-  display: block;
   font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
+  color: #8c8c8c;
 }
 
 .amount-value {
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 700;
 }
 
 .amount-section.income .amount-value {
-  color: #4caf50;
+  color: #52c41a;
 }
 
 .amount-section.expense .amount-value {
-  color: #f44336;
+  color: #ff4d4f;
 }
 
-/* 详情列表 */
-.detail-list {
+/* 详细信息网格 */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fafafa;
+  padding: 14px;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.info-item:hover {
+  background: #f0f0f0;
+}
+
+.info-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.info-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 4px;
+  min-width: 0;
 }
 
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: #f9f9f9;
-  border-radius: 8px;
-}
-
-.item-label {
-  color: #666;
-  font-size: 14px;
-}
-
-.item-value {
-  color: #333;
-  font-weight: 500;
-  font-size: 14px;
-  text-align: right;
-  max-width: 60%;
-  word-break: break-all;
-}
-
-.id-value {
-  font-family: monospace;
+.info-label {
   font-size: 12px;
-  color: #999;
+  color: #8c8c8c;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #262626;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* 备注区域 */
+.remark-section {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.remark-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.remark-icon {
+  font-size: 18px;
+}
+
+.remark-label {
+  font-size: 14px;
+  color: #8c8c8c;
+  font-weight: 500;
+}
+
+.remark-content {
+  font-size: 14px;
+  color: #595959;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 </style>

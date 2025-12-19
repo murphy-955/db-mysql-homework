@@ -31,7 +31,7 @@
       <div class="nav-item" :class="{ active: currentPath === '/account-search' }" @click="navigate('/account-search')">
         <span class="nav-icon">💳</span>
         <transition name="fade">
-          <span v-show="!isCollapsed" class="nav-label">账户查询</span>
+          <span v-show="!isCollapsed" class="nav-label">账户流水</span>
         </transition>
       </div>
     </nav>
