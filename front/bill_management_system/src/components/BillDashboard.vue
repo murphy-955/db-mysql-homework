@@ -168,6 +168,50 @@
             <span>第 {{ queryParams.page }} 页 / 共 {{ totalPages }} 页</span>
             <button class="btn btn-small" :disabled="queryParams.page >= totalPages || queryParams.page >= MAX_PAGES" @click="changePage(queryParams.page + 1)">下一页</button>
           </div>
+
+          <!-- 内联详情展示 -->
+          <div v-if="detailLoading || selectedBill || detailError" class="inline-detail">
+            <div class="section-header">
+              <h3>账单详情</h3>
+            </div>
+
+            <div v-if="detailLoading" class="loading">加载详情...</div>
+            <div v-else-if="detailError" class="error-text">{{ detailError }}</div>
+            <div v-else-if="selectedBill" class="detail-card-inline">
+              <div class="detail-amount" :class="(selectedBill.recordEnum || '').toUpperCase() === 'INCOME' ? 'income' : 'expense'">
+                <div class="amount-main">
+                  {{ (selectedBill.recordEnum || '').toUpperCase() === 'INCOME' ? '+' : '-' }}{{ Number(selectedBill.amount || 0).toFixed(2) }}
+                </div>
+                <div class="amount-meta">
+                  {{ (selectedBill.recordEnum || '').toUpperCase() === 'INCOME' ? '收入' : '支出' }} · {{ formatDetailDate(selectedBill.date) }}
+                </div>
+              </div>
+
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="label">账单ID</span>
+                  <span class="value">{{ selectedBill.id }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="label">分类</span>
+                  <span class="value">{{ selectedBill.type || '未分类' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="label">账户</span>
+                  <span class="value">{{ selectedBill.account || '未指定' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="label">记录类型</span>
+                  <span class="value">{{ getRecordTypeName(selectedBill.recordEnum) }}</span>
+                </div>
+              </div>
+
+              <div class="detail-remark">
+                <span class="label">备注</span>
+                <p class="value">{{ selectedBill.remarks || '暂无备注' }}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -218,6 +262,11 @@ const recordTypeList = ref({});
 
 // 用户账户列表
 const accountList = ref([]);
+
+// 当前选中的账单详情（内联展示）
+const selectedBill = ref(null);
+const detailLoading = ref(false);
+const detailError = ref('');
 
 const showAddModal = ref(false);
 
@@ -543,12 +592,24 @@ const getOneYearAgoDateStr = () => {
   return now.toISOString().split('T')[0];
 };
 
+const formatDetailDate = (dateStr) => {
+  if (!dateStr) return '未知日期';
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+};
+
 // 查询账单
 const searchBills = async () => {
   if (!queryParams.value.usageEnum) {
     alert('请选择查询方式');
     return;
   }
+
+  // 每次查询前清空当前详情
+  selectedBill.value = null;
+  detailError.value = '';
+  detailLoading.value = false;
 
   // 验证账户查询需要选择账户：确保非占位且在 accountList 中存在
   if (queryParams.value.usageEnum === 'ACCOUNT') {
@@ -587,16 +648,34 @@ const searchBills = async () => {
   }
 };
 
-const viewDetail = (billData) => {
+const viewDetail = async (billData) => {
   if (!billData || !billData.id) {
     alert('缺少账单ID，无法查看详情');
     return;
   }
 
-  router.push({
-    path: `/bill-detail/${billData.id}`,
-    state: { bill: billData }
-  });
+  detailError.value = '';
+  detailLoading.value = true;
+  selectedBill.value = null;
+
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post('/api/bill/getBillDetail', {
+      token,
+      id: billData.id
+    });
+
+    if (response.data.statusCode === 200 && response.data.data) {
+      selectedBill.value = response.data.data;
+    } else {
+      detailError.value = response.data.message || '未找到该账单';
+    }
+  } catch (error) {
+    console.error('获取账单详情失败:', error);
+    detailError.value = '获取账单详情失败，请稍后重试';
+  } finally {
+    detailLoading.value = false;
+  }
 };
 
 const deleteBill = (billId) => {
@@ -990,6 +1069,102 @@ onMounted(async () => {
   color: #fa8c16;
   font-size: 12px;
   margin-left: 8px;
+}
+
+/* 内联详情 */
+.inline-detail {
+  margin-top: 24px;
+}
+
+.detail-card-inline {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-amount {
+  padding: 16px;
+  border-radius: 10px;
+  color: #262626;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-amount.income {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.detail-amount.expense {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.detail-amount .amount-main {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.detail-amount .amount-meta {
+  font-size: 13px;
+  color: #8c8c8c;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.detail-item {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item .label {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.detail-item .value {
+  font-size: 14px;
+  color: #262626;
+  font-weight: 500;
+}
+
+.detail-remark {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-remark .label {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.detail-remark .value {
+  font-size: 14px;
+  color: #595959;
+  line-height: 1.6;
+}
+
+.error-text {
+  color: #ff4d4f;
+  padding: 12px 0;
 }
 
 /* 弹窗样式 */
