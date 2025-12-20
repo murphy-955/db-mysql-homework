@@ -54,7 +54,7 @@
             <select id="usageEnum" v-model="queryParams.usageEnum" @change="onSearchTypeChange">
               <option value="">请选择查询方式</option>
               <option value="DATE_RANGE">日期查询</option>
-              <option value="ACCOUNT">账户查询</option>
+<!--              <option value="ACCOUNT">账户查询</option>-->
               <option value="USAGE_TYPE">类型查询</option>
               <option value="KEYWORD">关键字查询</option>
               <option value="AMOUNT_RANGE">金额范围查询</option>
@@ -120,7 +120,7 @@
           <div class="query-actions">
             <button class="btn btn-primary" @click="searchBills">查询</button>
             <button class="btn btn-outline" @click="resetQuery">重置</button>
-            
+
           </div>
         </div>
 
@@ -301,7 +301,7 @@ const fetchUserAccounts = async () => {
       // 后端返回的是账户列表
       accountList.value = response.data.data || [];
       console.log('获取到账户列表:', accountList.value);
-      
+
       // 如果有账户，默认选中第一个（仅在账户列表不为空时）
       if (accountList.value.length > 0) {
         queryParams.value.accountId = accountList.value[0].id;
@@ -323,7 +323,7 @@ const fetchUserAccounts = async () => {
 const onSearchTypeChange = () => {
   // 重置其他查询条件
   resetQueryConditions();
-  
+
   // 如果切换到账户查询，默认选中第一个账户
   if (queryParams.value.usageEnum === 'ACCOUNT' && accountList.value.length > 0) {
     queryParams.value.accountId = accountList.value[0].id;
@@ -401,7 +401,7 @@ const buildRequestBody = (token, page = 1, limit) => {
         page: page,
         limit: limit
       }
-    
+
     case 'ACCOUNT':
       return {
         ...base,
@@ -419,7 +419,7 @@ const buildRequestBody = (token, page = 1, limit) => {
         page: page,
         limit: limit
       }
-    
+
     case 'KEYWORD':
       return {
         ...base,
@@ -493,12 +493,12 @@ const fetchFirstPage = async (token) => {
 // 获取下一页数据（游标式分页）
 const fetchNextPage = async (token) => {
   const limit = Number(queryParams.value.limit) || 10;
-  
+
   // 对于非日期查询，使用游标式分页：将 endDate 设为上一页最后一条的日期（向前翻页）
   if (queryParams.value.usageEnum !== 'DATE_RANGE' && lastEndDate.value) {
     queryParams.value.endDate = lastEndDate.value;
   }
-  
+
   const requestBody = buildRequestBody(token, queryParams.value.page, limit);
   let response = null;
   if (queryParams.value.type !== '') {
@@ -688,16 +688,16 @@ const deleteBill = (billId) => {
 const changePage = async (page) => {
   // 阻止超出允许页码（包含 MAX_PAGES）
   if (page < 1 || page > totalPages.value || page > MAX_PAGES) return;
-  
+
   // 如果是回到第一页，重新执行查询
   if (page === 1) {
     await searchBills();
     return;
   }
-  
+
   queryParams.value.page = page;
   loading.value = true;
-  
+
   try {
     const token = localStorage.getItem('token');
     // 翻页时使用游标式分页

@@ -83,30 +83,30 @@
           <!-- 流水列表 -->
           <table v-else class="bills-table">
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>类型</th>
-                <th>金额</th>
-                <th>日期</th>
-                <th>操作</th>
-              </tr>
+            <tr>
+              <th>ID</th>
+              <th>类型</th>
+              <th>金额</th>
+              <th>日期</th>
+              <th>操作</th>
+            </tr>
             </thead>
             <tbody>
-              <tr v-for="bill in bills" :key="bill.id">
-                <td>{{ bill.id }}</td>
-                <td>
+            <tr v-for="bill in bills" :key="bill.id">
+              <td>{{ bill.id }}</td>
+              <td>
                   <span class="type-tag" :class="getRecordTypeClass(bill.recordEnum)">
                     {{ getRecordTypeName(bill.recordEnum) }}
                   </span>
-                </td>
-                <td :class="bill.recordEnum?.toUpperCase() === 'INCOME' ? 'income-amount' : 'expenditure-amount'">
-                  {{ bill.recordEnum?.toUpperCase() === 'INCOME' ? '+' : '-' }}{{ formatBalance(bill.amount) }}
-                </td>
-                <td>{{ bill.date }}</td>
-                <td>
-                  <button class="btn btn-small" @click="viewDetail(bill)">详情</button>
-                </td>
-              </tr>
+              </td>
+              <td :class="bill.recordEnum?.toUpperCase() === 'INCOME' ? 'income-amount' : 'expenditure-amount'">
+                {{ bill.recordEnum?.toUpperCase() === 'INCOME' ? '+' : '-' }}{{ formatBalance(bill.amount) }}
+              </td>
+              <td>{{ bill.date }}</td>
+              <td>
+                <button class="btn btn-small" @click="viewDetail(bill)">详情</button>
+              </td>
+            </tr>
             </tbody>
           </table>
 
@@ -237,12 +237,17 @@ const fetchUserAccounts = async () => {
     });
 
     if (response.data.statusCode === 200) {
+      //add id as accountId in accountList
+      response.data.data.forEach(account => {
+        account.accountId = account.id;
+      });
+      console.log('获取到账户列表1:', response.data.data[0])
       accountList.value = response.data.data || [];
-      console.log('获取到账户列表:', accountList.value);
-      
+      console.log('获取到账户列表2:', accountList.value[0]);
+
       // 如果有账户，默认选中第一个的id
       if (accountList.value.length > 0) {
-        currentAccountId.value = accountList.value[0].id;
+        currentAccountId.value = accountList.value[0].accountId;
         console.log('默认选中账户ID:', currentAccountId.value);
       }
     } else {
@@ -273,7 +278,7 @@ const buildRequestBody = (token, pageNum, limitNum, accountId) => {
   // 查找对应的账户名称
   const accountObj = accountList.value.find(a => a.id === accountId);
   const accountName = accountObj ? accountObj.account : '';
-  
+
   console.log(`构建请求体: ID=${accountId} -> Name=${accountName}`);
 
   return {
@@ -290,7 +295,7 @@ const buildRequestBody = (token, pageNum, limitNum, accountId) => {
 const fetchFirstPage = async (token, accountId) => {
   const limitNum = Number(limit.value) || 10;
   const requestBody = buildRequestBody(token, 1, limitNum, accountId);
-  
+
   console.log('发送请求，requestBody:', requestBody);
 
   const response = await axios.post(
@@ -332,16 +337,16 @@ const fetchFirstPage = async (token, accountId) => {
 // 获取下一页数据（游标式分页）
 const fetchNextPage = async (token, accountId) => {
   const limitNum = Number(limit.value) || 10;
-  
+
   // 使用游标式分页：将 endDate 设为上一页最后一条的日期
   if (lastEndDate.value) {
     endDate.value = lastEndDate.value;
   }
-  
+
   const requestBody = buildRequestBody(token, page.value, limitNum, accountId);
-  
+
   console.log('翻页请求，requestBody:', requestBody);
-  
+
   const response = await axios.post(
     'http://localhost:8080/api/query/getBillList?searchType=ACCOUNT',
     requestBody
@@ -394,7 +399,7 @@ const searchBills = async () => {
   page.value = 1;
   // 重置游标
   lastEndDate.value = '';
-  
+
   // 设置日期范围：从一年前到今天
   startDate.value = getOneYearAgoDateStr();
   endDate.value = getTodayDateStr();
@@ -417,16 +422,16 @@ const searchBills = async () => {
 // 切换页码
 const changePage = async (newPage) => {
   if (newPage < 1 || newPage > totalPages.value || newPage > MAX_PAGES) return;
-  
+
   // 如果是回到第一页，重新执行查询
   if (newPage === 1) {
     await searchBills();
     return;
   }
-  
+
   page.value = newPage;
   billLoading.value = true;
-  
+
   try {
     const token = localStorage.getItem('token');
     await fetchNextPage(token, currentAccountId.value);

@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Data
 public class UserOperateBillDetailVo {
     @NotNull(message = "token")
-    private Long token;
+    private String token;
     @NotNull(message = "账单ID不能为空")
     private Long id;
 }

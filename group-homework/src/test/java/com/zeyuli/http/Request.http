@@ -98,3 +98,20 @@ Content-Type: application/json
     "startDate": "2025-10-10",
     "endDate": "2025-10-10"
 }
+
+###
+POST http://localhost:8080/api/user/getUserAccount
+Content-Type: application/json
+
+{
+  "token": "eyJ6aXAiOiJHWklQIiwiYWxnIjoiSFM1MTIifQ.H4sIAAAAAAAA_xWLQQ6AIAzA_rKzBxgwhEf4B-bmzYRIUBPj38Vb26QPtM6QAQ0GizYlb3RjMrOy9yyxRGcs01ocSSgUYYLe9FjKruP60Y1ULzmHipAGHa53hWwjESZC794PQdILjWYAAAA.1lgzbkWPsFx5y-dA4tnTTHuZl_uHD6eWUvusmUuqbQoxWVPWBixYA6ChnqORtqnex0n8QxBGmeQacULMettCJg"
+}
+
+###
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+  "username": "user3",
+  "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+}

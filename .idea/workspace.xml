@@ -4,18 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="feat: 新增获取用户账户信息接口">
-      <change afterPath="$PROJECT_DIR$/res/uml/多级缓存架构.puml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/res/uml/账单查询流程.puml" afterDir="false" />
+    <list default="true" id="efad6504-c3e2-4e78-b93e-55777870d46b" name="更改" comment="fix: 修复query相关api始终返回缓存数据的问题">
+      <change afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserAccountVo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/QueryBillMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/mappers/QueryBillMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/GetBillListOrderBySpecificMethodVo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAmountRangeStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillByAmountRangeStrategyImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillOrderByKeywordStrategyImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/strategy/impl/QueryBillOrderByKeywordStrategyImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/util/CacheUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/application-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/BillAccountSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/BillAccountSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/BillDashboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/BillDashboard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/bill_management_system/src/components/BillDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/front/bill_management_system/src/components/BillDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserOperateBillDetailVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/pojo/vo/UserOperateBillDetailVo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/java/com/zeyuli/service/impl/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/main/resources/mappers/QueryBillMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" beforeDir="false" afterPath="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sql/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/script.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,8 +27,8 @@
         <option value="Enum" />
         <option value="Exception" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="UML Sequence" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -50,6 +48,9 @@
     &quot;accountId&quot;: &quot;b591f40a-1c48-4d42-9c78-3119b83eeb4b&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/front/bill_management_system/src/components/BillAccountSearch.vue" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="HttpClientOnboardingState">{
   &quot;isOnboardingCommentShown&quot;: true
 }</component>
@@ -79,6 +80,8 @@
     &quot;HTTP 请求.Request | #10.executor&quot;: &quot;Run&quot;,
     &quot;HTTP 请求.Request | #11.executor&quot;: &quot;Run&quot;,
     &quot;HTTP 请求.Request | #12.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #13.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP 请求.Request | #14.executor&quot;: &quot;Run&quot;,
     &quot;HTTP 请求.Request | #2.executor&quot;: &quot;Run&quot;,
     &quot;HTTP 请求.Request | #3.executor&quot;: &quot;Run&quot;,
     &quot;HTTP 请求.Request | #4.executor&quot;: &quot;Run&quot;,
@@ -121,7 +124,7 @@
     &quot;npm.dev.executor&quot;: &quot;Run&quot;,
     &quot;npm.install.executor&quot;: &quot;Run&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;D:/fzu/mysql/group-homework/src/main/java/com/zeyuli/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
@@ -155,14 +158,25 @@
       <recent name="D:\fzu\MySql\homewok-3-SQL-statement\initial-mysql" />
     </key>
   </component>
+  <component name="RunDashboard">
+    <option name="configurationStatuses">
+      <map>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="Request | #13" value="STOPPED" />
+              <entry key="Request | #14" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="RunManager" selected="Spring Boot.Main">
-    <configuration name="script.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
-      <script-file value="$PROJECT_DIR$/sql/script.sql" />
-      <script-mode>FILE</script-mode>
-      <data-source id="c90cbe3f-407d-4585-87e6-d9306dabf209" />
+    <configuration name="Request | #13" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#13" index="13" runType="运行单个请求">
       <method v="2" />
     </configuration>
-    <configuration name="Request | #12" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#12" index="12" runType="运行单个请求">
+    <configuration name="Request | #14" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/group-homework/src/test/java/com/zeyuli/http/Request.http" executionIdentifier="#14" index="14" runType="运行单个请求">
       <method v="2" />
     </configuration>
     <configuration name="generated-requests | #9" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" executionIdentifier="#9" index="9" runType="运行单个请求">
@@ -208,20 +222,20 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="HTTP 请求.Request | #13" />
+      <item itemvalue="HTTP 请求.Request | #14" />
       <item itemvalue="HTTP 请求.generated-requests | #9" />
-      <item itemvalue="HTTP 请求.Request | #12" />
       <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
       <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
       <item itemvalue="Spring Boot.Main" />
-      <item itemvalue="数据库脚本.script.sql" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="HTTP 请求.Request | #13" />
+        <item itemvalue="HTTP 请求.Request | #14" />
         <item itemvalue="JUnit.InsertDataTest.testInsertBatchData" />
         <item itemvalue="HTTP 请求.generated-requests | #9" />
         <item itemvalue="JUnit.InsertUserAndUserAccountTest.testGenerateUsersAndAccounts" />
-        <item itemvalue="数据库脚本.script.sql" />
-        <item itemvalue="HTTP 请求.Request | #12" />
       </list>
     </recent_temporary>
   </component>
@@ -300,6 +314,9 @@
       <workItem from="1766098165466" duration="76000" />
       <workItem from="1766124149109" duration="14599000" />
       <workItem from="1766145133807" duration="12406000" />
+      <workItem from="1766173730553" duration="6765000" />
+      <workItem from="1766209602358" duration="3231000" />
+      <workItem from="1766213363180" duration="1281000" />
     </task>
     <task id="LOCAL-00001" summary="前七项">
       <option name="closed" value="true" />
@@ -557,7 +574,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766131461569</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="fix: 修复query相关api始终返回缓存数据的问题">
+      <option name="closed" value="true" />
+      <created>1766170240859</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1766170240859</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -596,7 +621,8 @@
     <MESSAGE value="docs: 新增数据库理论课作业" />
     <MESSAGE value="fix；移除无用的日志输出" />
     <MESSAGE value="feat: 新增获取用户账户信息接口" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 新增获取用户账户信息接口" />
+    <MESSAGE value="fix: 修复query相关api始终返回缓存数据的问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: 修复query相关api始终返回缓存数据的问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

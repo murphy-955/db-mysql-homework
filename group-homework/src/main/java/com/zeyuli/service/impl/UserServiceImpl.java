@@ -6,10 +6,7 @@ import com.zeyuli.enm.StatusCodeEnum;
 import com.zeyuli.mappers.UserMapper;
 import com.zeyuli.pojo.po.UserAccountPo;
 import com.zeyuli.pojo.po.UserPo;
-import com.zeyuli.pojo.vo.InitAccountInfoVo;
-import com.zeyuli.pojo.vo.QueryUserAccountInfoVo;
-import com.zeyuli.pojo.vo.UserLoginVo;
-import com.zeyuli.pojo.vo.UserRegisterVo;
+import com.zeyuli.pojo.vo.*;
 import com.zeyuli.service.UserService;
 import com.zeyuli.util.JwtUtil;
 import com.zeyuli.util.Response;
@@ -129,19 +126,28 @@ public class UserServiceImpl implements UserService {
     /**
      * 获取用户所有的账户信息<br>
      *
-     * @author : 李泽聿
-     * @since : 2025-12-19 15:55
      * @param vo {@link QueryUserAccountInfoVo}
      * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : 李泽聿
+     * @since : 2025-12-19 15:55
      */
     @Override
     @CheckUserToken
     public Map<String, Object> getUserAccountInfo(QueryUserAccountInfoVo vo) {
         String id = jwtUtil.getUserInfo(vo.getToken())[0];
         List<UserAccountPo> res = userMapper.selectAccountInfo(id);
-        if (res != null){
-            return Response.success(StatusCodeEnum.SUCCESS,res);
+        if (res != null) {
+            UserAccountVo userAccountVo = new UserAccountVo();
+            ArrayList<UserAccountVo> list = new ArrayList<>();
+            for (UserAccountPo po : res){
+                userAccountVo.setAccountId(po.getAccount());
+                userAccountVo.setBalance(po.getBalance());
+                userAccountVo.setDescription(po.getDescription());
+                userAccountVo.setUserId(po.getUserId());
+                list.add(userAccountVo);
+            }
+            return Response.success(StatusCodeEnum.SUCCESS, list);
         }
-        return Response.error(StatusCodeEnum.GET_USER_FAILED,"找不到相关账户信息");
+        return Response.error(StatusCodeEnum.GET_USER_FAILED, "找不到相关账户信息");
     }
 }

@@ -159,7 +159,6 @@ const formatDate = (dateStr) => {
 // 获取账单详情
 const fetchBillDetail = async () => {
   const routeStateBill = history.state?.bill || null;
-  // 兼容从 path 直接传 id 的场景
   const id = route.params.id || route.query.id || routeStateBill?.id;
 
   if (!id) {
@@ -193,9 +192,13 @@ const fetchBillDetail = async () => {
   }
 };
 
-// 固定返回账单查询页，避免浏览器历史导致跳转到外部页
+// 返回账单查询列表（优先回退历史记录，否则导航到 /bill-query）
 const goBack = () => {
-  router.push({ path: '/bill-query' });
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push({ path: '/bill-query' });
+  }
 };
 
 onMounted(fetchBillDetail);

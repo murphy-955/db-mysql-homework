@@ -11,7 +11,7 @@
         FROM bill_sys.user_bill
         WHERE user_id = #{userId}
         AND deleted = FALSE
-        <if test="vo.startDate == null and vo.endDate == null">
+        <if test="vo.startDate != null and vo.endDate != null">
             AND date BETWEEN #{vo.startDate} AND #{vo.endDate}
         </if>
         ORDER BY date DESC, id DESC
